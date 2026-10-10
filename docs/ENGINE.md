@@ -220,3 +220,37 @@ Measured on 300 random test homes:
   - package: gas 20,957.4, electricity −3,544.0 kWh, improvement potential 68.60%, carbon 3,310.6 kg/yr;
   - NEED-calibrated reference: carbon 3,216.8 kg/yr (pooled factor 0.484).
 - **Timing:** for a test home with 6 candidate measures (64 packages), `build()` with packages takes ~23 ms and with sensitivity ~181 ms (engine-v1 on the same home: 11 ms and 105 ms). Not yet re-measured on the 300 random York test homes.
+
+## 20. engine-v3 (docs/IMPROVEMENT_PLAN.md, D19–D29)
+| Area | Change | Switch / config |
+|---|---|---|
+| PV (D19) | NEED % applies to baseline electricity, not heat-pump electricity; capped at import | — |
+| Loft rule (D20) | roof type parsed from the EPC description; flat → infeasible; roof room / rafters / thatch / unknown type → needs_verification; depth sets suitability; ≥ 270 mm → infeasible; pre-1919 planning note | `engine_params.loft`, `.planning` |
+| Segments (D15 rev.) | region + largest single adjustment; backfitted effects once calibrated | `engine_params.segment_impacts.combine`, `engine_calibration.segment_effects` |
+| Area scaling (D21) | L1 benchmarks × (area / band reference)^β, in baseline and score; score params v2 | `engine_calibration.area_elasticity` |
+| Missing parts (D22) | train-mean prior instead of 50 (renewables by EPC age) | `engine_calibration.missing_part_priors` |
+| Costs (D23) | partial glazing × single-glazed share; size scaling once the York reference area is known | `services/costs.py`, `engine_params.costs` |
+| SCOP (D24) | 2.44 / 2.80 / 3.5 (Electrification of Heat) | `engine_params.heat_pump_scop` |
+| Thermostat (D25) | 10 / 7.5 / 5% by existing controls | `engine_params.smart_thermostat_by_controls` |
+| Bills (D26) | per fuel with standing charges at the Ofgem cap; gas standing charge saved only if no gas is left; price what-ifs | `configs/energy_prices.json`, `Assumptions.gas_price_p` / `elec_price_p` |
+| Grants and finance (D27) | BUS £7,500 (£9,000 off-gas uplift window); selection on net cost; payback; illustrative loan | `configs/grants.json`, `configs/finance.json`, `Assumptions.apply_grants` |
+| Uncertainty (D28) | 300 seeded draws; P10/P50/P90, P(carbon cut ≥ 10%), P(bill falls) | `ScenarioRequest.include_uncertainty` |
+| Portfolio (D29) | fabric-only potential, net cost, bill, payback, kg CO₂e/£; `rank_by` | `portfolio(rank_by=...)` |
+
+- **New outputs:**
+  - `ScenarioResult`: `bills`, `finance`, `uncertainty`;
+  - `standalone[m]`: bill saving, gross/net cost, grants, payback;
+  - `PackageResult`: `grants_gbp`, `net_cost_gbp`, `bill_saving_gbp`, `payback_years`;
+  - `PackageSearch.cost_basis`.
+- **Sensitivity:** 13 runs (adds `no_grants`).
+- **Demo A (hand-checked):**
+  - package: gas 20,957.4, electricity −4,667.1 kWh/yr, improvement potential 64.18%, carbon 3,148.9 kg/yr;
+  - money: bill saving £442/yr; £25,087 gross, £7,500 grant, £17,587 net; payback 39.8 years;
+  - cavity wall pick: £1,000, £238/yr, payback 4.2 years.
+- **Timing** (test home with 6 candidate measures):
+
+| Build | Time |
+|---|---|
+| With packages | ~26 ms |
+| + sensitivity (13 runs) | ~225 ms |
+| + uncertainty (300 draws) | ~150 ms |

@@ -93,10 +93,11 @@ def check_flag_counts():
 def check_score_params_train_only():
     import sys
     sys.path.insert(0, str(Path(__file__).parent))
-    from freeze_score_params import exclusion_reason
+    from freeze_score_params import exclusion_reason, scaled_baselines
     p = json.loads((CONFIGS / "score_params.json").read_text())["intensity"]
-    h = pd.read_parquet(YORK / "homes.parquet")
+    h = pd.read_parquet(YORK / "homes_tagged.parquet")
     tr = h[h.split == "train"].copy()
+    tr["baseline_gas_kwh"], tr["baseline_elec_kwh"], _ = scaled_baselines(tr)   # v2: same area scaling as the freeze (D21)
     used = tr[exclusion_reason(tr).isna()]
     inten = (used.baseline_gas_kwh + used.baseline_elec_kwh) / used.floor_area_m2
     p10, p90 = float(np.percentile(inten, 10)), float(np.percentile(inten, 90))

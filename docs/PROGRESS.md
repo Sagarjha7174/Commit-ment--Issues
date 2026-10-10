@@ -528,3 +528,26 @@ portfolio(top_n: int = 50, split: str | None = None) -> dict
 - `make elec-split`, then commit `configs/electric_heating_split.json`.
 - `make test`: the demo tests need data. Demo B's fixture expects "not estimated" until the split file exists; regenerate it with `tests/fixtures/hand_calc_demo.py` after building the split, and extend demo B's expectations to the estimated values.
 - `make score` and `make validate-sim`.
+
+---
+
+## 17. engine-v3 (branch `feature/engine-improvements`): see docs/IMPROVEMENT_PLAN.md
+| Phase | Content | Status |
+|---|---|---|
+| A | PV basis (D19), roof-aware loft rule + planning note (D20), segment max rule (D15 rev.), partial glazing cost (D23), field SCOP 2.80 (D24), thermostat by controls (D25) | done |
+| A2 | `make engine-cal`: area elasticity (D21), missing-part priors (D22), segment backfit, York reference area, baseline spread, score params v2 | code done; **run on the data machine** |
+| B | bills at the Ofgem cap (D26), BUS grants, net-cost selection, payback, illustrative loan (D27) | done |
+| C | Monte Carlo ranges (D28), portfolio fabric-only potential and `rank_by` (D29) | done |
+| D | post-retrofit SAP model, value model, ML, LLM, API, dashboard, planning data, lifetime carbon | not started |
+
+- **Tests:** 249 unit tests pass, 10 are skipped without data, and there are 9 data checks.
+- **New test files:** `tests/unit/test_engine_v3.py` and `tests/unit/test_engine_calibration.py`. The latter includes an end-to-end run of the calibration pipeline on synthetic files.
+
+**On the data machine, in order:**
+```bash
+make engine-cal && make elec-split
+.venv/bin/python tests/fixtures/hand_calc_demo.py
+make test && make validate-sim && make score
+git add configs/ && git commit -m "Engine calibration from York/NEED data" && git push
+```
+The calibration changes demo A's numbers (area scaling, backfitted segments). Run the fixture script after it, then review the diff of `tests/fixtures/scenario_a.json`.
