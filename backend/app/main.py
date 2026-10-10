@@ -2,6 +2,10 @@
 
     .venv/bin/uvicorn backend.app.main:app --port 8000          (make api)
 
+The web app (frontend/) calls /api/* (web_api.py) and /llm/*. In development Vite proxies both, so no CORS is needed;
+CORS_ORIGINS (comma list) allows other origins. After `npm run build` in frontend/, this app also serves the built web
+app at / (make web), so one process runs the whole demo.
+
 The engine (scenario_builder.build) is the only writer of numbers; the LLM routes explain its results and turn
 what-if questions into validated ScenarioRequests. No response carries an address, full postcode, UPRN or
 certificate number (checked on every response). Without an LLM API key every route still works: answers use the
@@ -9,9 +13,13 @@ deterministic template explainer.
 """
 from __future__ import annotations
 
+import os
+from pathlib import Path
 from typing import Any, Literal, Optional
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from .llm import service
@@ -22,11 +30,18 @@ from .schemas.enums import MeasureId
 from .schemas.scenario import Assumptions, ScenarioRequest, ScenarioResult, UserReading
 from .services import api as engine_api
 from .services.scenario_builder import PUBLIC_HOME_FIELDS, public_home
+from .web_api import router as web_router
 
 app = FastAPI(title="Lloyds PS2 Green Home Score", version="1.0",
               description="Engine results, explanations and what-ifs. Every number comes from the engine.")
-configure_engine(lambda pid, measures: run_scenario(pid, measures))
+configure_engine(lambda pid, measures: run_scenario(pid, measures), request_runner=run_request)
 app.include_router(llm_router)
+app.include_router(web_router)
+
+_DEFAULT_ORIGINS = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+app.add_middleware(CORSMiddleware, allow_origins=[o.strip() for o in os.environ.get("CORS_ORIGINS", _DEFAULT_ORIGINS).split(",")
+                                                  if o.strip()],
+                   allow_methods=["GET", "POST", "PUT"], allow_headers=["Content-Type", "Accept"])
 
 
 class Turn(BaseModel):
@@ -139,6 +154,24 @@ def get_portfolio(rank_by: Literal["improvement_potential", "fabric_potential", 
                                    "carbon_saving"] = "improvement_potential",
                   top_n: int = Query(50, ge=1, le=500), split: Optional[str] = None) -> dict:
     return _safe(engine_api.portfolio(top_n=top_n, split=split, rank_by=rank_by))
+
+
+# ---- built web app (frontend/dist), served last so every API route above wins ----
+WEB_DIST = Path(os.environ.get("WEB_DIST", Path(__file__).resolve().parents[2] / "frontend" / "dist"))
+
+
+if (WEB_DIST / "index.html").exists():
+    @app.get("/", include_in_schema=False)
+    @app.get("/{path:path}", include_in_schema=False)
+    def web_app(path: str = "") -> FileResponse:
+        """Static files from the build; any other path is a client-side route, so it gets index.html."""
+        root = WEB_DIST.resolve()
+        f = (root / path).resolve()
+        if path and f.is_file() and f.is_relative_to(root):
+            return FileResponse(f)
+        if path.startswith(("api/", "llm/")):
+            raise HTTPException(404, "not found")
+        return FileResponse(root / "index.html")
 
 
 __all__ = ["app", "PUBLIC_HOME_FIELDS"]

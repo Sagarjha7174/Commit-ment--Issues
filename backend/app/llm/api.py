@@ -25,17 +25,24 @@ from . import memory
 from .advise import advise, advise_whatif
 from .client import status
 from .context import UserContext
+from ..schemas.scenario import Assumptions, UserReading
 from .explain import explain
 from .measures import MeasureId
 from .whatif import EngineMismatch, answer_whatif
 
 router = APIRouter(prefix="/llm", tags=["llm"])
 _runner: Callable[[str, list[str] | None], dict] | None = None
+_request_runner: Callable[[dict], dict] | None = None
 
 
-def configure_engine(runner: Callable[[str, list[str] | None], dict]) -> None:
-    global _runner
+def configure_engine(runner: Callable[[str, list[str] | None], dict],
+                     request_runner: Callable[[dict], dict] | None = None) -> None:
+    """runner(property_id, measures) -> scenario dict. request_runner(ScenarioRequest dict) -> scenario dict (optional):
+    lets a caller send its full engine request (assumptions, reading, packages, sensitivity), so the scenario ID matches
+    the one the web app shows, and lets what-ifs change assumptions and readings."""
+    global _runner, _request_runner
     _runner = runner
+    _request_runner = request_runner
 
 
 def _run(property_id: str, measures: list[str] | None) -> dict:
@@ -47,7 +54,29 @@ def _run(property_id: str, measures: list[str] | None) -> dict:
         raise HTTPException(404, f"unknown property {property_id}") from e
 
 
-class ExplainRequest(BaseModel):
+class EngineRequestFields(BaseModel):
+    """Optional: the rest of the engine request the caller is showing. When any is set (and a request runner is
+    configured), the engine runs exactly that request, so scenario IDs match the caller's."""
+    assumptions: Assumptions | None = None
+    user_reading: UserReading | None = None
+    include_packages: bool | None = None
+    include_sensitivity: bool | None = None
+    include_uncertainty: bool | None = None
+
+    def engine_request(self, property_id: str, measures: list[str] | None) -> dict | None:
+        fields = {"assumptions": self.assumptions, "user_reading": self.user_reading,
+                  "include_packages": self.include_packages, "include_sensitivity": self.include_sensitivity,
+                  "include_uncertainty": self.include_uncertainty}
+        if all(v is None for v in fields.values()):
+            return None
+        req = {"home_id": property_id, "measures": None if measures is None else [str(getattr(m, "value", m)) for m in measures]}
+        for k, v in fields.items():
+            if v is not None:
+                req[k] = v.model_dump(mode="json") if isinstance(v, BaseModel) else v
+        return req
+
+
+class ExplainRequest(EngineRequestFields):
     property_id: str
     measures: list[MeasureId] | None = Field(default=None, description="None = the recommended plan")
     expected_scenario_id: str | None = None
@@ -59,7 +88,7 @@ class ExplainRequest(BaseModel):
     context: UserContext | None = None
 
 
-class WhatIfRequest(BaseModel):
+class WhatIfRequest(EngineRequestFields):
     property_id: str
     measures: list[MeasureId] | None = Field(default=None, description="The selection currently shown")
     question: str = Field(min_length=1, max_length=500)
@@ -67,6 +96,18 @@ class WhatIfRequest(BaseModel):
     template_mode: bool = False
     customer_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,64}$")
     context: UserContext | None = None
+
+
+def _run_for(req: EngineRequestFields, property_id: str, measures: list[str] | None) -> dict:
+    full = req.engine_request(property_id, measures)
+    if full is None:
+        return _run(property_id, measures)
+    if _request_runner is None:
+        raise HTTPException(501, "this server runs measure selections only (no request runner configured)")
+    try:
+        return _request_runner(full)
+    except KeyError as e:
+        raise HTTPException(404, f"unknown property {property_id}") from e
 
 
 def _check_expected(scenario: dict, expected: str | None) -> None:
@@ -90,7 +131,7 @@ def post_explain(req: ExplainRequest, background: BackgroundTasks) -> dict[str, 
         res = advise(req.property_id, lambda pid, ms: _run(pid, ms), context=req.context,
                      customer_id=req.customer_id, use_llm=not req.template_mode)
         return {"scenario": res.scenario, "explanation": res.explanation.to_dict(), "advice": res.to_dict()}
-    scenario = _run(req.property_id, req.measures)
+    scenario = _run_for(req, req.property_id, req.measures)
     _check_expected(scenario, req.expected_scenario_id)
     result = explain(scenario, use_llm=not req.template_mode)
     if req.template_mode and req.prefetch_llm:
@@ -144,10 +185,11 @@ def post_whatif(req: WhatIfRequest) -> dict[str, Any]:
         return {"scenario_id": res.explanation.scenario_id, "scenario": res.scenario,
                 "recalculated": True, "explanation": res.explanation.to_dict(), "advice": res.to_dict(),
                 "outcome": None if res.whatif is None else res.whatif.to_dict()["outcome"]}
-    scenario = _run(req.property_id, req.measures)
+    scenario = _run_for(req, req.property_id, req.measures)
     _check_expected(scenario, req.expected_scenario_id)
     try:
-        answer = answer_whatif(scenario, req.question, lambda pid, ms: _run(pid, ms), use_llm=not req.template_mode)
+        answer = answer_whatif(scenario, req.question, lambda pid, ms: _run(pid, ms), use_llm=not req.template_mode,
+                               request_runner=_request_runner)
     except EngineMismatch as e:
         raise HTTPException(500, f"engine did not apply the validated change: {e}") from e
     return answer.to_dict()
