@@ -5,7 +5,7 @@
     score(home_id: str) -> ScoreResult
     search(home_id: str, assumptions: Assumptions | None = None, threshold_pct: float = 10.0,
            budget_gbp: float | None = None, user_reading: UserReading | None = None) -> PackageSearch
-    portfolio(top_n: int = 50, split: str | None = None) -> dict
+    portfolio(top_n: int = 50, split: str | None = None, rank_by: str = "improvement_potential") -> dict
 """
 from __future__ import annotations
 
@@ -38,5 +38,5 @@ def search(home_id: str, assumptions: Optional[Assumptions] = None, threshold_pc
     return packages.search(h, get_baseline(h, user_reading), feasibility.assess(h), assumptions, threshold_pct, budget_gbp)
 
 
-def portfolio(top_n: int = 50, split: Optional[str] = None) -> dict:
-    return portfolio_mod.portfolio(top_n, split)
+def portfolio(top_n: int = 50, split: Optional[str] = None, rank_by: str = "improvement_potential") -> dict:
+    return portfolio_mod.portfolio(top_n, split, rank_by)

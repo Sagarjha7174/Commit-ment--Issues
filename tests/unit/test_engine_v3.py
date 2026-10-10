@@ -218,3 +218,101 @@ def test_scenario_reports_bills_and_finance():
     r = build(ScenarioRequest(home_id=h.home_id, measures=["cavity_wall", "heat_pump"]), h)
     assert r.bills["status"] == "ok" and r.finance["grants_gbp"] == 7500.0
     assert r.standalone["cavity_wall"]["bill_saving_gbp"] > 0 and r.standalone["heat_pump"]["net_cost_gbp"] == pytest.approx(10000.0)
+
+
+# ---- C1 (D28): Monte Carlo ranges ----
+
+from backend.app.services import uncertainty  # noqa: E402
+from backend.app.services.feasibility import assess  # noqa: E402
+
+
+def _unc(h, measures, seed="ab" * 8, a=HEADLINE, b=None, n=200):
+    return uncertainty.run(h, b or get_baseline(h), assess(h), measures, a, seed, n=n)
+
+
+def test_uncertainty_deterministic_and_ordered():
+    h = make_home(glazing="single", controls="timer")
+    u1, u2 = _unc(h, [M.cavity_wall, M.double_glazing]), _unc(h, [M.cavity_wall, M.double_glazing])
+    assert u1["percentiles"] == u2["percentiles"]
+    assert _unc(h, [M.cavity_wall], seed="cd" * 8)["percentiles"] != _unc(h, [M.cavity_wall])["percentiles"]
+    for v in u1["percentiles"].values():
+        if v:
+            assert v["p10"] <= v["p50"] <= v["p90"]
+
+
+def test_brief_range_bounds_the_glazing_draws():
+    h = make_home(glazing="single")
+    u = _unc(h, [M.double_glazing], n=400)
+    space = 0.77 * 12000 * (1 - 0.0305)   # space share varies 0.65-0.85 in the draws, so use its bounds
+    p = u["percentiles"]["gas_saving_kwh"]
+    assert p["p10"] >= 0.08 * 0.65 / 0.77 * space - 1e-6 and p["p90"] <= 0.12 * 0.85 / 0.77 * space + 1e-6
+
+
+def test_baseline_spread_only_when_calibrated_and_benchmark(monkeypatch):
+    from backend.app.schemas.scenario import UserReading
+    h = make_home()
+    assert not any("baseline" in x for x in _unc(h, [M.cavity_wall])["inputs_varied"])
+    monkeypatch.setattr(config, "engine_calibration", lambda: {"version": "t", "baseline_spread": {"gas_sigma_log": 0.4, "elec_sigma_log": 0.3}})
+    wide = _unc(h, [M.cavity_wall])
+    assert any("baseline" in x for x in wide["inputs_varied"])
+    user = _unc(h, [M.cavity_wall], b=get_baseline(h, UserReading(gas_kwh=12000.0, elec_kwh=3000.0)))
+    assert not any("baseline" in x for x in user["inputs_varied"])
+    width = lambda u: u["percentiles"]["gas_saving_kwh"]["p90"] - u["percentiles"]["gas_saving_kwh"]["p10"]  # noqa: E731
+    assert width(wide) > width(user)
+
+
+def test_uncertainty_unavailable_without_baseline_and_reports_context():
+    h = make_home(baseline_gas_kwh=None, gas_status="unknown_mains_gas")
+    assert _unc(h, [M.cavity_wall])["status"] == "unavailable"
+    u = _unc(make_home(), [M.cavity_wall])
+    assert "cavity_wall" in u["household_spread_context"] and 0 <= u["prob_bill_falls"] <= 1
+
+
+def test_scenario_uncertainty_optional():
+    h = make_home()
+    assert build(ScenarioRequest(home_id=h.home_id), h).uncertainty is None
+    r = build(ScenarioRequest(home_id=h.home_id, measures=["cavity_wall"], include_uncertainty=True), h)
+    assert r.uncertainty["status"] == "ok" and "uncertainty" in r.audit
+
+
+# ---- C2 (D29): portfolio ranking options ----
+
+def _poor_frame():
+    import pandas as pd
+    from backend.app.schemas.property import SOURCE_COLUMNS
+    rows = []
+    for i, (walls, roof, glazing, heating) in enumerate([
+            ("Cavity wall, as built, no insulation (assumed)", "Very Poor", "single", "gas_boiler"),
+            ("Solid brick, as built, no insulation (assumed)", "Poor", "single", "gas_boiler"),
+            ("Cavity wall, as built, no insulation (assumed)", "Poor", "double", "gas_boiler"),
+            ("Solid brick, as built, no insulation (assumed)", "Very Poor", "partial", "gas_boiler")]):
+        h = make_home(home_id=f"P{i}", rating="F", sap_score=25.0, walls_rating="Very Poor", walls_description=walls,
+                      roof_rating=roof, roof_description="Pitched, 25 mm loft insulation", glazing=glazing,
+                      multi_glaze_pct=40.0, heating_type=heating, heating_rating="Poor", controls="none",
+                      baseline_gas_kwh=18000.0 + 2000 * i, prov_baseline_gas_kwh="population_benchmark",
+                      prov_baseline_elec_kwh="population_benchmark")
+        d = h.model_dump()
+        r = {col: d.get(field) for col, field in SOURCE_COLUMNS.items()}
+        r["postcode"] = "YO10 1AA"
+        rows.append(r)
+    return pd.DataFrame(rows).set_index("property_id", drop=False)
+
+
+def test_portfolio_rank_by_and_fabric_columns(monkeypatch):
+    from backend.app.services import portfolio as pf
+    monkeypatch.setattr(pf, "homes_frame", _poor_frame)
+    pf._evaluate.cache_clear()
+    try:
+        base = pf.portfolio(top_n=10)
+        assert base["summary"]["flagged_poor_or_very_poor"] == 4 and base["summary"]["rank_by"] == "improvement_potential"
+        for r in base["homes"]:
+            assert r["heat_pump_in_package"] and r["fabric_improvement_potential_pct"] < r["improvement_potential_pct"]
+            assert r["net_cost_gbp"] == pytest.approx(r["gross_cost_gbp"] - 7500.0)
+            assert r["carbon_per_pound_kg"] == pytest.approx(r["carbon_saving_kg"] / r["net_cost_gbp"])
+        for key, col in pf.RANK_KEYS.items():
+            vals = [r[col] for r in pf.portfolio(top_n=10, rank_by=key)["homes"]]
+            assert vals == sorted(vals, reverse=True)
+        with pytest.raises(ValueError):
+            pf.portfolio(rank_by="nonsense")
+    finally:
+        pf._evaluate.cache_clear()

@@ -147,3 +147,29 @@ Each entry: decision, why, alternatives, consequences. Date 2026-10-10 unless no
 - **Selection:** package selection (Pareto, featured picks, carbon per £) uses the cost net of grants (`Assumptions.apply_grants`, default on). Gross cost is always shown. A `no_grants` sensitivity run (13 runs in total) shows whether picks depend on the grant.
 - **Finance:** simple payback = net cost / annual bill saving, with none when the bill does not fall. The monthly repayment at an illustrative 7.0% APR over 10 years (`configs/finance.json`, **not a Lloyds product or offer**) is shown next to the monthly bill saving.
 - **Demo A, full package:** £25,087 gross, £7,500 grant, £17,587 net, £442/yr bill saving, 39.8-year payback. The cavity wall pick pays back in 4.2 years.
+
+## D28. Monte Carlo ranges for a home's package (model-input uncertainty)
+- **Decision:** `ScenarioRequest.include_uncertainty` runs 300 draws, seeded from the scenario id so the result is reproducible. What varies:
+  - NEED impacts: headline triangular(low, mid, high) + segment adjustment + normal(0, empirical-Bayes posterior sd);
+  - glazing: uniform over the brief range;
+  - thermostat: uniform over the levels next to its controls placement;
+  - SCOP: triangular 2.44 / 2.80 / 3.5;
+  - boiler efficiency: ±0.05;
+  - space/water split: 0.65–0.85;
+  - baseline per fuel: lognormal household spread around the NEED cell median, when `make engine-cal` has built it. Never varied for a user reading or an observed zero.
+- **Reports:**
+  - P10 / P50 / P90 of gas, electricity, purchased energy, carbon (kg and %), bill saving and improvement potential;
+  - P(carbon cut ≥ 10%) and P(bill falls);
+  - what was and was not varied.
+- **Not compounded:** NEED's household outcome spread (p5–p95, which includes occupancy and other unrelated changes) is shown per measure as context. Compounding it across measures would overstate the spread, because that noise is per household, not per measure.
+- **Label:** "model-input uncertainty … not a confidence interval".
+- **Demo A:** carbon 3.09–3.25 t/yr (P10–P90); bill saving £343–£626/yr; P(bill falls) 1.0. Build time ~150 ms.
+
+## D29. Portfolio: fabric-only potential, cost metrics and ranking options
+- **Finding:** ranking by improvement potential of "all feasible measures" mostly ranks by heat-pump eligibility; a heat pump alone gives ~60% purchased-energy reduction in a gas home.
+- **Decision:** each flagged home also reports:
+  - fabric/controls-only potential and carbon;
+  - gross cost, grants and net cost;
+  - bill change and payback;
+  - kg CO₂e per £ (net).
+  - `portfolio(rank_by=...)` accepts improvement_potential (the brief's default, unchanged), fabric_potential, carbon_per_pound or carbon_saving. Unavailable values always rank last.

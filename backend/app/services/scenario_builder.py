@@ -16,6 +16,7 @@ from ..schemas.scenario import ScenarioRequest, ScenarioResult, Valuation, scena
 from . import audit as audit_mod
 from .combination import calibrated_view
 from .money import bill_change, finance_summary
+from .uncertainty import run as uncertainty_run
 from . import packages as packages_mod
 from . import sensitivity as sens_mod
 from .baseline import get_baseline
@@ -127,12 +128,18 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
                    "package_threshold_pct": packages_mod.THRESHOLD_PCT, "apply_grants": a.apply_grants,
                    "prices": {"gas_p_per_kwh": bills.get("prices", {}).get("gas_p_per_kwh"),
                               "elec_p_per_kwh": bills.get("prices", {}).get("elec_p_per_kwh")}}
+    unc = uncertainty_run(home, baseline, feas, applied, a, sid, threshold_pct=packages_mod.THRESHOLD_PCT) \
+        if request.include_uncertainty else None
     aud = audit_mod.build_audit(sid, versions, baseline, feas, sim, pkg, sens, warnings)
+    if unc is not None and unc.get("status") == "ok":
+        aud["uncertainty"] = {k: unc[k] for k in ("label", "n_draws", "prob_carbon_cut_ge_threshold", "prob_bill_falls",
+                                                  "inputs_varied", "not_varied")}
     return ScenarioResult(
         scenario_id=sid, home=public_home(home), request=request, baseline=baseline, feasibility=feas,
         measures_applied=applied, measures_blocked=blocked, simulation=sim, standalone=standalone, carbon=carbon,
         score_before=s_before, score_after=s_after, packages=pkg, sensitivity=sens, valuation=valuation(),
         combination_check=calibrated_view(baseline, home, applied, a, feas), bills=bills, finance=finance,
+        uncertainty=unc,
         audit=aud, assumptions=assumptions, warnings=warnings, versions=versions,
         data_timestamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )
