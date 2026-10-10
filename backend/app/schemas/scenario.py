@@ -23,6 +23,9 @@ class Assumptions(BaseModel):
     heat_pump_partial_share: Optional[float] = None   # required when mode = partial
     baseline_scale: float = 1.0                       # sensitivity only
     segment_impacts: bool = True                      # NEED impacts adjusted to the home's segments (D15)
+    gas_price_p: Optional[float] = Field(default=None, ge=0)    # what-if unit rate, p/kWh (D26); None = price cap
+    elec_price_p: Optional[float] = Field(default=None, ge=0)   # e.g. a heat-pump tariff
+    apply_grants: bool = True                         # package selection on cost net of grants (D27)
     combination_mode: CombinationMode = CombinationMode.engineering   # D17
 
 
@@ -40,6 +43,7 @@ class ScenarioRequest(BaseModel):
     user_reading: Optional[UserReading] = None
     include_packages: bool = True
     include_sensitivity: bool = False
+    include_uncertainty: bool = False   # Monte Carlo ranges for the requested package (D28)
 
 
 class Baseline(BaseModel):
@@ -122,6 +126,9 @@ class ScenarioResult(BaseModel):
     sensitivity: Optional[dict] = None
     valuation: Valuation
     combination_check: Optional[dict] = None   # NEED-calibrated reference next to the engineering estimate (D17)
+    bills: Optional[dict] = None               # annual bill before/after per fuel (D26)
+    finance: Optional[dict] = None             # gross/net cost, grants, payback, illustrative loan (D27)
+    uncertainty: Optional[dict] = None         # Monte Carlo ranges (D28)
     audit: dict
     assumptions: dict
     warnings: list[str]

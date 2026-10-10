@@ -17,7 +17,9 @@ OBJECTIVE_TEXT = {
 def _pkg_summary(p) -> dict:
     return {"package_id": p.package_id, "cost_gbp": p.cost_gbp, "carbon_saving_kg": p.carbon_saving_kg,
             "carbon_saving_pct": p.carbon_saving_pct, "gas_saving_kwh": p.gas_saving_kwh,
-            "elec_saving_kwh": p.elec_saving_kwh, "purchased_saving_kwh": p.purchased_saving_kwh}
+            "elec_saving_kwh": p.elec_saving_kwh, "purchased_saving_kwh": p.purchased_saving_kwh,
+            "grants_gbp": p.grants_gbp, "net_cost_gbp": p.net_cost_gbp, "bill_saving_gbp": p.bill_saving_gbp,
+            "payback_years": p.payback_years}
 
 
 def _difference(a, b) -> list[str]:
@@ -31,6 +33,8 @@ def _difference(a, b) -> list[str]:
         out.append(f"cost difference {b.cost_gbp - a.cost_gbp:+,.0f} GBP (alternative minus winner)")
     if a.carbon_saving_kg is not None and b.carbon_saving_kg is not None:
         out.append(f"carbon difference {b.carbon_saving_kg - a.carbon_saving_kg:+,.0f} kg/yr")
+    if a.bill_saving_gbp is not None and b.bill_saving_gbp is not None:
+        out.append(f"annual bill saving difference {b.bill_saving_gbp - a.bill_saving_gbp:+,.0f} GBP (alternative minus winner)")
     if a.elec_saving_kwh is not None and b.elec_saving_kwh is not None and abs(b.elec_saving_kwh - a.elec_saving_kwh) > 1:
         out.append(f"electricity saving difference {b.elec_saving_kwh - a.elec_saving_kwh:+,.0f} kWh/yr (negative = more electricity used)")
     return out

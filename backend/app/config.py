@@ -42,6 +42,18 @@ def engine_params() -> dict:
     return _json("engine_params.json")
 
 
+def energy_prices() -> dict:
+    return _json("energy_prices.json")
+
+
+def grants() -> dict:
+    return _json("grants.json")
+
+
+def finance() -> dict:
+    return _json("finance.json")
+
+
 def _optional_json(name: str) -> dict | None:
     p = CONFIGS / name
     return json.loads(p.read_text()) if p.exists() else None
@@ -117,6 +129,9 @@ def versions() -> dict:
         "emission_factors": f"DESNZ {ef['elec']['year']}",
         "engine": "engine-v2",
         "engine_params": engine_params()["version"],
+        "energy_prices": energy_prices()["version"],
+        "grants": grants()["version"],
+        "finance": finance()["version"],
         # data-derived refinements: present only once built, so the scenario_id changes when they change
         **{k: v["version"] for k, v in (("electric_heating_split", electric_heating_split()),
                                         ("combination_calibration", combination_calibration()),

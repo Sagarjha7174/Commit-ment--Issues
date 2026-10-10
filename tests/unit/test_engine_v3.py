@@ -139,3 +139,82 @@ def test_thermostat_saving_falls_with_better_controls():
         h = make_home(controls=c)
         savings.append(simulate(get_baseline(h), h, [M.smart_thermostat], HEADLINE).gas_saving_kwh)
     assert savings[0] > savings[1] > savings[2]
+
+
+# ---- B (D26, D27): bills, grants, payback, illustrative loan ----
+
+from backend.app.schemas.scenario import ScenarioRequest  # noqa: E402
+from backend.app.services import money  # noqa: E402
+from backend.app.services.scenario_builder import build  # noqa: E402
+
+
+def test_bill_arithmetic_at_price_cap():
+    h = make_home()
+    s = simulate(get_baseline(h), h, [M.cavity_wall], HEADLINE)
+    b = money.bill_change(s)
+    gas_saved = 0.11982 * 12000
+    assert b["gas_saving_gbp"] == pytest.approx(gas_saved * 0.0797, abs=0.01)
+    assert b["elec_saving_gbp"] == pytest.approx(0.0, abs=0.01) and b["standing_saving_gbp"] == pytest.approx(0.0, abs=0.01)
+    before = 12000 * 0.0797 + 3000 * 0.2632 + 365 * (0.5483 + 0.2968)
+    assert b["before_gbp"] == pytest.approx(before, abs=0.01)
+
+
+def test_gas_standing_charge_saved_only_when_no_gas_left():
+    h = make_home()
+    b = get_baseline(h)
+    keep = money.bill_change(simulate(b, h, [M.heat_pump], HEADLINE))                 # cooking gas stays
+    gone = money.bill_change(simulate(b, h, [M.heat_pump], HEADLINE.model_copy(update={"other_gas_share": 0.0})))
+    assert keep["standing_saving_gbp"] == pytest.approx(0.0, abs=0.01)
+    assert gone["standing_saving_gbp"] == pytest.approx(365 * 0.2968, abs=0.01)
+
+
+def test_price_override_for_heat_pump_tariff():
+    h = make_home()
+    s = simulate(get_baseline(h), h, [M.heat_pump], HEADLINE)
+    cap = money.bill_change(s)
+    cheap = money.bill_change(s, HEADLINE.model_copy(update={"elec_price_p": 15.0}))
+    assert cheap["saving_gbp"] > cap["saving_gbp"] and "override" in cheap["prices"]["source"]
+
+
+@pytest.mark.parametrize("heating,mains_gas,expected", [("gas_boiler", True, 7500.0), ("oil", False, 9000.0),
+                                                        ("electric", False, 9000.0), ("heat_pump", False, 0.0)])
+def test_boiler_upgrade_scheme(heating, mains_gas, expected):
+    h = make_home(heating_type=heating, mains_gas=mains_gas)
+    total, notes = money.grants_for([M.heat_pump], h, {"heat_pump": 17500.0})
+    assert total == expected and notes
+    assert money.grants_for([M.cavity_wall], h, {"cavity_wall": 1000.0})[0] == 0.0
+
+
+def test_grant_never_exceeds_cost():
+    assert money.grants_for([M.heat_pump], make_home(), {"heat_pump": 5000.0})[0] == 5000.0
+
+
+def test_payback_and_loan():
+    h = make_home()
+    s = simulate(get_baseline(h), h, [M.cavity_wall], HEADLINE)
+    f = money.finance_summary([M.cavity_wall], h, money.bill_change(s))
+    assert f["net_cost_gbp"] == 1000.0 and f["payback_years"] == pytest.approx(1000 / f["annual_bill_saving_gbp"], abs=0.05)
+    r, n = 0.07 / 12, 120
+    assert f["illustrative_loan"]["monthly_repayment_gbp"] == pytest.approx(1000 * r / (1 - (1 + r) ** -n), abs=0.01)
+    rising = money.finance_summary([M.heat_pump], h, {"status": "ok", "saving_gbp": -50.0})
+    assert rising["payback_years"] is None and "not paid back" in rising["payback_note"]
+
+
+def test_package_selection_uses_net_cost_and_no_grant_run_exists():
+    h = make_home(roof_rating="Poor", glazing="single", controls="timer")
+    r = build(ScenarioRequest(home_id=h.home_id, include_sensitivity=True), h)
+    assert r.packages.cost_basis.startswith("net of grants")
+    hp = next(p for p in r.packages.packages if p.package_id == "heat_pump")
+    assert hp.grants_gbp == 7500.0 and hp.net_cost_gbp == hp.cost_gbp - 7500.0
+    assert hp.carbon_per_pound_kg == pytest.approx(hp.carbon_saving_kg / hp.net_cost_gbp)
+    assert "no_grants" in {x["name"] for x in r.sensitivity["runs"]}
+    gross = build(ScenarioRequest(home_id=h.home_id, assumptions=Assumptions(apply_grants=False)), h)
+    hp_g = next(p for p in gross.packages.packages if p.package_id == "heat_pump")
+    assert gross.packages.cost_basis == "gross" and hp_g.carbon_per_pound_kg == pytest.approx(hp_g.carbon_saving_kg / hp_g.cost_gbp)
+
+
+def test_scenario_reports_bills_and_finance():
+    h = make_home()
+    r = build(ScenarioRequest(home_id=h.home_id, measures=["cavity_wall", "heat_pump"]), h)
+    assert r.bills["status"] == "ok" and r.finance["grants_gbp"] == 7500.0
+    assert r.standalone["cavity_wall"]["bill_saving_gbp"] > 0 and r.standalone["heat_pump"]["net_cost_gbp"] == pytest.approx(10000.0)

@@ -161,6 +161,10 @@ class PackageResult(BaseModel):
     warnings: list[str] = Field(default_factory=list)
     sensitivity: Optional[dict] = None    # for featured packages: does the pick survive each sensitivity run
     calibrated: Optional[dict] = None     # NEED-calibrated reference for 2+ fabric/controls measures (D17)
+    grants_gbp: Optional[float] = None    # D27; subject to eligibility
+    net_cost_gbp: Optional[float] = None
+    bill_saving_gbp: Optional[float] = None    # annual, positive = bill falls (D26)
+    payback_years: Optional[float] = None      # net cost / bill saving; None if the bill does not fall
     status: ValueStatus = ValueStatus.ok
     reason_code: Optional[str] = None
 
@@ -183,3 +187,4 @@ class PackageSearch(BaseModel):
     threshold_pct: float
     budget_gbp: Optional[float] = None
     baseline_emissions_kg: Optional[float] = None
+    cost_basis: str = "gross"             # "net of grants (subject to eligibility)" when grants are applied (D27)

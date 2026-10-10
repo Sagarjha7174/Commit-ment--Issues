@@ -1,0 +1,18 @@
+{
+ "version": "grants-2026-10",
+ "as_of": "2026-10-10",
+ "as_of_note": "fixed evaluation date so results are reproducible; update when the scheme changes",
+ "grants": [
+  {"id": "bus_ashp", "name": "Boiler Upgrade Scheme (air source heat pump)", "measure": "heat_pump",
+   "amount_gbp": 7500,
+   "uplift": {"amount_gbp": 9000, "condition": "off_gas", "valid_from": "2026-07-21", "valid_to": "2027-03-31",
+              "note": "temporary rate for homes off the gas grid (applications 21 Jul 2026 - 31 Mar 2027)"},
+   "eligibility": {"nations": ["England", "Wales"], "replaces_heating_types": ["gas_boiler", "oil", "electric", "other"]},
+   "eligibility_note": "subject to full scheme rules (installer, property and EPC requirements); check the Ofgem BUS page before relying on it",
+   "sources": ["https://www.ofgem.gov.uk/environmental-and-social-schemes/boiler-upgrade-scheme",
+               "https://www.energysavingtrust.org.uk/grants-and-schemes/boiler-upgrade-scheme/"]}
+ ],
+ "region_nation": "England",
+ "not_modelled": "insulation grants (ECO4, Great British Insulation Scheme) depend on household income and benefits, which the engine does not know",
+ "decision": "D27"
+}

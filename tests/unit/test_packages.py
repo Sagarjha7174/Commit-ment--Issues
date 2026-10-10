@@ -158,7 +158,7 @@ def test_sensitivity_runs_and_labels():
     h = make_home(glazing="single", controls="timer")
     s, b, f = _search(h)
     r = sensitivity.run(h, b, f, s)
-    assert "not a confidence interval" in r["label"] and len(r["runs"]) == 12
+    assert "not a confidence interval" in r["label"] and len(r["runs"]) == 13
     assert set(r["survival"]) == {"lowest_cost_meeting_threshold", "largest_carbon_saving", "best_carbon_per_pound"}
     assert "roof orientation and shading (PV yield)" in r["untested"]
     for obj, sv in r["survival"].items():

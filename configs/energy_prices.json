@@ -1,0 +1,14 @@
+{
+ "version": "prices-2026Q4",
+ "period": "2026-10-01 to 2026-12-31",
+ "basis": "Ofgem energy price cap, Direct Debit, GB average (rates vary by region and tariff; the cap limits unit rates and standing charges, not total bills)",
+ "elec": {"unit_p_per_kwh": 26.32, "standing_p_per_day": 54.83,
+          "vat_note": "reported as including 0% VAT on domestic electricity from 1 October 2026"},
+ "gas": {"unit_p_per_kwh": 7.97, "standing_p_per_day": 29.68, "vat_note": "includes 5% VAT"},
+ "sources": ["https://www.uswitch.com/gas-electricity/news/october-energy-price-cap-to-increase-by-four-percent/",
+             "https://www.payplan.com/blog/ofgem-energy-price-cap-hits-three-year-high/",
+             "https://octopus.energy/blog/october-2026-energy-price-cap-should-i-fix-my-tariff/"],
+ "verify_against": "Ofgem energy price cap page (rates taken from press coverage citing Ofgem)",
+ "export": "solar export is not credited (no Smart Export Guarantee rate assumed): bill savings from PV are conservative",
+ "decision": "D26"
+}

@@ -21,6 +21,7 @@ from ..schemas.scenario import Assumptions, Baseline
 from .carbon import carbon_change, emissions_kg
 from .combination import calibrated_view
 from .costs import package_cost
+from .money import bill_change, finance_summary
 from .simulator import simulate
 
 THRESHOLD_PCT = 10.0
@@ -193,6 +194,10 @@ def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], as
                                              cost_gbp=cost, status=ValueStatus.unavailable, reason_code=sim.reason_code,
                                              eligible_for_cost_comparison=False))
                 continue
+            bill = bill_change(sim, a)
+            fin = finance_summary(ms, home, bill) if ms else {"status": "ok", "grants_gbp": 0.0, "net_cost_gbp": 0.0, "payback_years": None}
+            net = fin.get("net_cost_gbp")
+            sel_cost = (net if a.apply_grants else cost) if cost is not None else None   # selection basis (D27)
             pr = PackageResult(
                 package_id=pid, measures=ms, confirmed=not verify, must_verify=verify, cost_gbp=cost,
                 cost_provenance=cost_prov, cost_status=ValueStatus.ok if cost is not None else ValueStatus.unavailable,
@@ -200,11 +205,13 @@ def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], as
                 gas_saving_kwh=sim.gas_saving_kwh, elec_saving_kwh=sim.elec_saving_kwh,
                 purchased_saving_kwh=sim.purchased_saving_kwh, improvement_potential_pct=sim.improvement_potential_pct,
                 carbon_saving_kg=carb.total_kg, carbon_saving_pct=carb.saving_pct_of_baseline,
-                carbon_per_pound_kg=(carb.total_kg / cost) if cost else None,
+                carbon_per_pound_kg=(carb.total_kg / sel_cost) if sel_cost else None,
+                grants_gbp=fin.get("grants_gbp"), net_cost_gbp=net, bill_saving_gbp=bill.get("saving_gbp"),
+                payback_years=fin.get("payback_years"),
                 unvalidated_impacts=[m.value for m in ms if not validated[m.value]], warnings=warns,
                 calibrated=calibrated_view(baseline, home, ms, a, feas) if (warns and include_calibrated) else None)
             results.append(pr)
-            cands.append(Cand(pid, cost, carb.total_kg, sim.purchased_saving_kwh, len(ms), not verify,
+            cands.append(Cand(pid, sel_cost, carb.total_kg, sim.purchased_saving_kwh, len(ms), not verify,
                               carb.saving_pct_of_baseline or 0.0, verify))
 
     # dominance shown per row: confirmed packages vs confirmed packages; conditional packages vs all packages
@@ -217,4 +224,5 @@ def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], as
          for o in LABELS], ["baseline unavailable: no packages estimated"])
     results.sort(key=lambda p: (p.status != ValueStatus.ok, -(p.carbon_saving_kg or 0), p.cost_gbp or 0, len(p.measures), p.package_id))
     return PackageSearch(packages=results, featured=featured, fallbacks=fallbacks, excluded_measures=excluded,
-                         threshold_pct=threshold_pct, budget_gbp=budget, baseline_emissions_kg=base_kg)
+                         threshold_pct=threshold_pct, budget_gbp=budget, baseline_emissions_kg=base_kg,
+                         cost_basis="net of grants (subject to eligibility)" if a.apply_grants else "gross")

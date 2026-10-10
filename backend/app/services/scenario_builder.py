@@ -15,6 +15,7 @@ from ..schemas.property import HomeRecord
 from ..schemas.scenario import ScenarioRequest, ScenarioResult, Valuation, scenario_id
 from . import audit as audit_mod
 from .combination import calibrated_view
+from .money import bill_change, finance_summary
 from . import packages as packages_mod
 from . import sensitivity as sens_mod
 from .baseline import get_baseline
@@ -80,14 +81,21 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
         s1 = simulate(baseline, home, [m], a, feas)
         r = s1.measures[0] if s1.measures else None
         c1 = carbon_change(s1)
+        b1 = bill_change(s1, a)
+        f1 = finance_summary([m], home, b1)
         standalone[m.value] = {
             "status": (r.status if r else s1.status).value, "reason": (r.reason_code if r else s1.reason_code),
             "gas_saving_kwh": r.gas_saving_kwh if r else None, "elec_saving_kwh": r.elec_saving_kwh if r else None,
             "purchased_saving_kwh": r.purchased_saving_kwh if r else None,
             "carbon_saving_kg": c1.total_kg, "suitability": fmap[m].suitability.value if fmap[m].suitability else None,
             "feasibility": fmap[m].state.value, "reason_text": fmap[m].reason_text,
+            "bill_saving_gbp": b1.get("saving_gbp"), "gross_cost_gbp": f1.get("gross_cost_gbp"),
+            "grants_gbp": f1.get("grants_gbp"), "net_cost_gbp": f1.get("net_cost_gbp"), "payback_years": f1.get("payback_years"),
         }
 
+    bills = bill_change(sim, a)
+    done_ok = [r.measure for r in sim.measures if r.status == ValueStatus.ok]
+    finance = finance_summary(done_ok, home, bills) if done_ok else None
     pkg = packages_mod.search(home, baseline, feas, a) if request.include_packages else None
     sens = sens_mod.run(home, baseline, feas, pkg, a) if (request.include_sensitivity and pkg is not None) else None
 
@@ -116,13 +124,15 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
     assumptions = {**resolve(a, home).as_dict(), "heat_pump_mode": a.heat_pump_mode.value,
                    "heat_pump_partial_share": a.heat_pump_partial_share, "baseline_scale": a.baseline_scale,
                    "emission_factors": {f: v["kg_co2e_per_kwh"] for f, v in config.emission_factors().items()},
-                   "package_threshold_pct": packages_mod.THRESHOLD_PCT}
+                   "package_threshold_pct": packages_mod.THRESHOLD_PCT, "apply_grants": a.apply_grants,
+                   "prices": {"gas_p_per_kwh": bills.get("prices", {}).get("gas_p_per_kwh"),
+                              "elec_p_per_kwh": bills.get("prices", {}).get("elec_p_per_kwh")}}
     aud = audit_mod.build_audit(sid, versions, baseline, feas, sim, pkg, sens, warnings)
     return ScenarioResult(
         scenario_id=sid, home=public_home(home), request=request, baseline=baseline, feasibility=feas,
         measures_applied=applied, measures_blocked=blocked, simulation=sim, standalone=standalone, carbon=carbon,
         score_before=s_before, score_after=s_after, packages=pkg, sensitivity=sens, valuation=valuation(),
-        combination_check=calibrated_view(baseline, home, applied, a, feas),
+        combination_check=calibrated_view(baseline, home, applied, a, feas), bills=bills, finance=finance,
         audit=aud, assumptions=assumptions, warnings=warnings, versions=versions,
         data_timestamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )

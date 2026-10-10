@@ -131,3 +131,19 @@ Each entry: decision, why, alternatives, consequences. Date 2026-10-10 unless no
 - **Finding:** the same 7.5% saving was applied whether a home had no controls or full controls.
 - **Decision:** the brief range is placed by current controls: none → 10% (high), timer → 7.5% (mid), full → 5% (low). The scenario impact level still shifts one step. This is an assumption.
 - **Validation homes:** the NEED "heat controls" validation homes use timer controls (an upgrade from basic controls), which keeps them at the mid value.
+
+## D26. Annual bills per fuel at the Ofgem price cap
+- **Decision:** bill = unit cost + standing charges, at the Ofgem cap for 1 Oct – 31 Dec 2026 (Direct Debit, GB average):
+  - electricity 26.32p/kWh + 54.83p/day;
+  - gas 7.97p/kWh + 29.68p/day (`configs/energy_prices.json`; rates from press coverage citing Ofgem, to verify on the Ofgem page).
+  - The gas standing charge is saved only when no gas is left: cooking gas keeps the connection.
+  - Solar export is not credited, so PV bill savings are conservative.
+  - What-if unit rates (e.g. a heat-pump tariff) go through `Assumptions.gas_price_p` / `elec_price_p`.
+- **Why:** customers decide in £. Demo A shows why carbon alone misleads: the heat pump cuts ~2.9 t CO₂/yr but is roughly bill-neutral (−£4/yr) at capped rates, while cavity wall insulation alone saves £238/yr for £1,000.
+- **Outputs:** `ScenarioResult.bills`, `standalone[m].bill_saving_gbp`, `PackageResult.bill_saving_gbp`.
+
+## D27. Grants, net cost, payback and an illustrative loan
+- **Grants:** Boiler Upgrade Scheme £7,500 for an air-source heat pump. Off-gas homes get £9,000 for applications 21 Jul 2026 – 31 Mar 2027 (temporary uplift). Grants are evaluated at a fixed `as_of` date (`configs/grants.json`) so results stay reproducible. Eligibility: England or Wales, replacing gas, oil, electric or other heating. The grant is capped at the measure cost and is always labelled "subject to eligibility". Insulation grants (ECO4, GBIS) are income-based and not modelled.
+- **Selection:** package selection (Pareto, featured picks, carbon per £) uses the cost net of grants (`Assumptions.apply_grants`, default on). Gross cost is always shown. A `no_grants` sensitivity run (13 runs in total) shows whether picks depend on the grant.
+- **Finance:** simple payback = net cost / annual bill saving, with none when the bill does not fall. The monthly repayment at an illustrative 7.0% APR over 10 years (`configs/finance.json`, **not a Lloyds product or offer**) is shown next to the monthly bill saving.
+- **Demo A, full package:** £25,087 gross, £7,500 grant, £17,587 net, £442/yr bill saving, 39.8-year payback. The cavity wall pick pays back in 4.2 years.

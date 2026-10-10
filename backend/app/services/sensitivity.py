@@ -33,6 +33,7 @@ def variants(base: Assumptions) -> list[tuple[str, str, Assumptions]]:
         ("headline_impacts", "national headline impacts instead of segment-adjusted (D15)", {"segment_impacts": False}),
         ("need_calibrated_combinations", "fabric/controls combinations scaled to NEED medians (D17)",
          {"combination_mode": CombinationMode.need_calibrated}),
+        ("no_grants", "package costs without grants (D27)", {"apply_grants": False}),
     ]
     return [(n, d, base.model_copy(update=u)) for n, d, u in v]
 
