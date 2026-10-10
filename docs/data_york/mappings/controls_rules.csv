@@ -1,5 +1,0 @@
-regex,level
-temperature zone control|smart,smart
-"^none$|no time or thermostatic|no thermostatic control|^manual charge|flat rate charging, no",none
-(?:programmer|charging system linked).*(?:room thermostat|room stat|trvs)|room thermostat and trvs|automatic charge control|celect|high heat retention|boiler energy manager|programmer.*bypass,full
-programmer|room thermostat|trvs|appliance thermostat|flat rate charging,timer

@@ -1,69 +1,24 @@
-# ---- secrets ----
-.env
-.env.*
-!.env.example
-*.pem
-*.key
-*.git2
-
-# ---- data (raw and processed; anchored to the repo root so tests/data/ is NOT ignored) ----
-/dataset/
-/data/
-*.parquet
-*.zip
-*.ods
-*.xlsx
-!configs/reference_docs/ECUK_2026_End_Use_tables.xlsx
-*.xls
-# address-bearing audit file, wherever it is copied
-match_audit_sample*.csv
-
-# ---- python ----
-.venv/
-venv/
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.ipynb_checkpoints/
-.coverage
-htmlcov/
-coverage/
-*.egg-info/
-
-# ---- node / frontend ----
-node_modules/
-frontend/dist/
-dist/
-build/
-
-# ---- models ----
-*.lgb
-*.pkl
-*.joblib
-*.onnx
-models/*.bin
-
-# ---- os / editor ----
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
+# Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# ---- claude / local tools ----
-.claude/
-tmp/
-scratch/
-dataset/
-data/
-# engine source package that happens to be named data/ (built data stays ignored above)
-!/backend/app/data/
-# data-integrity tests (code, not data)
-!/tests/data/
+node_modules
+dist
+dist-ssr
+*.local
 
-# ---- LLM call log and answer cache (local only) ----
-backend/.cache/
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

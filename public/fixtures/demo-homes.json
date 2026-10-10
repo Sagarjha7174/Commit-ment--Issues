@@ -1,0 +1,29 @@
+[
+ {
+  "home_id": "U100050529765",
+  "case": "a_poor_gas_house",
+  "display_label": "Demo home A, 1967-1975 detached house, York",
+  "why_chosen": "EPC E used as proxy for 'Poor' class (score not built yet); gas boiler; walls and roof rated poor; partial glazing. 35 test homes matched; first by property_id.",
+  "rating": "E",
+  "property_type": "House",
+  "postcode_outward": "YO31"
+ },
+ {
+  "home_id": "A012dcfda4e502be0",
+  "case": "b_flat_loft_solar_infeasible",
+  "display_label": "Demo home B, 2003-2006 flat, York",
+  "why_chosen": "Flat with another dwelling above (roof N/A) so loft insulation is infeasible; flats are excluded from solar PV. 803 test homes matched; first by property_id.",
+  "rating": "B",
+  "property_type": "Flat",
+  "postcode_outward": "YO1"
+ },
+ {
+  "home_id": "U100050565716",
+  "case": "c_missing_data",
+  "display_label": "Demo home C, 2008 detached house, York",
+  "why_chosen": "No wall rating (not_applicable); data warnings: ['no usable main heating description', 'mains gas connection unknown', 'latest EPC older than 10 years']. 5 test homes lack a wall rating; most warnings first.",
+  "rating": "B",
+  "property_type": "House",
+  "postcode_outward": "YO32"
+ }
+]

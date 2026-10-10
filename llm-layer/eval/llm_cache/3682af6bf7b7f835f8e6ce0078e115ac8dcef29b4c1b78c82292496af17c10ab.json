@@ -1,3 +1,0 @@
-{
- "whatif": "Adding a heat pump is estimated to {diff.gas_saving_kwh|change} gas use, {diff.grid_elec_saving_kwh|change} grid electricity, and {diff.carbon_saving_kg|change} carbon emissions. The overall cost would {diff.extra_cost_gbp|change}. The green home score improves to {green_home_score.after.total} and is now classified as {green_home_score.after.class}."
-}

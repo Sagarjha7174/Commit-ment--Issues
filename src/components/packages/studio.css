@@ -1,0 +1,59 @@
+.studio-cols { position: relative; display: grid; grid-template-columns: 1fr; gap: 0; border: 1px solid var(--line-strong); border-radius: var(--radius-md); overflow: hidden; background: var(--surface); }
+@media (min-width: 980px) { .studio-cols { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 640px) and (max-width: 979px) {
+  .studio-cols { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; }
+  .plan { flex: 0 0 min(420px, 85%); scroll-snap-align: start; }
+}
+.plan { display: grid; grid-template-rows: auto 1fr; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background var(--dur-fast); }
+.plan:last-child { border-right: none; }
+.plan.is-active { background: color-mix(in srgb, var(--gold) 7%, var(--surface)); }
+.plan-head { display: grid; grid-template-columns: auto 1fr; gap: var(--s-3); padding: var(--s-4); border-bottom: 1px solid var(--line); min-height: 140px; }
+.plan-letter { font-size: 3rem; line-height: 0.9; color: var(--accent); }
+.plan-head h3 { font-family: var(--font-sans); font-weight: 800; font-size: 1.02rem; line-height: 1.3; margin: 2px 0 4px; }
+.plan-body { padding: var(--s-4); display: grid; gap: var(--s-3); align-content: start; }
+.plan-measures { list-style: none; display: flex; flex-wrap: wrap; gap: 4px; }
+.plan-hero { font-size: 2.4rem; line-height: 1; color: var(--saving); }
+.metrics { display: grid; gap: var(--s-3); }
+.metric { display: grid; gap: 4px; }
+.metric-head { display: flex; justify-content: space-between; gap: var(--s-2); font-size: var(--fs-sm); }
+.metric-head span { color: var(--ink-muted); }
+.plan-facts { display: grid; gap: 4px; font-size: var(--fs-sm); border-top: 1px solid var(--line); padding-top: var(--s-2); }
+.plan-facts > div { display: flex; justify-content: space-between; gap: var(--s-2); }
+.plan-facts dt { color: var(--ink-muted); }
+.plan-why { background: var(--surface-sunk); padding: var(--s-3); border-radius: var(--radius-sm); }
+.plan-flag { display: flex; gap: 6px; font-size: var(--fs-xs); font-weight: 600; align-items: flex-start; color: var(--ink-2); }
+.plan-flag svg { flex: none; margin-top: 1px; }
+.plan-flag-verify { color: var(--verify); }
+.plan-stability { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-2); align-items: center; border-top: 1px solid var(--line); padding-top: var(--s-3); }
+.plan-stability .ok { color: var(--saving); }
+.plan-stability .warn { color: var(--verify); }
+.plan-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; }
+.plan-empty .plan-body { color: var(--ink-muted); }
+.ring-bg { fill: none; stroke: var(--paper-deep); stroke-width: 5; }
+.ring-fg { fill: none; stroke: var(--saving); stroke-width: 5; stroke-linecap: round; transition: stroke-dasharray var(--dur) var(--ease); }
+.ring text { font: 800 10px var(--font-sans); fill: var(--ink); }
+.tradeoff { margin-top: var(--s-4); }
+.tradeoff ul { padding-left: 1.1em; font-size: var(--fs-sm); display: grid; gap: 2px; margin-top: 4px; }
+
+.matrix { margin-top: var(--s-6); display: grid; gap: var(--s-3); }
+.matrix-head { display: grid; gap: var(--s-4); grid-template-columns: 1fr; align-items: center; }
+@media (min-width: 900px) { .matrix-head { grid-template-columns: 0.8fr 1.2fr; } }
+.matrix-title { font-size: 1.8rem; }
+.matrix-controls { justify-content: space-between; }
+.matrix-table th[scope='row'] { min-width: 200px; }
+.matrix-table td { min-width: 120px; }
+.matrix-table .bar { margin-top: 4px; height: 6px; }
+.matrix-measures, .matrix-tags, .matrix-status { display: flex; flex-wrap: wrap; gap: 3px; }
+.matrix-tags { margin-top: 4px; }
+.matrix-table tr.is-current { background: var(--saving-soft); }
+.matrix-table tr.is-dominated { color: var(--ink-muted); }
+.matrix-more { justify-self: start; }
+.pareto { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: var(--s-3); }
+.pareto-tip { background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; font-size: 12px; box-shadow: var(--shadow-md); }
+.pareto-tip i { color: var(--ink-muted); }
+.pareto-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.pareto-legend span { display: inline-flex; gap: 5px; align-items: center; }
+.dot { width: 10px; height: 10px; border-radius: 99px; display: inline-block; }
+.dot-ink { background: var(--ink); }
+.dot-grey { background: var(--line-strong); }
+.dot-ring { border: 2.5px solid var(--saving); }

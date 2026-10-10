@@ -1,7 +1,0 @@
-{
- "version": "finance-v1",
- "apr_pct": 7.0,
- "term_years": 10,
- "status": "illustrative assumption for comparing a monthly repayment with the monthly bill saving; not a Lloyds product, rate or offer",
- "decision": "D27"
-}
