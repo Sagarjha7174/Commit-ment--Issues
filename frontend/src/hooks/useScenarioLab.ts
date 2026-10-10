@@ -80,6 +80,9 @@ export function toRequest(homeId: string, d: Draft): ScenarioRequest {
     user_reading: d.user_reading,
     include_packages: true,
     include_sensitivity: true,
+    include_uncertainty: true,
+    use_modelled_epc: false,
+    use_model_baseline: false,
   };
 }
 
@@ -89,11 +92,17 @@ const ASSUMPTION_LABEL: Partial<Record<keyof Assumptions, string>> = {
   heat_pump_mode: 'Heat-pump mode',
   space_share_of_heat_water_gas: 'Space-heating share of gas',
   baseline_scale: 'People at home',
+  gas_price_p: 'Gas price',
+  elec_price_p: 'Electricity price',
+  apply_grants: 'Grants',
 };
 
 const ASSUMPTION_VALUE: Partial<Record<keyof Assumptions, (v: unknown) => string>> = {
   baseline_scale: (v) => (v === 1 ? 'as recorded' : Number(v) > 1 ? 'more' : 'fewer'),
   heat_pump_scop: (v) => (v === null ? 'typical' : `SCOP ${v}`),
+  gas_price_p: (v) => (v === null ? 'price cap' : `${v}p/kWh`),
+  elec_price_p: (v) => (v === null ? 'price cap' : `${v}p/kWh`),
+  apply_grants: (v) => (v ? 'included' : 'left out'),
 };
 
 /** Human description of what changed between two drafts. Uses the engine's applied list for "engine default". */
@@ -177,6 +186,8 @@ export interface ScenarioLab {
   setReading(r: UserReading | null): void;
   /** Replace the whole draft (e.g. reopening a saved plan); the engine recalculates it. */
   restore(d: Draft): void;
+  /** Apply a validated engine request (e.g. from a what-if): measures, assumptions and reading in one change. */
+  applyRequest(r: ScenarioRequest): void;
   revert(): void;
   retry(): void;
   selectObjective(o: Objective): void;
@@ -267,6 +278,7 @@ export function useScenarioLab(homeId: string, opts: { debounceMs?: number; tran
     setAssumptions: (patch) => setDraft({ assumptions: Assumptions.parse({ ...stateRef.current.draft.assumptions, ...patch }) }),
     setReading: (r) => setDraft({ user_reading: r }),
     restore: (d) => dispatch({ type: 'draft', draft: { measures: d.measures === null ? null : orderMeasures(d.measures), assumptions: Assumptions.parse(d.assumptions), user_reading: d.user_reading } }),
+    applyRequest: (r) => dispatch({ type: 'draft', draft: { measures: r.measures === null ? null : orderMeasures(r.measures), assumptions: Assumptions.parse(r.assumptions), user_reading: r.user_reading ?? null } }),
     revert: () => {
       const c = stateRef.current.confirmed;
       dispatch({ type: 'draft', draft: c ? draftOf(c) : initialDraft() });

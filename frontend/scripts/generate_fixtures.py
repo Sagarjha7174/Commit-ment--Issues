@@ -1,15 +1,15 @@
-"""Generate the frontend's offline snapshot from the REAL engine (feature/engine-core).
+"""Generate the frontend's offline snapshot from the REAL engine in this repository.
 
 This is a snapshot tool, not a server. Every number in public/fixtures/ is produced by the engine's own
-scenario_builder.build() / portfolio code; nothing here calculates anything.
+scenario_builder.build() / package search / portfolio code; nothing here calculates anything.
 
-The York parquet is not distributed, so the three public demo homes are rebuilt from configs/demo_homes.json
-plus the few non-public EPC fields that tests/fixtures/hand_calc_demo.py documents for them (SUPPLEMENTS below).
-The script refuses to write anything unless the engine output reproduces the engine's own hand-calculated
-acceptance fixtures (tests/fixtures/scenario_{a,b,c}.json).
+The York parquet is not distributed, so the three public demo homes come from the engine's demo-home source
+(backend/app/data/demo_homes.py: configs/demo_homes.json plus the certificate fields documented in
+tests/fixtures/hand_calc_demo.py). The script refuses to write anything unless the engine output reproduces the
+engine's own hand-calculated acceptance fixtures (tests/fixtures/scenario_{a,b,c}.json).
 
-Usage (engine venv needs pydantic, pandas, pyarrow):
-    python scripts/generate_fixtures.py --engine-dir ../engine-core [--engine-commit <sha>]
+Usage, from the repository root (the engine venv needs the packages in requirements.txt):
+    make web-fixtures      # = .venv/bin/python frontend/scripts/generate_fixtures.py [--engine-dir .] [--engine-commit <sha>]
 """
 from __future__ import annotations
 
@@ -19,31 +19,13 @@ import itertools
 import json
 import re
 import shutil
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[1] / "public" / "fixtures"
-
-# Non-public EPC fields for the demo homes, as documented in tests/fixtures/hand_calc_demo.py
-# (A: "cavity walls Poor, roof Very Poor, partial 87%", heating rating used as 80 = Good;
-#  B: walls Good, roof N/A with a dwelling above, heating rating 10 = Very Poor, double glazed;
-#  C: missing data, only the build year is known).
-SUPPLEMENTS = {
-    "a_poor_gas_house": {
-        "raw_walls_description": "Cavity wall, as built, no insulation (assumed)",
-        "raw_roof_description": "Pitched, no insulation (assumed)",
-        "multi_glaze_pct": 87.0, "heating_rating": "Good", "age_end": 1975.0,
-        "raw_photo_supply": 0.0, "raw_solar_water_heating_flag": "N", "raw_wind_turbine_count": 0,
-    },
-    "b_flat_loft_solar_infeasible": {
-        "raw_walls_description": "Cavity wall, as built, insulated (assumed)",
-        "raw_roof_description": "(another dwelling above)",
-        "multi_glaze_pct": 100.0, "heating_rating": "Very Poor", "age_end": 2006.0,
-        "raw_photo_supply": 0.0, "raw_solar_water_heating_flag": "N", "raw_wind_turbine_count": 0,
-    },
-    "c_missing_data": {"age_end": 2008.0},
-}
+REPO = Path(__file__).resolve().parents[2]
 
 MEASURE_ORDER = ["loft_insulation", "cavity_wall", "solid_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"]
 
@@ -82,43 +64,39 @@ def close(a, b, tol=1e-6):
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--engine-dir", required=True, type=Path)
-    ap.add_argument("--engine-commit", default="unknown")
+    ap.add_argument("--engine-dir", default=REPO, type=Path)
+    ap.add_argument("--engine-commit", default=None)
     args = ap.parse_args()
     eng = args.engine_dir.resolve()
     sys.path.insert(0, str(eng))
+    if args.engine_commit is None:
+        try:
+            args.engine_commit = subprocess.run(["git", "-C", str(eng), "rev-parse", "--short", "HEAD"], check=True,
+                                                capture_output=True, text=True).stdout.strip()
+        except (OSError, subprocess.CalledProcessError):
+            args.engine_commit = "unknown"
 
-    import pandas as pd
-    from backend.app import config
-    from backend.app.schemas.property import SOURCE_COLUMNS, home_from_row
-    from backend.app.schemas.scenario import ScenarioRequest
+    from backend.app.data import demo_homes
+    from backend.app.evidence import evidence as build_evidence
+    from backend.app.schemas.property import home_from_row
+    from backend.app.schemas.scenario import Assumptions, ScenarioRequest, UserReading
+    from backend.app.services import packages as packages_mod
     from backend.app.services import portfolio as portfolio_mod
     from backend.app.services import scenario_builder
-    from backend.app.services import packages as packages_mod
     from backend.app.services.baseline import get_baseline
     from backend.app.services.feasibility import assess
-    from backend.app.schemas.scenario import Assumptions, UserReading
 
-    demo = json.loads((eng / "configs" / "demo_homes.json").read_text())
-    inv = {v: k for k, v in SOURCE_COLUMNS.items()}
+    demo = demo_homes.demo_config()
     rows, homes = {}, {}
-    for h in demo["homes"]:
-        row = {c: None for c in SOURCE_COLUMNS}
-        row["property_id"], row["split"] = h["home_id"], h["split"]
-        for k, v in h["public_fields"].items():
-            if k in inv:
-                row[inv[k]] = v
-        for k, v in SUPPLEMENTS[h["case"]].items():
-            row[inv.get(k, k)] = v
-        row["postcode"] = h["public_fields"]["postcode_outward"]
-        rec = home_from_row(row)
-        rec.display_label = h["display_label"]
+    for h, row in zip(demo["homes"], demo_homes.demo_rows()):
+        rec = home_from_row(row).model_copy(update={"display_label": h["display_label"]})
         rows[h["case"]], homes[h["case"]] = row, rec
 
     def build(case, measures=None, overrides=None, reading=None):
         h = homes[case]
         req = ScenarioRequest(home_id=h.home_id, measures=measures, assumptions=overrides or {},
-                              user_reading=reading, include_packages=True, include_sensitivity=True)
+                              user_reading=reading, include_packages=True, include_sensitivity=True,
+                              include_uncertainty=True)
         return scenario_builder.build(req, home=h)
 
     # ---- parity with the engine's hand-calculated acceptance fixtures ----
@@ -178,10 +156,10 @@ def main() -> None:
         return out
     manifest = {
         "kind": "offline_snapshot",
-        "engine_branch": "feature/engine-core", "engine_commit": args.engine_commit,
+        "engine_branch": "main", "engine_commit": args.engine_commit,
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "generator": "scripts/generate_fixtures.py",
-        "home_inputs": "configs/demo_homes.json public fields + non-public fields documented in tests/fixtures/hand_calc_demo.py",
+        "home_inputs": "backend/app/data/demo_homes.py (configs/demo_homes.json public fields + certificate fields documented in tests/fixtures/hand_calc_demo.py)",
         "parity": "reproduces tests/fixtures/scenario_{a,b,c}.json (engine hand-calculated acceptance fixtures)",
         "assumption_presets": ASSUMPTION_PRESETS,
         "homes": {},
@@ -239,54 +217,18 @@ def main() -> None:
         manifest["homes"][hid] = entry
 
     # demo homes list (public fields only)
-    (OUT / "demo-homes.json").write_text(json.dumps([
-        {"home_id": h["home_id"], "case": h["case"], "display_label": h["display_label"], "why_chosen": h["why_chosen"],
-         "rating": h["public_fields"]["rating"], "property_type": h["public_fields"]["property_type"],
-         "postcode_outward": h["public_fields"]["postcode_outward"]}
-        for h in demo["homes"]], indent=1))
+    (OUT / "demo-homes.json").write_text(json.dumps(demo_homes.demo_list(), indent=1))
 
     # portfolio: the engine's real portfolio code, run over the demo subset only
-    df = pd.DataFrame(list(rows.values())).set_index("property_id", drop=False)
-    portfolio_mod.homes_frame = lambda: df
+    portfolio_mod.homes_frame = demo_homes.demo_frame
     portfolio_mod._evaluate.cache_clear()
-    pf = portfolio_mod.portfolio(top_n=50)
+    pf = dict(portfolio_mod.portfolio(top_n=50))
     pf["data_mode"] = "demo_subset"
     pf["data_note"] = "Engine portfolio code run over the 3 public demo homes only, not the 65,872-home York dataset."
     (OUT / "portfolio.json").write_text(json.dumps(pf, indent=1, default=str))
 
-    # evidence: configs and validation files, verbatim where possible
-    cat = config.catalogue()
-    smap = config.score_mappings()
-    data_md = (eng / "docs" / "DATA.md").read_text()
-    sources = []
-    for m in re.finditer(r"^### (1\.\d+) (.+?)\n(.*?)(?=^### |^## )", data_md, re.S | re.M):
-        sources.append({"id": m.group(1), "title": m.group(2).strip(), "body": m.group(3).strip()})
-    model_switch = config.model_switch()
-    evidence = {
-        "versions": config.versions(),
-        "sources": sources,
-        "score": {"weights": smap["weights"], "classes": smap["classes"], "missing": smap["missing"],
-                  "rating_points": smap["rating_points"],
-                  "parts": {k: smap[k] for k in smap["weights"]},
-                  "intensity_params": config.score_params()["intensity"]},
-        "catalogue": {
-            "version": cat["version"],
-            "global": cat["global"],
-            "measures": [{k: m.get(k) for k in ("id", "label", "impact", "impact_units", "impact_method", "impact_basis",
-                                              "target_end_use", "conversion_method", "household_dispersion", "source",
-                                              "source_table", "validated", "cost", "dependencies", "applicability_rules")}
-                         for m in cat["measures"]],
-        },
-        "emission_factors": config.emission_factors(),
-        "simulator_vs_need": json.loads((eng / "docs" / "validation" / "simulator_vs_need.json").read_text()),
-        "value_gate": config.value_gate(),
-        "models": {"status": "pending" if model_switch is None else "available", "detail": model_switch},
-        "policy_comparison": {"status": "pending",
-                              "detail": "Policy A/B/C regret experiment (eval/) has no saved results on the engine branch yet."},
-        "llm_evaluation": {"status": "pending",
-                           "detail": "The LLM layer is on feature/llm-layer (docs/LLM.md). Its reported results were measured on a fake "
-                                     "engine; they are not quoted here until rerun on the real engine and York demo homes."},
-    }
+    # evidence: configs and validation files, verbatim (the same builder as GET /api/evidence)
+    evidence = build_evidence()
     (OUT / "evidence.json").write_text(json.dumps(evidence, indent=1, default=str))
     (OUT / "manifest.json").write_text(json.dumps(manifest, indent=1))
     size = sum(p.stat().st_size for p in OUT.rglob("*") if p.is_file())

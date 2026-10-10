@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 import { AlertTriangle, CheckCircle2, HelpCircle } from 'lucide-react';
 import type { MeasureId, ScenarioResult } from '../../api/schema';
 import { HORIZON_TEXT, type Situation } from '../../hooks/useSituation';
-import { fmtGbp } from '../../utils/format';
+import { fmtGbp, fmtNumber, isNum } from '../../utils/format';
 import { MEASURE_SHORT, measureLabel, packageIdFor, SENSITIVITY_RUN_LABEL } from '../../utils/labels';
 import { permissionFor } from '../../utils/permissions';
 import { selectionPackage } from '../../utils/scenarioDiff';
@@ -34,9 +34,21 @@ function planAnswers(r: ScenarioResult, s: Situation): Answer[] {
   }
 
   const afford: Answer = (() => {
-    const cost = pkg?.cost_gbp;
+    const fin = r.finance && r.finance.status === 'ok' ? r.finance : null;
+    const grants = r.request.assumptions.apply_grants && isNum(fin?.grants_gbp) ? fin!.grants_gbp! : 0;
+    const cost = fin ? (grants > 0 ? fin.net_cost_gbp : fin.gross_cost_gbp) : pkg?.cost_gbp;
     if (cost == null) return { q: 'Can I afford it now?', tone: 'unknown', headline: 'No cost estimate for this selection.', body: 'The engine has no indicative cost for this combination.' };
-    const base = <>Indicative cost <b>{fmtGbp(cost)}</b> (typical EPC figure for York, not a quote). Bill savings in pounds aren’t estimated yet, so payback can’t be shown.</>;
+    const bill = r.bills && r.bills.status === 'ok' ? r.bills.saving_gbp : null;
+    const loan = fin?.illustrative_loan;
+    const base = (
+      <>
+        Indicative cost <b>{fmtGbp(cost)}</b>{grants > 0 && <> after {fmtGbp(grants)} of grants, subject to eligibility (from {fmtGbp(fin!.gross_cost_gbp)})</>} (typical EPC figures for York, not a quote).{' '}
+        {isNum(bill)
+          ? <>Energy bills {bill >= 0 ? <>fall by about <b>{fmtGbp(bill)}</b></> : <>rise by about <b>{fmtGbp(-bill)}</b></>} a year at the price cap{isNum(fin?.payback_years) ? <>, so it pays back in about {fmtNumber(fin!.payback_years!, fin!.payback_years! < 10 ? 1 : 0)} years</> : bill <= 0 ? ', so it does not pay back through bills' : ''}.</>
+          : 'Bill savings aren’t estimated without a baseline.'}
+        {loan && isNum(loan.monthly_repayment_gbp) && <> An illustrative {loan.term_years}-year loan at {fmtNumber(loan.apr_pct, 1)}% would cost about {fmtGbp(loan.monthly_repayment_gbp)} a month (not a Lloyds product or offer).</>}
+      </>
+    );
     if (!s.budgetAnswered) return { q: 'Can I afford it now?', tone: 'unknown', headline: `About ${fmtGbp(cost)}.`, body: <>{base} Tell us your budget in “Your situation” to check the fit.</> };
     if (s.budgetGbp === null) return { q: 'Can I afford it now?', tone: 'ok', headline: `About ${fmtGbp(cost)}; you said there’s no fixed limit.`, body: base };
     const fits = cost <= s.budgetGbp;
@@ -100,7 +112,7 @@ function planAnswers(r: ScenarioResult, s: Situation): Answer[] {
     {
       q: 'What happens after installation?',
       tone: 'unknown',
-      headline: `Suggested order: ${r.simulation.measures.map((m) => MEASURE_SHORT[m.measure as MeasureId]).join(' → ')}.`,
+      headline: `Suggested order: ${(r.install_sequence ?? r.simulation.measures.map((m) => m.measure)).map((m) => MEASURE_SHORT[m as MeasureId]).join(' → ')}.`,
       body: 'Insulate before a heat pump so it can be smaller. Maintenance, servicing and replacement costs aren’t modelled yet: keep the decision record so you can compare later.',
     },
   ];

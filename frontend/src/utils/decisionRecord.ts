@@ -29,12 +29,16 @@ export function buildDecisionRecord(r: ScenarioResult, situation: Situation) {
       gas_saving_kwh: r.simulation.gas_saving_kwh, elec_saving_kwh: r.simulation.elec_saving_kwh,
       carbon_saving_kg: r.carbon.total_kg, indicative_cost_gbp: pkg?.cost_gbp ?? null,
       cost_provenance: pkg?.cost_provenance ?? null,
+      bills: r.bills, finance: r.finance,
+      ranges: r.uncertainty?.status === 'ok' ? { label: r.uncertainty.label, percentiles: r.uncertainty.percentiles } : null,
+      property_value: r.valuation.status === 'ok' ? { low_pct: r.valuation.low_pct, mid_pct: r.valuation.mid_pct, high_pct: r.valuation.high_pct, caveats: r.valuation.caveats } : null,
+      indicative_epc_after: r.score_after?.epc_change ?? null,
     },
     featured_packages: r.packages?.featured ?? [],
     sensitivity: r.sensitivity ? { label: r.sensitivity.label, survival: r.sensitivity.survival, untested: r.sensitivity.untested } : null,
     unknowns: r.audit.unknowns,
     warnings: r.warnings,
-    not_modelled: ['energy bills and payback in £', 'climate hazards (flood, heat)', 'legal permissions', 'maintenance and replacement costs'],
+    not_modelled: ['climate hazards (flood, heat)', 'legal permissions', 'maintenance and replacement costs', 'solar export payments'],
   };
 }
 

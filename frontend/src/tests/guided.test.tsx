@@ -66,10 +66,10 @@ describe('step 2: your options', () => {
     await open(HOME_A, 'options');
     expect(await screen.findByRole('heading', { name: 'Three ways to improve this home for £5,000 or less' }, T)).toBeInTheDocument();
     const biggest = screen.getByRole('heading', { name: 'Biggest carbon cut' }).closest('article')!;
-    // engine budget search (services/packages.py) at £5,000: loft + cavity wall + thermostat, not the £29,350 six-measure plan
-    expect(within(biggest).getByText('Loft + Cavity wall + Thermostat')).toBeInTheDocument();
+    // engine budget search (services/packages.py) at £5,000: cavity wall + glazing + thermostat, not the £16,537 (after grants) five-measure plan
+    expect(within(biggest).getByText('Cavity wall + Glazing + Thermostat')).toBeInTheDocument();
     expect(within(biggest).getByText('Within your budget')).toBeInTheDocument();
-    expect(within(biggest).getByText(/Without a budget limit: .*£29,350/)).toBeInTheDocument();
+    expect(within(biggest).getByText(/Without a budget limit: .*£16,537/)).toBeInTheDocument();
     expect(screen.queryByText(/Over your £5,000 budget/)).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole('button', { name: 'Compare with no budget limit' }));
@@ -166,7 +166,8 @@ describe('permissions and the decision record', () => {
     expect(permissionFor('cavity_wall', f(a, 'cavity_wall'), 'tenant', a.home).state).toBe('needs_consent');
     expect(permissionFor('solar_pv', f(a, 'solar_pv'), 'leaseholder', a.home).state).toBe('needs_building_approval');
     expect(permissionFor('heat_pump', f(a, 'heat_pump'), 'owner', a.home).state).toBe('check_local_rules');
-    expect(permissionFor('loft_insulation', f(a, 'loft_insulation'), 'owner', a.home).state).toBe('no_known_issue');
+    expect(permissionFor('smart_thermostat', f(a, 'smart_thermostat'), 'owner', a.home).state).toBe('no_known_issue');
+    expect(permissionFor('loft_insulation', f(a, 'loft_insulation'), 'owner', a.home).state).toBe('not_feasible');   // flat roof (D20)
   });
 
   it('the decision record holds the scenario id, versions, situation and unknowns', () => {
@@ -175,7 +176,8 @@ describe('permissions and the decision record', () => {
     expect(rec.versions).toEqual(a.versions);
     expect(rec.situation_user_provided.role).toBe('tenant');
     expect(rec.outcomes_estimated.score_before).toBe(44);
-    expect(rec.not_modelled).toContain('energy bills and payback in £');
+    expect(rec.not_modelled).not.toContain('energy bills and payback in £');
+    expect(rec.outcomes_estimated.finance?.net_cost_gbp).toBe(a.finance?.net_cost_gbp);
     expect(rec.feasibility.find((x) => x.measure === 'cavity_wall')?.permission_guidance).toBe('Needs landlord permission');
   });
 });

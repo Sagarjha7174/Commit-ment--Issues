@@ -14,7 +14,8 @@ import {
 } from './schema';
 
 export interface PortfolioParams { top_n: number; split?: string | null }
-export interface ExplainArgs { homeId: string; measures: MeasureId[] | null; scenarioId: string; templateMode: boolean }
+/** request: the engine request of the scenario on screen, sent whole so the server explains exactly that scenario. */
+export interface ExplainArgs { homeId: string; measures: MeasureId[] | null; scenarioId: string; templateMode: boolean; request?: Req }
 /** Engine package search with a spending limit (services/api.py search(..., budget_gbp)). */
 export interface BudgetSearchArgs {
   home_id: string;
@@ -22,7 +23,7 @@ export interface BudgetSearchArgs {
   user_reading: Req['user_reading'];
   budget_gbp: number;
 }
-export interface WhatIfArgs { homeId: string; measures: MeasureId[] | null; scenarioId: string; question: string }
+export interface WhatIfArgs { homeId: string; measures: MeasureId[] | null; scenarioId: string; question: string; request?: Req }
 
 export interface Transport {
   readonly kind: DataMode;
@@ -65,7 +66,18 @@ export function resultMatchesRequest(result: Result, req: Req): boolean {
     && JSON.stringify(Assumptions.parse(r.assumptions)) === JSON.stringify(Assumptions.parse(req.assumptions))
     && JSON.stringify(r.user_reading) === JSON.stringify(req.user_reading)
     && r.include_packages === req.include_packages
-    && r.include_sensitivity === req.include_sensitivity;
+    && r.include_sensitivity === req.include_sensitivity
+    && r.include_uncertainty === req.include_uncertainty;
+}
+
+/** The rest of the engine request, for the LLM routes (they rerun exactly this request). */
+function engineFields(req: Req | undefined): Record<string, unknown> {
+  if (!req) return {};
+  const r = normaliseRequest(req);
+  return {
+    assumptions: r.assumptions, user_reading: r.user_reading, include_packages: r.include_packages,
+    include_sensitivity: r.include_sensitivity, include_uncertainty: r.include_uncertainty,
+  };
 }
 
 // ---------------------------------------------------------------- live
@@ -134,7 +146,7 @@ export function createLiveTransport(): Transport {
     async explain(args, signal) {
       const body = {
         property_id: args.homeId, measures: args.measures, expected_scenario_id: args.scenarioId,
-        template_mode: args.templateMode, prefetch_llm: args.templateMode,
+        template_mode: args.templateMode, prefetch_llm: args.templateMode, ...engineFields(args.request),
       };
       const data = await http('/llm/explain', { method: 'POST', body: JSON.stringify(body), signal, timeoutMs: LLM_TIMEOUT_MS });
       const expl = parseOrThrow(ExplainResponse, data, 'Explanation').explanation;
@@ -148,7 +160,10 @@ export function createLiveTransport(): Transport {
       return ps;
     },
     async whatif(args, signal) {
-      const body = { property_id: args.homeId, measures: args.measures, question: args.question, expected_scenario_id: args.scenarioId };
+      const body = {
+        property_id: args.homeId, measures: args.measures, question: args.question, expected_scenario_id: args.scenarioId,
+        ...engineFields(args.request),
+      };
       return parseOrThrow(WhatIfResponse, await http('/llm/whatif', { method: 'POST', body: JSON.stringify(body), signal, timeoutMs: LLM_TIMEOUT_MS }), 'What-if');
     },
   };
@@ -238,8 +253,8 @@ export function createFixtureTransport(base = FIXTURE_BASE): Transport {
       if (!home) {
         throw new ApiError('not_found', `Home ${body.home_id} is not in the offline snapshot (it contains the three public demo homes only).`);
       }
-      if (!body.include_packages || !body.include_sensitivity) {
-        throw new ApiError('fixture_miss', 'The snapshot stores results with packages and sensitivity included.');
+      if (!body.include_packages || !body.include_sensitivity || !body.include_uncertainty) {
+        throw new ApiError('fixture_miss', 'The snapshot stores results with packages, sensitivity and uncertainty included.');
       }
       let variant: { shared: string; scenarios: Record<string, string> } | undefined;
       if (body.user_reading) {

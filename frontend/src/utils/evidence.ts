@@ -3,7 +3,7 @@
  * Nothing is invented: when the engine does not supply a piece of evidence, the entry says so.
  */
 import type { MeasureId, PackageResult, ScenarioResult } from '../api/schema';
-import { fmtGbp, fmtKg, fmtKwh, fmtNumber, fmtPct, humanise, missingText, savingDirection, type Direction } from './format';
+import { fmtGbp, fmtKg, fmtKwh, fmtNumber, fmtPct, humanise, isNum, missingText, savingDirection, type Direction } from './format';
 import { measureLabel, PROVENANCE_INFO, SCORE_PART_LABEL } from './labels';
 
 export interface EvidenceInput { label: string; value: string; provenance?: string | null }
@@ -164,24 +164,73 @@ export function costEvidence(r: ScenarioResult, pkg: PackageResult | undefined, 
     assumptions: pkg ? [pkg.cost_provenance] : [],
     missing: pkg && !pkg.eligible_for_cost_comparison ? ['Not eligible for cost comparison (missing cost or estimate).'] : [],
     validation: 'Indicative only: EPC assessor cost ranges for York, not quotes.',
-    limitations: ['Bills in pounds are not estimated.', 'Heat-pump cost comes from a single software default text in the EPC data.'],
+    limitations: ['Heat-pump cost comes from a single software default text in the EPC data.', 'Grants are subject to scheme eligibility.'],
     sources: ['EPC recommendations indicative_cost, City of York'],
   };
 }
 
 export function valuationEvidence(r: ScenarioResult): EvidenceEntry {
   const v = r.valuation;
+  const inputs: EvidenceInput[] = [];
+  if (isNum(v.sap_before)) inputs.push({ label: 'EPC (SAP) today', value: `${fmtNumber(v.sap_before)}${v.rating_before ? ` (band ${v.rating_before})` : ''}`, provenance: 'observed' });
+  if (isNum(v.sap_after_indicative)) inputs.push({ label: 'Indicative EPC after', value: `${fmtNumber(v.sap_after_indicative, 1)}${v.rating_after_indicative ? ` (band ${v.rating_after_indicative})` : ''}`, provenance: 'modelled' });
+  if (isNum(v.current_value_gbp)) inputs.push({ label: 'Current value (model)', value: `${fmtGbp(v.current_value_gbp)} (80% range ${fmtGbp(v.current_value_low_gbp)} to ${fmtGbp(v.current_value_high_gbp)})`, provenance: 'modelled' });
   return {
     ...base(r),
     title: 'Property value',
     value: v.status === 'ok' ? `${fmtPct(v.low_pct, 1)} to ${fmtPct(v.high_pct, 1)}` : missingText(v.status),
     summary: v.reason,
-    inputs: [],
-    assumptions: [],
+    inputs,
+    method: v.basis || undefined,
+    assumptions: v.value_reason ? [v.value_reason] : [],
     missing: v.status !== 'ok' ? [v.reason] : [],
-    validation: 'Value model gated by a sales-match precision audit and a range-coverage check.',
-    limitations: ['Historical price associations are not causal.', 'Never a promise of uplift.'],
-    sources: ['HM Land Registry Price Paid 2025–2026'],
+    validation: 'Value model gated by a sales-match precision audit (precision 1.00) and an 80% interval coverage check on held-out test sales (D10, D38).',
+    limitations: v.caveats.length ? v.caveats : ['Historical price associations are not causal.', 'Never a promise of uplift.'],
+    sources: ['HM Land Registry Price Paid 2025–2026', ...Object.values(v.model_versions)],
+  };
+}
+
+export function billsEvidence(r: ScenarioResult): EvidenceEntry {
+  const b = r.bills;
+  const f = r.finance;
+  const p = b?.prices ?? {};
+  return {
+    ...base(r),
+    title: 'Bills, grants and payback',
+    value: b && b.status === 'ok' ? `${fmtGbp(b.saving_gbp)} a year` : missingText(b?.status ?? 'not_estimated'),
+    direction: savingDirection(b?.saving_gbp),
+    summary: 'Annual bill before and after at the unit rates and standing charges shown; payback = net cost ÷ annual bill saving.',
+    inputs: [
+      ...baselineInputs(r),
+      { label: 'Gas unit rate', value: `${p.gas_p_per_kwh ?? '—'}p/kWh`, provenance: r.request.assumptions.gas_price_p != null ? 'user_provided' : 'assumption' },
+      { label: 'Electricity unit rate', value: `${p.elec_p_per_kwh ?? '—'}p/kWh`, provenance: r.request.assumptions.elec_price_p != null ? 'user_provided' : 'assumption' },
+      { label: 'Standing charges', value: `gas ${p.gas_standing_p_per_day ?? '—'}p/day, electricity ${p.elec_standing_p_per_day ?? '—'}p/day`, provenance: 'assumption' },
+      ...(f ? [{ label: 'Cost before grants', value: fmtGbp(f.gross_cost_gbp, f.status), provenance: 'assumption' },
+        { label: 'Grants', value: fmtGbp(f.grants_gbp, f.status), provenance: 'assumption' }] : []),
+    ],
+    method: 'Engine money module (D26 bills at the price cap; D27 grants, net cost, payback, illustrative loan).',
+    assumptions: [...(b?.notes ?? []), ...(f?.grant_notes ?? [])],
+    missing: b && b.status !== 'ok' ? [b.reason ?? 'Bills need a baseline.'] : [],
+    validation: 'Bills use published price-cap rates; they are not compared with real bills.',
+    limitations: ['Estimate at capped unit rates; not a quote.', 'Solar export is not credited.', 'The loan is illustrative: not a Lloyds product, rate or offer.'],
+    sources: [String(p.source ?? 'configs/energy_prices.json'), 'configs/grants.json', 'configs/finance.json'],
+  };
+}
+
+export function rangeEvidence(r: ScenarioResult): EvidenceEntry {
+  const u = r.uncertainty;
+  return {
+    ...base(r),
+    title: 'Ranges (Monte Carlo)',
+    value: u && u.status === 'ok' ? `${u.n_draws ?? ''} draws` : missingText(u?.status ?? 'not_estimated'),
+    summary: u?.label,
+    inputs: Object.entries(u?.percentiles ?? {}).filter(([, q]) => q).map(([k, q]) => ({ label: humanise(k), value: `P10 ${fmtNumber(q!.p10)} · P50 ${fmtNumber(q!.p50)} · P90 ${fmtNumber(q!.p90)}` })),
+    method: 'Seeded Monte Carlo over documented input ranges (D28); the seed comes from the scenario ID, so the same request gives the same ranges.',
+    assumptions: u ? u.inputs_varied.map((x) => `Varied: ${x}`) : [],
+    missing: u ? u.not_varied.map((x) => `Not varied: ${x}`) : [],
+    validation: 'Shows sensitivity to inputs; it is not a confidence interval.',
+    limitations: ['Occupancy, weather and installation quality are not varied.'],
+    sources: ['configs/retrofit_catalogue.json', 'configs/engine_params.json'],
   };
 }
 

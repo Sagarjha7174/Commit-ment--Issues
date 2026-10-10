@@ -13,3 +13,14 @@
 .callout-verify { background: var(--verify-soft); border-left: 3px solid var(--verify); }
 .energy-chart-panel { display: grid; gap: var(--s-3); }
 .energy-chart { min-height: 220px; }
+.money-panel { display: grid; gap: var(--s-4); margin-bottom: var(--s-4); }
+.money-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--s-4); }
+.money-cell { display: grid; gap: 4px; align-content: start; min-width: 0; }
+.money-cell .kicker { display: flex; align-items: center; gap: 6px; }
+.money-value { font-family: var(--font-serif); font-size: 1.6rem; line-height: 1.1; overflow-wrap: anywhere; }
+.money-panel .loan { border-left: 3px solid var(--line-strong); padding-left: var(--s-3); }
+.ranges { display: grid; gap: var(--s-2); }
+.ranges .kicker { display: flex; align-items: center; gap: 6px; }
+.range-table th, .range-table td { padding: 6px 10px; text-align: left; border-bottom: 1px solid var(--line); }
+.range-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.tile-range { font-size: var(--fs-xs, 0.75rem); }

@@ -47,6 +47,9 @@ export function diffScenarios(prev: ScenarioResult, curr: ScenarioResult): Scena
       status: [prev.simulation.improvement_potential_status, curr.simulation.improvement_potential_status] },
     { key: 'score', label: 'Score after retrofit', before: prev.score_after?.total ?? null, after: curr.score_after?.total ?? null, unit: 'score', kind: 'level' },
     { key: 'cost', label: 'Selection cost', before: pp?.cost_gbp ?? null, after: cp?.cost_gbp ?? null, unit: 'gbp', kind: 'level' },
+    { key: 'net_cost', label: 'Cost after grants', before: prev.finance?.net_cost_gbp ?? null, after: curr.finance?.net_cost_gbp ?? null, unit: 'gbp', kind: 'level' },
+    { key: 'bill', label: 'Bill saving a year', before: prev.bills?.saving_gbp ?? null, after: curr.bills?.saving_gbp ?? null, unit: 'gbp', kind: 'saving',
+      status: [prev.bills?.status ?? 'not_estimated', curr.bills?.status ?? 'not_estimated'] },
   ];
   const featured = (curr.packages?.featured ?? []).map((f) => {
     const before = prev.packages?.featured.find((x) => x.objective === f.objective)?.package_id ?? null;

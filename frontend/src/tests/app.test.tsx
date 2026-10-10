@@ -32,7 +32,7 @@ describe('My Home: demo home A (Poor gas house)', () => {
   it('shows the heat-pump electricity rise as a negative saving, in words as well as colour', async () => {
     await openHome(HOME_A);
     expect(document.querySelector('.callout-increase')).toHaveTextContent(/Electricity use rises/);
-    expect(screen.getAllByText('−3,675').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('−4,865').length).toBeGreaterThan(0);
     expect(screen.getAllByText('increase').length).toBeGreaterThan(0);
   });
 
@@ -46,10 +46,23 @@ describe('My Home: demo home A (Poor gas house)', () => {
     expect(within(studio).getAllByText(/sensitivity runs/).length).toBe(3);
   });
 
-  it('reports property value as not estimated', async () => {
+  it('shows the gated property-value range as an association, and the indicative EPC change', async () => {
     await openHome(HOME_A);
-    expect(screen.getAllByText('Not estimated').length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/audit pending/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('+2.9% – 7.2%').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/an association in York sales, not a promise/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('E → C').length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/not an EPC re-assessment/).length).toBeGreaterThan(0);
+  });
+
+  it('shows bills at the price cap, grants, payback and the illustrative loan from the engine', async () => {
+    await openHome(HOME_A);
+    const money = document.querySelector('.money-panel') as HTMLElement;
+    expect(within(money).getByText('£3,023 → £2,633')).toBeInTheDocument();
+    expect(within(money).getByText('£16,537')).toBeInTheDocument();
+    expect(within(money).getByText(/after £7,500 of grants \(from £24,037\)/)).toBeInTheDocument();
+    expect(within(money).getByText('42 years')).toBeInTheDocument();
+    expect(within(money).getByText(/Not a Lloyds product, rate or offer/)).toBeInTheDocument();
+    expect(within(money).getByRole('table')).toHaveTextContent(/Carbon saving/);
   });
 
   it('recalculates a what-if: removing a measure gives a new confirmed scenario everywhere', async () => {
@@ -61,7 +74,7 @@ describe('My Home: demo home A (Poor gas house)', () => {
     // (the transient "recalculating" state is asserted in scenarioLab.test.tsx with controlled timing)
     await screen.findByText('What changed', {}, T);
 
-    const after = snapshotResult(HOME_A, 'default', 'cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat').scenario_id.slice(0, 8);
+    const after = snapshotResult(HOME_A, 'default', 'cavity_wall+double_glazing+heat_pump+smart_thermostat').scenario_id.slice(0, 8);
     await waitFor(() => expect(screen.getAllByText(after).length).toBeGreaterThanOrEqual(3), T); // dock, explanation, audit
     expect(screen.queryAllByText(before).filter((n) => n.closest('.dock'))).toHaveLength(0);
     expect(screen.getAllByText('Removed Solar PV').length).toBeGreaterThan(0);

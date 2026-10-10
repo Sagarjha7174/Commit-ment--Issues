@@ -1,14 +1,14 @@
 /**
- * Explanation for the confirmed scenario. Uses the LLM layer (POST /llm/explain) when it is available and the
- * scenario can be expressed as a measure selection; otherwise, or on any failure, the deterministic template.
- * An explanation is only ever shown for the scenario ID it was generated for.
+ * Explanation for the confirmed scenario. Uses the LLM layer (POST /llm/explain) when it is available; the whole engine
+ * request is sent, so the server explains exactly the scenario on screen (assumptions and readings included).
+ * Otherwise, or on any failure, the deterministic template. An explanation is only ever shown for the scenario ID it
+ * was generated for.
  */
 import { useQuery } from '@tanstack/react-query';
 import type { Explanation, ScenarioResult } from '../api/schema';
 import { useLlmHealth, useTransport } from '../api/queries';
 import { toApiError } from '../api/errors';
 import { templateExplanation } from '../utils/explainTemplate';
-import { DEFAULT_ASSUMPTIONS } from './useScenarioLab';
 
 export interface ExplanationState {
   explanation: Explanation | null;
@@ -19,9 +19,8 @@ export interface ExplanationState {
   reason: string | null;
 }
 
-export function llmCanExplain(r: ScenarioResult): string | null {
-  if (r.request.user_reading) return 'The LLM routes accept measure selections only; this scenario uses your meter reading.';
-  if (JSON.stringify(r.request.assumptions) !== JSON.stringify(DEFAULT_ASSUMPTIONS)) return 'The LLM routes accept measure selections only; this scenario uses changed assumptions.';
+/** Why the LLM cannot explain this scenario, or null. The routes take the full engine request, so nothing blocks it. */
+export function llmCanExplain(_r: ScenarioResult): string | null {
   return null;
 }
 
@@ -33,10 +32,11 @@ export function useExplanation(result: ScenarioResult | null, templateMode: bool
   const useLlm = !!result && llmAvailable && !templateMode && !blocker;
 
   const q = useQuery({
-    queryKey: [t.kind, 'explain', result?.scenario_id, result?.request.measures ?? null],
+    queryKey: [t.kind, 'explain', result?.scenario_id],
     enabled: useLlm,
     queryFn: ({ signal }) => t.explain({
       homeId: result!.home.home_id, measures: result!.request.measures, scenarioId: result!.scenario_id, templateMode: false,
+      request: result!.request,
     }, signal),
     retry: false,
     staleTime: Infinity,

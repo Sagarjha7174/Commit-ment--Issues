@@ -1,6 +1,6 @@
 /**
  * The scenario contract, mirrored one-to-one from the engine's Pydantic models
- * (feature/engine-core: backend/app/schemas/{enums,scenario,retrofit,property}.py).
+ * (backend/app/schemas/{enums,scenario,retrofit,property}.py in this repository).
  *
  * Every API response is parsed with these schemas at the boundary, so a drift between
  * backend and frontend fails loudly as a validation error instead of rendering wrong numbers.
@@ -34,6 +34,7 @@ export const ValueStatus = z.enum(['ok', 'unavailable', 'not_estimated', 'blocke
 export type ValueStatus = z.infer<typeof ValueStatus>;
 
 export const HeatPumpMode = z.enum(['full', 'partial', 'unknown']);
+export const CombinationMode = z.enum(['engineering', 'need_calibrated']);
 export const ImpactLevel = z.enum(['low', 'mid', 'high']);
 export type ImpactLevel = z.infer<typeof ImpactLevel>;
 
@@ -56,6 +57,13 @@ export const Assumptions = z.object({
   heat_pump_mode: HeatPumpMode.default('full'),
   heat_pump_partial_share: nnum.default(null),
   baseline_scale: num.default(1),
+  segment_impacts: z.boolean().default(true),
+  /** What-if unit rates in p/kWh (D26); null = the Ofgem price cap. */
+  gas_price_p: z.number().min(0).nullable().default(null),
+  elec_price_p: z.number().min(0).nullable().default(null),
+  /** Package selection on cost net of grants (D27). */
+  apply_grants: z.boolean().default(true),
+  combination_mode: CombinationMode.default('engineering'),
 });
 export type Assumptions = z.infer<typeof Assumptions>;
 
@@ -72,6 +80,10 @@ export const ScenarioRequest = z.object({
   user_reading: UserReading.nullable().default(null),
   include_packages: z.boolean().default(true),
   include_sensitivity: z.boolean().default(false),
+  /** Monte Carlo ranges for the requested package (D28). */
+  include_uncertainty: z.boolean().default(false),
+  use_modelled_epc: z.boolean().default(false),
+  use_model_baseline: z.boolean().default(false),
 });
 export type ScenarioRequest = z.infer<typeof ScenarioRequest>;
 
@@ -86,6 +98,9 @@ export const Baseline = z.object({
   source: z.string(),
   blocking_flags: strList,
   gas_heated: z.boolean(),
+  elec_heated: z.boolean().default(false),
+  elec_heat_share: nnum.default(null),
+  elec_heat_share_source: z.string().default(''),
   note: z.string(),
 });
 export type Baseline = z.infer<typeof Baseline>;
@@ -102,6 +117,21 @@ export const PartScore = z.object({
 });
 export type PartScore = z.infer<typeof PartScore>;
 
+/** Indicative EPC change after retrofit from the SAP model (D34); modelled, not an EPC re-assessment. */
+export const EpcChange = z.object({
+  status: ValueStatus,
+  reason: nstr.default(null),
+  sap_before: nnum.default(null),
+  sap_change: nnum.default(null),
+  sap_after_indicative: nnum.default(null),
+  rating_before: nstr.default(null),
+  rating_after_indicative: nstr.default(null),
+  model_version: nstr.default(null),
+  provenance: nstr.default(null),
+  label: z.string().default(''),
+});
+export type EpcChange = z.infer<typeof EpcChange>;
+
 export const ScoreResult = z.object({
   status: ValueStatus,
   total: z.number().int().nullable(),
@@ -114,14 +144,35 @@ export const ScoreResult = z.object({
   parts: z.array(PartScore),
   key_issues: strList,
   notes: strList,
+  epc_change: EpcChange.nullable().default(null),
+  rating_after_indicative: nstr.default(null),
 });
 export type ScoreResult = z.infer<typeof ScoreResult>;
 
+/** Indicative property-value impact (M3): an association from York sales, not a causal effect. */
 export const Valuation = z.object({
   status: ValueStatus,
   reason: z.string(),
-  low_pct: nnum,
-  high_pct: nnum,
+  low_pct: nnum.default(null),
+  mid_pct: nnum.default(null),
+  high_pct: nnum.default(null),
+  sap_before: nnum.default(null),
+  sap_change: nnum.default(null),
+  sap_after_indicative: nnum.default(null),
+  rating_before: nstr.default(null),
+  rating_after_indicative: nstr.default(null),
+  current_value_gbp: nnum.default(null),
+  current_value_low_gbp: nnum.default(null),
+  current_value_high_gbp: nnum.default(null),
+  potential_value_low_gbp: nnum.default(null),
+  potential_value_high_gbp: nnum.default(null),
+  value_status: ValueStatus.nullable().default(null),
+  value_reason: nstr.default(null),
+  measures: strList,
+  provenance: nstr.default(null),
+  basis: z.string().default(''),
+  caveats: strList,
+  model_versions: z.record(z.string(), z.string()).default({}),
 });
 export type Valuation = z.infer<typeof Valuation>;
 
@@ -141,8 +192,15 @@ export const EndUses = z.object({
   gas_water: num,
   gas_other: num,
   elec_base: num,
+  elec_space: num.default(0),
+  elec_water: num.default(0),
   hp_elec: num,
   pv_offset: num,
+  /** Totals computed by the engine (EndUses computed fields); the UI prints them, never adds parts itself. */
+  gas_total: num.optional(),
+  elec_import: num.optional(),
+  elec_gross: num.optional(),
+  purchased: num.optional(),
 });
 export type EndUses = z.infer<typeof EndUses>;
 
@@ -234,6 +292,12 @@ export const PackageResult = z.object({
   unvalidated_impacts: strList,
   warnings: strList,
   sensitivity: z.record(z.string(), z.unknown()).nullable(),
+  calibrated: z.record(z.string(), z.unknown()).nullable().default(null),
+  /** D26/D27: grants subject to eligibility; bill saving annual, positive = bill falls. */
+  grants_gbp: nnum.default(null),
+  net_cost_gbp: nnum.default(null),
+  bill_saving_gbp: nnum.default(null),
+  payback_years: nnum.default(null),
   status: ValueStatus,
   reason_code: nstr,
 });
@@ -255,7 +319,8 @@ export const PackageSearch = z.object({
   excluded_measures: z.record(z.string(), z.string()).default({}),
   threshold_pct: num,
   budget_gbp: nnum,
-  baseline_emissions_kg: nnum,
+  baseline_emissions_kg: nnum.default(null),
+  cost_basis: z.string().optional(),
 });
 export type PackageSearch = z.infer<typeof PackageSearch>;
 
@@ -385,6 +450,73 @@ export const Audit = z.object({
 });
 export type Audit = z.infer<typeof Audit>;
 
+/** Annual bills at the price cap (or the what-if tariff), per fuel (D26). Positive saving = bill falls. */
+export const Bills = z.object({
+  status: ValueStatus,
+  reason: nstr.optional(),
+  before_gbp: nnum.default(null),
+  after_gbp: nnum.default(null),
+  saving_gbp: nnum.default(null),
+  gas_saving_gbp: nnum.default(null),
+  elec_saving_gbp: nnum.default(null),
+  standing_saving_gbp: nnum.default(null),
+  prices: z.record(z.string(), z.union([z.number(), z.string(), z.null()])).default({}),
+  notes: strList,
+});
+export type Bills = z.infer<typeof Bills>;
+
+/** Gross and net cost, grants, payback and an illustrative loan (D27). Not a Lloyds product or offer. */
+export const Finance = z.object({
+  status: ValueStatus,
+  reason: nstr.optional(),
+  gross_cost_gbp: nnum.default(null),
+  grants_gbp: nnum.default(null),
+  net_cost_gbp: nnum.default(null),
+  cost_provenance: z.string().default(''),
+  grant_notes: strList,
+  annual_bill_saving_gbp: nnum.default(null),
+  payback_years: nnum.default(null),
+  illustrative_loan: z.object({
+    apr_pct: num,
+    term_years: num,
+    status: z.string(),
+    monthly_repayment_gbp: nnum,
+    monthly_bill_saving_gbp: nnum,
+    saving_covers_repayment: z.boolean().nullable(),
+  }).nullable().default(null),
+});
+export type Finance = z.infer<typeof Finance>;
+
+const Pctl = z.object({ p10: nnum, p50: nnum, p90: nnum });
+/** Monte Carlo ranges over documented input ranges (D28); not a confidence interval. */
+export const Uncertainty = z.object({
+  status: ValueStatus,
+  reason: nstr.optional(),
+  label: z.string().default(''),
+  n_draws: num.optional(),
+  percentiles: z.record(z.string(), Pctl.nullable()).default({}),
+  threshold_pct: nnum.optional(),
+  prob_carbon_cut_ge_threshold: nnum.optional(),
+  prob_bill_falls: nnum.optional(),
+  inputs_varied: strList,
+  not_varied: strList,
+});
+export type Uncertainty = z.infer<typeof Uncertainty>;
+
+/** Assessor-relevance priority of feasible measures (M5); install order stays the engine's physical order. */
+export const RecommendationRank = z.object({
+  measure: MeasureId,
+  assessor_relevance_prob: nnum,
+  basis: z.string(),
+  feasibility: z.string(),
+  verify: z.boolean(),
+  carbon_per_pound_kg: nnum.default(null),
+  bill_saving_gbp: nnum.default(null),
+  rank: num,
+  label: z.string(),
+});
+export type RecommendationRank = z.infer<typeof RecommendationRank>;
+
 export const ScenarioResult = z.object({
   scenario_id: z.string().min(1),
   home: PublicHome,
@@ -401,6 +533,12 @@ export const ScenarioResult = z.object({
   packages: PackageSearch.nullable(),
   sensitivity: Sensitivity.nullable(),
   valuation: Valuation,
+  combination_check: z.record(z.string(), z.unknown()).nullable().default(null),
+  bills: Bills.nullable().default(null),
+  finance: Finance.nullable().default(null),
+  uncertainty: Uncertainty.nullable().default(null),
+  recommendation_ranking: z.array(RecommendationRank).nullable().default(null),
+  install_sequence: z.array(MeasureId).nullable().default(null),
   audit: Audit,
   assumptions: z.record(z.string(), z.unknown()),
   warnings: strList,
@@ -440,6 +578,14 @@ export const PortfolioRow = z.object({
   elec_saving_kwh: nnum,
   carbon_saving_kg: nnum,
   floor_area_m2: nnum,
+  heat_pump_in_package: z.boolean().optional(),
+  fabric_improvement_potential_pct: nnum.optional(),
+  gross_cost_gbp: nnum.optional(),
+  grants_gbp: nnum.optional(),
+  net_cost_gbp: nnum.optional(),
+  bill_saving_gbp: nnum.optional(),
+  payback_years: nnum.optional(),
+  carbon_per_pound_kg: nnum.optional(),
 });
 export type PortfolioRow = z.infer<typeof PortfolioRow>;
 
@@ -453,6 +599,9 @@ export const Portfolio = z.object({
     median_improvement_potential_pct: nnum,
     total_carbon_saving_potential_t: nnum,
     share_incomplete_data_pct: nnum,
+    rank_by: z.string().optional(),
+    total_net_cost_gbp: nnum.optional(),
+    homes_with_bill_falling: z.number().optional(),
     notes: strList,
   }),
   homes: z.array(PortfolioRow),
@@ -515,6 +664,9 @@ export const Evidence = z.object({
     })),
   }).loose(),
   value_gate: z.record(z.string(), z.unknown()),
+  energy_prices: z.record(z.string(), z.unknown()).optional(),
+  grants: z.record(z.string(), z.unknown()).optional(),
+  finance: z.record(z.string(), z.unknown()).optional(),
   models: EvalBlock,
   policy_comparison: EvalBlock,
   llm_evaluation: EvalBlock,
@@ -528,7 +680,7 @@ export const Health = z.object({
 });
 export type Health = z.infer<typeof Health>;
 
-// ---------- LLM layer (feature/llm-layer: backend/app/llm/{api,render,explain,whatif}.py) ----------
+// ---------- LLM layer (backend/app/llm/{api,render,explain,whatif}.py) ----------
 export const Span = z.object({
   key: z.string(),
   display: z.string(),
@@ -569,7 +721,7 @@ export type LlmHealth = z.infer<typeof LlmHealth>;
 
 export const WhatIfResponse = z.object({
   outcome: z.object({
-    kind: z.enum(['change_measures', 'question_about_current', 'out_of_scope']),
+    kind: z.enum(['change_measures', 'change_assumptions', 'question_about_current', 'out_of_scope', 'invalid_request']),
     parser: z.string(),
     requested_add: strList,
     requested_remove: strList,
@@ -579,7 +731,12 @@ export const WhatIfResponse = z.object({
     blocked: strList,
     conditional: strList,
     new_measures: strList,
-  }),
+    /** Validated changes to the engine request (tariff, readings, heat-pump mode, ...) and why a change was refused. */
+    request_changes: z.record(z.string(), z.unknown()).default({}),
+    invalid_reason: nstr.default(null),
+    /** The validated ScenarioRequest; the UI applies it through POST /api/scenario. */
+    new_request: ScenarioRequest.nullable().default(null),
+  }).loose(),
   scenario_id: nstr,
   recalculated: z.boolean(),
   explanation: Explanation,

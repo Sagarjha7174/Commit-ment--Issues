@@ -5,7 +5,28 @@
   "score_mappings": "score-map-v1",
   "state_effects": "state-effects-v1",
   "emission_factors": "DESNZ 2026",
-  "engine": "engine-v1"
+  "engine": "engine-v2",
+  "engine_params": "engine-params-v2",
+  "energy_prices": "prices-2026Q4",
+  "grants": "grants-2026-10",
+  "finance": "finance-v1",
+  "combination_calibration": "combo-cal-v1",
+  "model_energy_elec_q10": "energy_elec_q10-ab346cd53b",
+  "model_energy_elec_q50": "energy_elec_q50-2f7a17dfd5",
+  "model_energy_elec_q90": "energy_elec_q90-a8992acb31",
+  "model_energy_gas_q10": "energy_gas_q10-82012900eb",
+  "model_energy_gas_q50": "energy_gas_q50-0405ea2f8d",
+  "model_energy_gas_q90": "energy_gas_q90-e5b4febb60",
+  "model_rec_cavity_wall": "rec_cavity_wall-e5e5e46152",
+  "model_rec_double_glazing": "rec_double_glazing-dca7b16dc7",
+  "model_rec_loft_insulation": "rec_loft_insulation-191b038222",
+  "model_rec_smart_thermostat": "rec_smart_thermostat-0ffe5f9c0a",
+  "model_rec_solar_pv": "rec_solar_pv-c899ef13c9",
+  "model_rec_solid_wall": "rec_solid_wall-8f82aadfd2",
+  "model_recommender_ranking": "recommender_ranking-a7b0ca2720",
+  "model_sap": "sap-fd2a47149d",
+  "model_value_gbm": "value_gbm-22f686dedf",
+  "model_value_hedonic": "value_hedonic-efee5ed00a"
  },
  "sources": [
   {
@@ -704,11 +725,21 @@
   },
   "matched_sales_count": 4000,
   "n_rows": 50,
-  "value_model_enabled_pending_coverage": true,
-  "coverage_check": "pending (evaluated after value-model training)",
+  "value_model_enabled_pending_coverage": false,
+  "coverage_check": {
+   "result": "pass",
+   "empirical_coverage": 0.8207,
+   "nominal": 0.8,
+   "accept_range": [
+    0.75,
+    0.85
+   ],
+   "n_test": 619,
+   "evaluated": "test split, once (M7)"
+  },
   "rows_filled": 50,
   "rows_blank": 0,
-  "status": "audited",
+  "status": "enabled",
   "precision": 1.0,
   "correct": 50,
   "n_audited": 50,
@@ -739,18 +770,406 @@
   "precision_ok": true,
   "count_ok": true,
   "uncertainty_note": "precision from only 50 audited matches: 95% Wilson interval 0.929-1.000",
-  "audit_file": "data/processed/region=york/match_audit_sample.csv"
+  "audit_file": "data/processed/region=york/match_audit_sample.csv",
+  "decision": "all three D10 conditions pass: value estimate enabled"
+ },
+ "energy_prices": {
+  "version": "prices-2026Q4",
+  "period": "2026-10-01 to 2026-12-31",
+  "basis": "Ofgem energy price cap, Direct Debit, GB average (rates vary by region and tariff; the cap limits unit rates and standing charges, not total bills)",
+  "elec": {
+   "unit_p_per_kwh": 26.32,
+   "standing_p_per_day": 54.83,
+   "vat_note": "reported as including 0% VAT on domestic electricity from 1 October 2026"
+  },
+  "gas": {
+   "unit_p_per_kwh": 7.97,
+   "standing_p_per_day": 29.68,
+   "vat_note": "includes 5% VAT"
+  },
+  "sources": [
+   "https://www.uswitch.com/gas-electricity/news/october-energy-price-cap-to-increase-by-four-percent/",
+   "https://www.payplan.com/blog/ofgem-energy-price-cap-hits-three-year-high/",
+   "https://octopus.energy/blog/october-2026-energy-price-cap-should-i-fix-my-tariff/"
+  ],
+  "verify_against": "Ofgem energy price cap page (rates taken from press coverage citing Ofgem)",
+  "export": "solar export is not credited (no Smart Export Guarantee rate assumed): bill savings from PV are conservative",
+  "decision": "D26"
+ },
+ "grants": {
+  "version": "grants-2026-10",
+  "as_of": "2026-10-10",
+  "as_of_note": "fixed evaluation date so results are reproducible; update when the scheme changes",
+  "grants": [
+   {
+    "id": "bus_ashp",
+    "name": "Boiler Upgrade Scheme (air source heat pump)",
+    "measure": "heat_pump",
+    "amount_gbp": 7500,
+    "uplift": {
+     "amount_gbp": 9000,
+     "condition": "off_gas",
+     "valid_from": "2026-07-21",
+     "valid_to": "2027-03-31",
+     "note": "temporary rate for homes off the gas grid (applications 21 Jul 2026 - 31 Mar 2027)"
+    },
+    "eligibility": {
+     "nations": [
+      "England",
+      "Wales"
+     ],
+     "replaces_heating_types": [
+      "gas_boiler",
+      "oil",
+      "electric",
+      "other"
+     ]
+    },
+    "eligibility_note": "subject to full scheme rules (installer, property and EPC requirements); check the Ofgem BUS page before relying on it",
+    "sources": [
+     "https://www.ofgem.gov.uk/environmental-and-social-schemes/boiler-upgrade-scheme",
+     "https://www.energysavingtrust.org.uk/grants-and-schemes/boiler-upgrade-scheme/"
+    ]
+   }
+  ],
+  "region_nation": "England",
+  "not_modelled": "insulation grants (ECO4, Great British Insulation Scheme) depend on household income and benefits, which the engine does not know",
+  "decision": "D27"
+ },
+ "finance": {
+  "version": "finance-v1",
+  "apr_pct": 7.0,
+  "term_years": 10,
+  "status": "illustrative assumption for comparing a monthly repayment with the monthly bill saving; not a Lloyds product, rate or offer",
+  "decision": "D27"
  },
  "models": {
-  "status": "pending",
-  "detail": null
+  "status": "available",
+  "detail": {
+   "registry_version": "model-registry-v1",
+   "models": [
+    {
+     "name": "energy_elec",
+     "version": null,
+     "shipped": false,
+     "gates": {
+      "mae_at_least_2pct_below_b0_overall": false,
+      "mae_not_worse_on_yorkshire": true,
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_val_mae": 1410.5,
+      "val_mae": 1389.7,
+      "york_b0_val_mae": 1300.5,
+      "york_val_mae": 1278.0
+     }
+    },
+    {
+     "name": "energy_elec_q10",
+     "version": "energy_elec_q10-ab346cd53b",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 459.4,
+      "mean_pinball_kwh": 453.3
+     }
+    },
+    {
+     "name": "energy_elec_q50",
+     "version": "energy_elec_q50-2f7a17dfd5",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 459.4,
+      "mean_pinball_kwh": 453.3
+     }
+    },
+    {
+     "name": "energy_elec_q90",
+     "version": "energy_elec_q90-a8992acb31",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 459.4,
+      "mean_pinball_kwh": 453.3
+     }
+    },
+    {
+     "name": "energy_gas",
+     "version": null,
+     "shipped": false,
+     "gates": {
+      "mae_at_least_2pct_below_b0_overall": false,
+      "mae_not_worse_on_yorkshire": true,
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_val_mae": 3626.1,
+      "val_mae": 3569.5,
+      "york_b0_val_mae": 3699.1,
+      "york_val_mae": 3645.2
+     }
+    },
+    {
+     "name": "energy_gas_q10",
+     "version": "energy_gas_q10-82012900eb",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 1169.6,
+      "mean_pinball_kwh": 1149.6
+     }
+    },
+    {
+     "name": "energy_gas_q50",
+     "version": "energy_gas_q50-0405ea2f8d",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 1169.6,
+      "mean_pinball_kwh": 1149.6
+     }
+    },
+    {
+     "name": "energy_gas_q90",
+     "version": "energy_gas_q90-e5b4febb60",
+     "shipped": true,
+     "gates": {
+      "quantiles_mean_pinball_below_b0_cell_quantiles": true
+     },
+     "headline_val": {
+      "b0_mean_pinball_kwh": 1169.6,
+      "mean_pinball_kwh": 1149.6
+     }
+    },
+    {
+     "name": "rec_cavity_wall",
+     "version": "rec_cavity_wall-e5e5e46152",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.6125,
+      "val_pr_auc": 0.9862
+     }
+    },
+    {
+     "name": "rec_double_glazing",
+     "version": "rec_double_glazing-dca7b16dc7",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.7947,
+      "val_pr_auc": 0.9958
+     }
+    },
+    {
+     "name": "rec_heat_pump",
+     "version": null,
+     "shipped": false,
+     "gates": {
+      "insufficient_labels": true
+     },
+     "headline_val": {
+      "train_positives": 23
+     }
+    },
+    {
+     "name": "rec_loft_insulation",
+     "version": "rec_loft_insulation-191b038222",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.5994,
+      "val_pr_auc": 0.9097
+     }
+    },
+    {
+     "name": "rec_smart_thermostat",
+     "version": "rec_smart_thermostat-0ffe5f9c0a",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.2039,
+      "val_pr_auc": 0.5257
+     }
+    },
+    {
+     "name": "rec_solar_pv",
+     "version": "rec_solar_pv-c899ef13c9",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.9799,
+      "val_pr_auc": 0.9994
+     }
+    },
+    {
+     "name": "rec_solid_wall",
+     "version": "rec_solid_wall-8f82aadfd2",
+     "shipped": true,
+     "gates": {
+      "pr_auc_above_b1": true
+     },
+     "headline_val": {
+      "b1_val_pr_auc": 0.9821,
+      "val_pr_auc": 0.995
+     }
+    },
+    {
+     "name": "recommender_ranking",
+     "version": "recommender_ranking-a7b0ca2720",
+     "shipped": true,
+     "gates": {
+      "ndcg3_above_b2": true
+     },
+     "headline_val": {
+      "ndcg3_b2": 0.5239,
+      "ndcg3_model": 0.9944
+     }
+    },
+    {
+     "name": "sap",
+     "version": "sap-fd2a47149d",
+     "shipped": true,
+     "gates": {
+      "monotonicity": true,
+      "pairs_mae_below_delta0": true,
+      "r2_sanity_ge_0.75": true,
+      "val_mae_below_b0": true,
+      "val_mae_below_b1": true
+     },
+     "headline_val": {
+      "b0_val_mae": 6.0469,
+      "b1_val_mae": 4.5125,
+      "delta0_mae": 6.8222,
+      "pairs_mae": 4.96,
+      "val_mae": 3.5108
+     }
+    },
+    {
+     "name": "value_gbm",
+     "version": "value_gbm-22f686dedf",
+     "shipped": true,
+     "gates": {
+      "hedonic_beta_interval_reported": true,
+      "val_mdape_below_b0": true
+     },
+     "headline_val": {
+      "b0_val_mdape": 0.1831,
+      "b1_val_mdape": 0.1028,
+      "val_mdape": 0.0901
+     }
+    },
+    {
+     "name": "value_hedonic",
+     "version": "value_hedonic-efee5ed00a",
+     "shipped": true,
+     "gates": {
+      "beta_interval_reported": true
+     },
+     "headline_val": {
+      "beta_sap": 0.00194,
+      "p10": 0.001124,
+      "p90": 0.002737
+     }
+    }
+   ],
+   "model_switch": {
+    "use_model_baseline": false,
+    "beat_benchmark": false,
+    "model_version": {
+     "gas": null,
+     "elec": null
+    },
+    "per_fuel_gate": {
+     "gas": false,
+     "elec": false
+    },
+    "val_mae": {
+     "gas": 3569.5,
+     "elec": 1389.7
+    },
+    "benchmark_val_mae": {
+     "gas": 3626.1,
+     "elec": 1410.5
+    },
+    "rule": "on only if both fuels beat the benchmark MAE by >= 2% overall and are not worse on Yorkshire (D36)"
+   },
+   "test_scored_once": true,
+   "report": "docs/EVALUATION.md (generated from docs/validation/ml_*.json)"
+  }
  },
  "policy_comparison": {
   "status": "pending",
-  "detail": "Policy A/B/C regret experiment (eval/) has no saved results on the engine branch yet."
+  "detail": "The policy A/B/C regret experiment has no saved results yet."
  },
  "llm_evaluation": {
-  "status": "pending",
-  "detail": "The LLM layer is on feature/llm-layer (docs/LLM.md). Its reported results were measured on a fake engine; they are not quoted here until rerun on the real engine and York demo homes."
+  "status": "available",
+  "detail": {
+   "targets": {
+    "groundedness": 0.9,
+    "factual_accuracy": 0.9,
+    "unsupported_claim_rate": 0.05
+   },
+   "runs": [
+    {
+     "mode": "mock",
+     "label": "Mocked LLM (offline, scripted)",
+     "date": "2026-10-11",
+     "n": 53,
+     "groundedness": 1.0,
+     "factual_accuracy": 1.0,
+     "unsupported_claim_rate": 0.0,
+     "whatif_success": 1.0,
+     "refusal_correctness": 1.0,
+     "items_all_checks_passed": 1.0,
+     "targets_met": {
+      "groundedness": true,
+      "factual_accuracy": true,
+      "unsupported_claim_rate": true
+     }
+    },
+    {
+     "mode": "template",
+     "label": "Template explainer (deterministic baseline)",
+     "date": "2026-10-11",
+     "n": 53,
+     "groundedness": 1.0,
+     "factual_accuracy": 1.0,
+     "unsupported_claim_rate": 0.0,
+     "whatif_success": 1.0,
+     "refusal_correctness": 1.0,
+     "items_all_checks_passed": 1.0,
+     "targets_met": {
+      "groundedness": true,
+      "factual_accuracy": true,
+      "unsupported_claim_rate": true
+     }
+    }
+   ],
+   "live_llm_run": false,
+   "note": "No live-LLM run yet: the template and mocked runs show the guardrails, not a live model's answer quality.",
+   "report": "docs/LLM_EVALUATION.md"
+  }
  }
 }

@@ -5,7 +5,7 @@ import { useBudgetSearch } from '../../api/queries';
 import { toApiError } from '../../api/errors';
 import type { ScenarioLab } from '../../hooks/useScenarioLab';
 import { HORIZON_TEXT, PRIORITY_OBJECTIVE, ROLE_SHORT, useSituation, type Situation } from '../../hooks/useSituation';
-import { fmtGbp, fmtKg, fmtKwh, fmtPct, isNum, savingDirection } from '../../utils/format';
+import { fmtGbp, fmtKg, fmtKwh, fmtNumber, fmtPct, isNum, savingDirection } from '../../utils/format';
 import { MEASURE_SHORT, OBJECTIVE_SHORT, packageIdFor, packageName } from '../../utils/labels';
 import { permissionFor, PERMISSION_NOTE } from '../../utils/permissions';
 import { DirectionTag } from '../../components/common/Knowledge';
@@ -110,7 +110,8 @@ export function OptionsTab({ r, lab, onTab }: { r: ScenarioResult; lab: Scenario
           const sameAsUnbudgeted = unbudgeted.get(f.objective) === f.package_id;
           const surv = sameAsUnbudgeted ? r.sensitivity?.survival[f.objective] : undefined;
           const without = budgetMode && !sameAsUnbudgeted ? byId.get(unbudgeted.get(f.objective) ?? '') : undefined;
-          const over = !budgetMode && budget !== null && budget > 0 && p?.cost_gbp != null && p.cost_gbp > budget;
+          const cost = p ? (r.request.assumptions.apply_grants ? (p.net_cost_gbp ?? p.cost_gbp) : p.cost_gbp) : null;   // the engine selects on cost net of grants (D27)
+          const over = !budgetMode && budget !== null && budget > 0 && cost != null && cost > budget;
           const perms = p ? p.measures.map((m) => permissionFor(m, fmap.get(m), s.role, r.home)) : [];
           const needAsk = perms.filter((x) => x.state === 'needs_consent' || x.state === 'needs_building_approval');
           const elecDir = savingDirection(p?.elec_saving_kwh);
@@ -128,10 +129,14 @@ export function OptionsTab({ r, lab, onTab }: { r: ScenarioResult; lab: Scenario
                   <p className="option-measures">{p.measures.map((m) => MEASURE_SHORT[m]).join(' + ')}</p>
                   <dl className="option-nums">
                     <div><dt>Cost</dt><dd>
-                      <b>{p.cost_gbp != null ? `About ${fmtGbp(p.cost_gbp)}` : 'Not known'}</b>
+                      <b>{cost != null ? `About ${fmtGbp(cost)}` : 'Not known'}</b>
+                      {r.request.assumptions.apply_grants && isNum(p.grants_gbp) && p.grants_gbp > 0 && <span className="xsmall muted"> after a {fmtGbp(p.grants_gbp)} grant</span>}
                       {budgetMode && <span className="fit fit-ok">Within your budget</span>}
                       {over && <span className="fit fit-over">Over your {fmtGbp(budget)} budget</span>}
                     </dd></div>
+                    <div><dt>Bills</dt><dd>{isNum(p.bill_saving_gbp)
+                      ? (p.bill_saving_gbp >= 0.5 ? <><b>{fmtGbp(p.bill_saving_gbp)} a year less</b></> : p.bill_saving_gbp <= -0.5 ? <><b>{fmtGbp(Math.abs(p.bill_saving_gbp))} a year more</b> <DirectionTag direction="increase" label="goes up" /></> : 'About the same')
+                      : 'Not estimated'}{isNum(p.payback_years) && <span className="muted"> · pays back in about {fmtNumber(p.payback_years, p.payback_years < 10 ? 1 : 0)} years</span>}</dd></div>
                     <div><dt>Carbon</dt><dd><b>{fmtKg(p.carbon_saving_kg)} less</b>{isNum(p.carbon_saving_pct) && <span className="muted"> ({fmtPct(p.carbon_saving_pct)} of today)</span>}</dd></div>
                     <div><dt>Gas</dt><dd>{fmtKwh(p.gas_saving_kwh)} less</dd></div>
                     <div><dt>Electricity</dt><dd>{isNum(p.elec_saving_kwh) && p.elec_saving_kwh < -0.5 ? <><b>{fmtKwh(Math.abs(p.elec_saving_kwh))} more</b> <DirectionTag direction={elecDir} label="goes up" /></> : isNum(p.elec_saving_kwh) && p.elec_saving_kwh > 0.5 ? `${fmtKwh(p.elec_saving_kwh)} less` : 'No change'}</dd></div>
@@ -139,7 +144,7 @@ export function OptionsTab({ r, lab, onTab }: { r: ScenarioResult; lab: Scenario
                   <ul className="option-flags">
                     {surv && <li>{surv.changed_under.length ? <Activity size={13} aria-hidden="true" /> : <ShieldCheck size={13} aria-hidden="true" />} Still the pick in {surv.survives.replace('/', ' of ')} “what if” <Term k="sensitivity">tests</Term></li>}
                     {!surv && budgetMode && <li className="muted">“What if” tests are run for the no-limit plans only.</li>}
-                    {without && <li className="muted">Without a budget limit: {packageName(without.package_id)} ({fmtGbp(without.cost_gbp)}, {fmtKg(without.carbon_saving_kg)} less)</li>}
+                    {without && <li className="muted">Without a budget limit: {packageName(without.package_id)} ({fmtGbp(without.net_cost_gbp ?? without.cost_gbp)}, {fmtKg(without.carbon_saving_kg)} less)</li>}
                     {needAsk.length > 0 && <li><ShieldAlert size={13} aria-hidden="true" /> {s.role === 'tenant' ? 'Needs landlord permission' : 'Needs building approval'} ({needAsk.length})</li>}
                     {!p.confirmed && <li><ShieldAlert size={13} aria-hidden="true" /> Needs a survey to confirm: {p.must_verify.join('; ')}</li>}
                   </ul>
@@ -152,7 +157,7 @@ export function OptionsTab({ r, lab, onTab }: { r: ScenarioResult; lab: Scenario
           );
         })}
       </div>
-      <p className="xsmall muted">Costs are typical EPC figures for York, not quotes. Savings are estimates. {s.role !== 'unknown' && `Permission notes are for a ${ROLE_SHORT[s.role].toLowerCase()}. `}{PERMISSION_NOTE}</p>
+      <p className="xsmall muted">Costs are typical EPC figures for York, not quotes, shown after grants the home may qualify for (subject to eligibility). Bills are at the Ofgem price cap. Savings are estimates. {s.role !== 'unknown' && `Permission notes are for a ${ROLE_SHORT[s.role].toLowerCase()}. `}{PERMISSION_NOTE}</p>
       <div className="row">
         <button className="btn btn-ghost" onClick={() => onTab('try')}>Or build your own mix →</button>
         <button className="btn btn-link small" onClick={() => onTab('expert')}>See all {ps?.packages.length ?? 0} combinations</button>

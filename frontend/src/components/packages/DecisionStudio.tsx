@@ -132,6 +132,9 @@ export function DecisionStudio({ result: r, selectedObjective, onSelectObjective
                     <dl className="plan-facts">
                       <div><dt>Purchased energy saving</dt><dd className="num">{fmtSigned(p.purchased_saving_kwh, 'kWh/yr', p.status)}</dd></div>
                       <div><dt>Carbon per £</dt><dd className="num">{p.carbon_per_pound_kg != null ? `${p.carbon_per_pound_kg.toFixed(3)} kg CO₂e per £` : 'Not estimated'}</dd></div>
+                      <div><dt>After grants</dt><dd className="num">{fmtGbp(p.net_cost_gbp, p.cost_status)}{p.grants_gbp ? <span className="xsmall muted"> ({fmtGbp(p.grants_gbp)} grant)</span> : null}</dd></div>
+                      <div><dt>Bill change a year</dt><dd className="num">{p.bill_saving_gbp == null ? 'Not estimated' : p.bill_saving_gbp >= 0 ? `${fmtGbp(p.bill_saving_gbp)} less` : `${fmtGbp(-p.bill_saving_gbp)} more`}</dd></div>
+                      <div><dt>Simple payback</dt><dd className="num">{p.payback_years == null ? 'Not reached' : `${p.payback_years < 10 ? p.payback_years.toFixed(1) : Math.round(p.payback_years)} years`}</dd></div>
                     </dl>
 
                     <div className="plan-why">

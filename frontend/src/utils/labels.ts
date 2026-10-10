@@ -129,3 +129,22 @@ export function prettyText(s: string): string {
   const out = s.replace(MEASURE_ID_RE, (m) => MEASURE_LABEL[m as MeasureId]);
   return out.charAt(0).toUpperCase() + out.slice(1);
 }
+
+/** Plain names for the engine request fields a what-if can change (backend/app/llm/whatif.py REQUEST_FIELDS). */
+const REQUEST_FIELD_LABEL: Record<string, string> = {
+  gas_price_p: 'gas price (p/kWh)',
+  elec_price_p: 'electricity price (p/kWh)',
+  apply_grants: 'grants applied',
+  heat_pump_mode: 'heat-pump mode',
+  heat_pump_partial_share: 'heat-pump share of the heating',
+  heat_pump_scop: 'heat-pump SCOP',
+  impact_level: 'measure impacts',
+  baseline_scale: 'people at home',
+  user_gas_kwh: 'your gas reading (kWh/yr)',
+  user_elec_kwh: 'your electricity reading (kWh/yr)',
+  include_uncertainty: 'ranges',
+};
+
+export function assumptionLabel(field: string): string {
+  return REQUEST_FIELD_LABEL[field] ?? field.replace(/_/g, ' ');
+}

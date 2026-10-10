@@ -9,13 +9,20 @@
   "flagged_poor_or_very_poor": 1,
   "flagged_with_potential_available": 1,
   "flagged_potential_unavailable": 0,
-  "median_improvement_potential_pct": 68.08472076758615,
-  "total_carbon_saving_potential_t": 3.2916928705824002,
+  "median_improvement_potential_pct": 63.397224425082655,
+  "total_carbon_saving_potential_t": 3.1204149964122925,
   "share_incomplete_data_pct": 33.333333333333336,
+  "rank_by": "improvement_potential",
+  "median_fabric_improvement_potential_pct": 14.99790846797795,
+  "total_fabric_carbon_saving_potential_t": 0.6940485365216537,
+  "total_net_cost_gbp": 16537.0,
+  "homes_with_bill_falling": 1,
   "notes": [
    "improvement potential = confirmed feasible package per home (estimates, benchmark baselines)",
    "flags use the Green Home Score class (per-m2 intensity and ratings), not total consumption",
-   "carbon potential sums package savings; fabric combinations may be overestimated (D14)"
+   "carbon potential sums package savings; fabric combinations may be overestimated (D14)",
+   "heat pumps dominate purchased-energy potential; fabric_improvement_potential_pct shows insulation and controls alone",
+   "costs net of Boiler Upgrade Scheme grants, subject to eligibility (D27)"
   ]
  },
  "homes": [
@@ -33,14 +40,23 @@
     "insulation (walls Poor, roof Very Poor)",
     "renewable energy (no renewables recorded)"
    ],
-   "package_id": "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv",
-   "improvement_potential_pct": 68.08472076758615,
+   "package_id": "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv",
+   "improvement_potential_pct": 63.397224425082655,
    "improvement_potential_status": "ok",
    "improvement_potential_reason": null,
    "gas_saving_kwh": 20957.35833333333,
-   "elec_saving_kwh": -3675.186711827714,
-   "carbon_saving_kg": 3291.6928705824002,
-   "floor_area_m2": 171.0
+   "elec_saving_kwh": -4865.029533433186,
+   "carbon_saving_kg": 3120.4149964122926,
+   "floor_area_m2": 171.0,
+   "heat_pump_in_package": true,
+   "fabric_improvement_potential_pct": 14.99790846797795,
+   "fabric_carbon_saving_kg": 694.0485365216537,
+   "gross_cost_gbp": 24037.0,
+   "grants_gbp": 7500.0,
+   "net_cost_gbp": 16537.0,
+   "bill_saving_gbp": 389.83,
+   "payback_years": 42.4,
+   "carbon_per_pound_kg": 0.18869293078625463
   }
  ],
  "data_mode": "demo_subset",

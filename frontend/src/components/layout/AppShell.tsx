@@ -55,6 +55,7 @@ function DataStatus() {
         {err ? 'Live engine unreachable' : health.data ? 'Live engine' : 'Connecting…'}
       </span>
       {err && <span className="xsmall muted">{err.message}</span>}
+      {!err && health.data?.data_mode === 'demo_homes' && <span className="xsmall muted">York data not on this server: the 3 public demo homes only.</span>}
       <span className="row">
         {err && <button className="btn-link xsmall" onClick={() => health.refetch()}>Retry</button>}
         <button className="btn-link xsmall" onClick={() => switchTo('fixtures')}>Use offline snapshot</button>

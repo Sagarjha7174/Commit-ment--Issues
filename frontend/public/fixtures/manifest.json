@@ -1,10 +1,10 @@
 {
  "kind": "offline_snapshot",
- "engine_branch": "feature/engine-core",
- "engine_commit": "54155e0",
- "generated_at": "2026-10-10T21:37:01+00:00",
+ "engine_branch": "main",
+ "engine_commit": "d72dc69",
+ "generated_at": "2026-10-10T23:24:02+00:00",
  "generator": "scripts/generate_fixtures.py",
- "home_inputs": "configs/demo_homes.json public fields + non-public fields documented in tests/fixtures/hand_calc_demo.py",
+ "home_inputs": "backend/app/data/demo_homes.py (configs/demo_homes.json public fields + certificate fields documented in tests/fixtures/hand_calc_demo.py)",
  "parity": "reproduces tests/fixtures/scenario_{a,b,c}.json (engine hand-calculated acceptance fixtures)",
  "assumption_presets": {
   "default": {},
@@ -31,7 +31,6 @@
   "U100050529765": {
    "case": "a_poor_gas_house",
    "selectable": [
-    "loft_insulation",
     "cavity_wall",
     "double_glazing",
     "smart_thermostat",
@@ -41,21 +40,15 @@
    "variants": {
     "default": {
      "overrides": {},
-     "shared": "shared/U100050529765-default-9e36d5d5fa05.json",
+     "shared": "shared/U100050529765-default-6de03d5e318f.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/default__engine-default.json",
       "none": "scenarios/U100050529765/default__none.json",
-      "loft_insulation": "scenarios/U100050529765/default__loft_insulation.json",
       "cavity_wall": "scenarios/U100050529765/default__cavity_wall.json",
       "double_glazing": "scenarios/U100050529765/default__double_glazing.json",
       "smart_thermostat": "scenarios/U100050529765/default__smart_thermostat.json",
       "heat_pump": "scenarios/U100050529765/default__heat_pump.json",
       "solar_pv": "scenarios/U100050529765/default__solar_pv.json",
-      "cavity_wall+loft_insulation": "scenarios/U100050529765/default__cavity_wall+loft_insulation.json",
-      "double_glazing+loft_insulation": "scenarios/U100050529765/default__double_glazing+loft_insulation.json",
-      "loft_insulation+smart_thermostat": "scenarios/U100050529765/default__loft_insulation+smart_thermostat.json",
-      "heat_pump+loft_insulation": "scenarios/U100050529765/default__heat_pump+loft_insulation.json",
-      "loft_insulation+solar_pv": "scenarios/U100050529765/default__loft_insulation+solar_pv.json",
       "cavity_wall+double_glazing": "scenarios/U100050529765/default__cavity_wall+double_glazing.json",
       "cavity_wall+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+smart_thermostat.json",
       "cavity_wall+heat_pump": "scenarios/U100050529765/default__cavity_wall+heat_pump.json",
@@ -66,16 +59,6 @@
       "heat_pump+smart_thermostat": "scenarios/U100050529765/default__heat_pump+smart_thermostat.json",
       "smart_thermostat+solar_pv": "scenarios/U100050529765/default__smart_thermostat+solar_pv.json",
       "heat_pump+solar_pv": "scenarios/U100050529765/default__heat_pump+solar_pv.json",
-      "cavity_wall+double_glazing+loft_insulation": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation.json",
-      "cavity_wall+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+loft_insulation+smart_thermostat.json",
-      "cavity_wall+heat_pump+loft_insulation": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation.json",
-      "cavity_wall+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+loft_insulation+solar_pv.json",
-      "double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__double_glazing+loft_insulation+smart_thermostat.json",
-      "double_glazing+heat_pump+loft_insulation": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation.json",
-      "double_glazing+loft_insulation+solar_pv": "scenarios/U100050529765/default__double_glazing+loft_insulation+solar_pv.json",
-      "heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__heat_pump+loft_insulation+smart_thermostat.json",
-      "loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__loft_insulation+smart_thermostat+solar_pv.json",
-      "heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__heat_pump+loft_insulation+solar_pv.json",
       "cavity_wall+double_glazing+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+smart_thermostat.json",
       "cavity_wall+double_glazing+heat_pump": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump.json",
       "cavity_wall+double_glazing+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+solar_pv.json",
@@ -86,28 +69,12 @@
       "double_glazing+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+smart_thermostat+solar_pv.json",
       "double_glazing+heat_pump+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+solar_pv.json",
       "heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__heat_pump+smart_thermostat+solar_pv.json",
-      "cavity_wall+double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation.json",
-      "cavity_wall+double_glazing+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+solar_pv.json",
-      "cavity_wall+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat.json",
-      "cavity_wall+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+loft_insulation+smart_thermostat+solar_pv.json",
-      "cavity_wall+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+solar_pv.json",
-      "double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
-      "double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
-      "double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+solar_pv.json",
-      "heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
       "cavity_wall+double_glazing+heat_pump+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+smart_thermostat.json",
       "cavity_wall+double_glazing+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+smart_thermostat+solar_pv.json",
       "cavity_wall+double_glazing+heat_pump+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+solar_pv.json",
       "cavity_wall+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+smart_thermostat+solar_pv.json",
       "double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+smart_thermostat+solar_pv.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
-      "cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv.json",
-      "cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
-      "double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
-      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-default-1000.json",
@@ -119,11 +86,11 @@
      "overrides": {
       "impact_level": "low"
      },
-     "shared": "shared/U100050529765-impact-low-31dffea33b3f.json",
+     "shared": "shared/U100050529765-impact-low-38f50ddde015.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/impact-low__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/impact-low__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-low__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-low__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-impact-low-1000.json",
@@ -135,11 +102,11 @@
      "overrides": {
       "impact_level": "high"
      },
-     "shared": "shared/U100050529765-impact-high-3dca10dd12c1.json",
+     "shared": "shared/U100050529765-impact-high-0f10dcb074db.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/impact-high__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/impact-high__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-high__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-high__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-impact-high-1000.json",
@@ -151,11 +118,11 @@
      "overrides": {
       "heat_pump_scop": 2.5
      },
-     "shared": "shared/U100050529765-scop-2.5-a425716d6f9c.json",
+     "shared": "shared/U100050529765-scop-2.5-1ca874be344d.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/scop-2.5__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/scop-2.5__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-2.5__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-2.5__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-scop-2.5-1000.json",
@@ -167,11 +134,11 @@
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/U100050529765-scop-3.5-6d14f809c6a3.json",
+     "shared": "shared/U100050529765-scop-3.5-78843e5759e1.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/scop-3.5__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/scop-3.5__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-3.5__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-3.5__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-scop-3.5-1000.json",
@@ -183,11 +150,11 @@
      "overrides": {
       "baseline_scale": 0.85
      },
-     "shared": "shared/U100050529765-occupancy-low-7f41e04f3242.json",
+     "shared": "shared/U100050529765-occupancy-low-d93caacbcf28.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/occupancy-low__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/occupancy-low__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-low__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-low__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-occupancy-low-1000.json",
@@ -199,11 +166,11 @@
      "overrides": {
       "baseline_scale": 1.15
      },
-     "shared": "shared/U100050529765-occupancy-high-e3f1eac0ad32.json",
+     "shared": "shared/U100050529765-occupancy-high-5cf453a7347e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050529765/occupancy-high__engine-default.json",
       "cavity_wall": "scenarios/U100050529765/occupancy-high__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-high__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-high__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
       "1000": "budgets/U100050529765-occupancy-high-1000.json",
@@ -217,7 +184,7 @@
      "gas_kwh": 18500.0,
      "elec_kwh": 3400.0
     },
-    "shared": "shared/U100050529765-reading-46b44672138e.json",
+    "shared": "shared/U100050529765-reading-7246e289bee1.json",
     "scenarios": {
      "engine-default": "scenarios/U100050529765/reading__engine-default.json"
     },
@@ -237,7 +204,7 @@
    "variants": {
     "default": {
      "overrides": {},
-     "shared": "shared/A012dcfda4e502be0-default-f46f1709ac3a.json",
+     "shared": "shared/A012dcfda4e502be0-default-2a8f514ae347.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/default__engine-default.json",
       "none": "scenarios/A012dcfda4e502be0/default__none.json",
@@ -255,7 +222,7 @@
      "overrides": {
       "impact_level": "low"
      },
-     "shared": "shared/A012dcfda4e502be0-impact-low-f46f1709ac3a.json",
+     "shared": "shared/A012dcfda4e502be0-impact-low-2a8f514ae347.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/impact-low__engine-default.json"
      },
@@ -269,7 +236,7 @@
      "overrides": {
       "impact_level": "high"
      },
-     "shared": "shared/A012dcfda4e502be0-impact-high-f46f1709ac3a.json",
+     "shared": "shared/A012dcfda4e502be0-impact-high-2a8f514ae347.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/impact-high__engine-default.json"
      },
@@ -283,7 +250,7 @@
      "overrides": {
       "heat_pump_scop": 2.5
      },
-     "shared": "shared/A012dcfda4e502be0-scop-2.5-f46f1709ac3a.json",
+     "shared": "shared/A012dcfda4e502be0-scop-2.5-2a8f514ae347.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/scop-2.5__engine-default.json"
      },
@@ -297,7 +264,7 @@
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/A012dcfda4e502be0-scop-3.5-f46f1709ac3a.json",
+     "shared": "shared/A012dcfda4e502be0-scop-3.5-2a8f514ae347.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/scop-3.5__engine-default.json"
      },
@@ -311,7 +278,7 @@
      "overrides": {
       "baseline_scale": 0.85
      },
-     "shared": "shared/A012dcfda4e502be0-occupancy-low-19d7e062c776.json",
+     "shared": "shared/A012dcfda4e502be0-occupancy-low-e7731918fad6.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/occupancy-low__engine-default.json"
      },
@@ -325,7 +292,7 @@
      "overrides": {
       "baseline_scale": 1.15
      },
-     "shared": "shared/A012dcfda4e502be0-occupancy-high-b34b0c17e96f.json",
+     "shared": "shared/A012dcfda4e502be0-occupancy-high-0eaa11eac08d.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/occupancy-high__engine-default.json"
      },
@@ -351,7 +318,7 @@
    "variants": {
     "default": {
      "overrides": {},
-     "shared": "shared/U100050565716-default-a45cd373491b.json",
+     "shared": "shared/U100050565716-default-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/default__engine-default.json",
       "none": "scenarios/U100050565716/default__none.json",
@@ -493,7 +460,7 @@
      "overrides": {
       "impact_level": "low"
      },
-     "shared": "shared/U100050565716-impact-low-a45cd373491b.json",
+     "shared": "shared/U100050565716-impact-low-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/impact-low__engine-default.json"
      },
@@ -507,7 +474,7 @@
      "overrides": {
       "impact_level": "high"
      },
-     "shared": "shared/U100050565716-impact-high-a45cd373491b.json",
+     "shared": "shared/U100050565716-impact-high-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/impact-high__engine-default.json"
      },
@@ -521,7 +488,7 @@
      "overrides": {
       "heat_pump_scop": 2.5
      },
-     "shared": "shared/U100050565716-scop-2.5-a45cd373491b.json",
+     "shared": "shared/U100050565716-scop-2.5-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/scop-2.5__engine-default.json"
      },
@@ -535,7 +502,7 @@
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/U100050565716-scop-3.5-a45cd373491b.json",
+     "shared": "shared/U100050565716-scop-3.5-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/scop-3.5__engine-default.json"
      },
@@ -549,7 +516,7 @@
      "overrides": {
       "baseline_scale": 0.85
      },
-     "shared": "shared/U100050565716-occupancy-low-a45cd373491b.json",
+     "shared": "shared/U100050565716-occupancy-low-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/occupancy-low__engine-default.json"
      },
@@ -563,7 +530,7 @@
      "overrides": {
       "baseline_scale": 1.15
      },
-     "shared": "shared/U100050565716-occupancy-high-a45cd373491b.json",
+     "shared": "shared/U100050565716-occupancy-high-ed1437340e4e.json",
      "scenarios": {
       "engine-default": "scenarios/U100050565716/occupancy-high__engine-default.json"
      },

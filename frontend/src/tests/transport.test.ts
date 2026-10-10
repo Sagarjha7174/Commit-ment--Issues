@@ -6,7 +6,8 @@ import { HOME_A, HOME_B, snapshotResult, stubFixtureFetch } from './helpers';
 
 const req = (over: Partial<ScenarioRequest> = {}): ScenarioRequest => ({
   home_id: HOME_A, measures: null, assumptions: Assumptions.parse({}), user_reading: null,
-  include_packages: true, include_sensitivity: true, ...over,
+  include_packages: true, include_sensitivity: true, include_uncertainty: true, use_modelled_epc: false,
+  use_model_baseline: false, ...over,
 });
 
 function stubResponse(status: number, body: unknown) {
@@ -68,6 +69,32 @@ describe('live transport (routes from docs/API_CONTRACT.md, mocked fetch)', () =
     stubResponse(409, { detail: { error: 'stale_scenario' } });
     expect(await kindOf(live.explain({ homeId: HOME_A, measures: null, scenarioId: 'mine', templateMode: false }))).toBe('stale');
   });
+
+  it('sends the whole engine request to the LLM routes, so the server explains the scenario on screen', async () => {
+    const shown = req({ measures: ['cavity_wall', 'heat_pump'], assumptions: Assumptions.parse({ gas_price_p: 6 }), user_reading: { gas_kwh: 15000, elec_kwh: null } });
+    const fn = vi.fn(async () => new Response(JSON.stringify({ explanation: { scenario_id: 'mine', sections: [], source: 'template' } }), { status: 200 }));
+    vi.stubGlobal('fetch', fn);
+    await live.explain({ homeId: HOME_A, measures: shown.measures, scenarioId: 'mine', templateMode: false, request: shown });
+    const [url, init] = fn.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe('/llm/explain');
+    expect(JSON.parse(String(init.body))).toMatchObject({
+      property_id: HOME_A, measures: ['cavity_wall', 'heat_pump'], expected_scenario_id: 'mine',
+      assumptions: { gas_price_p: 6 }, user_reading: { gas_kwh: 15000, elec_kwh: null },
+      include_packages: true, include_sensitivity: true, include_uncertainty: true,
+    });
+  });
+
+  it('accepts what-if outcomes that change assumptions or are refused', async () => {
+    const outcome = { kind: 'change_assumptions', parser: 'keywords', requested_add: [], requested_remove: [], unsupported: [], added: [], removed: [], blocked: [], conditional: [], new_measures: [],
+      request_changes: { gas_price_p: 6 }, invalid_reason: null, new_request: req({ assumptions: Assumptions.parse({ gas_price_p: 6 }) }) };
+    const body = { outcome, scenario_id: 'new', recalculated: true, explanation: { scenario_id: 'new', sections: [], source: 'template' } };
+    stubResponse(200, body);
+    const w = await live.whatif({ homeId: HOME_A, measures: null, scenarioId: 'mine', question: 'gas at 6p', request: req() });
+    expect(w.outcome.kind).toBe('change_assumptions');
+    expect(w.outcome.new_request?.assumptions.gas_price_p).toBe(6);
+    stubResponse(200, { ...body, recalculated: false, outcome: { ...outcome, kind: 'invalid_request', invalid_reason: 'a partial heat pump needs a share', new_request: null } });
+    expect((await live.whatif({ homeId: HOME_A, measures: null, scenarioId: 'mine', question: 'partial heat pump', request: req() })).outcome.invalid_reason).toMatch(/share/);
+  });
 });
 
 describe('fixture transport (offline snapshot)', () => {
@@ -110,7 +137,7 @@ describe('budget package search (engine search with budget_gbp)', () => {
     const ps = await createFixtureTransport('/fixtures').packages(args);
     expect(ps.budget_gbp).toBe(5000);
     const largest = ps.featured.find((f) => f.objective === 'largest_carbon_saving')!;
-    expect(largest.package_id).toBe('cavity_wall+loft_insulation+smart_thermostat');
+    expect(largest.package_id).toBe('cavity_wall+double_glazing+smart_thermostat');
     const pkg = ps.packages.find((p) => p.package_id === largest.package_id)!;
     expect(pkg.cost_gbp!).toBeLessThanOrEqual(5000);
     expect(ps.packages.length).toBe(snapshotResult(HOME_A).packages!.packages.length);

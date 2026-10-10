@@ -6,7 +6,7 @@ import { ERROR_TITLES, toApiError } from '../../api/errors';
 import type { WhatIfResponse } from '../../api/schema';
 import { draftOf, type ScenarioLab as Lab } from '../../hooks/useScenarioLab';
 import { fmtGbp, fmtKg, fmtKwh, fmtNumber, fmtPct, fmtSigned, isNum, savingDirection, shortId } from '../../utils/format';
-import { MEASURE_SHORT, measureLabel, packageName } from '../../utils/labels';
+import { assumptionLabel, MEASURE_SHORT, measureLabel, packageName } from '../../utils/labels';
 import { diffScenarios, type DiffRow } from '../../utils/scenarioDiff';
 import { DirectionTag } from '../common/Knowledge';
 import { ErrorState, SectionHeader } from '../common/States';
@@ -58,6 +58,61 @@ export function Diff({ prev, curr }: { prev: ScenarioResult; curr: ScenarioResul
         {d.baselineSource[0] !== d.baselineSource[1] && <p className="small">Baseline source changed: {d.baselineSource[0]} → {d.baselineSource[1]}.</p>}
       </div>
     </div>
+  );
+}
+
+/** Your own unit rates (D26) and whether grants count towards the cost (D27); the engine reprices everything. */
+export function TariffForm({ lab, result }: { lab: Lab; result: ScenarioResult }) {
+  const a = lab.state.draft.assumptions;
+  const [gas, setGas] = useState(a.gas_price_p != null ? String(a.gas_price_p) : '');
+  const [elec, setElec] = useState(a.elec_price_p != null ? String(a.elec_price_p) : '');
+  const [err, setErr] = useState<string | null>(null);
+  const t = useTransport();
+  // The result's prices are the cap only when the result itself used no custom rate.
+  const ra = result.request.assumptions;
+  const cap = ra.gas_price_p == null && ra.elec_price_p == null ? result.bills?.prices : undefined;
+  const parse = (s: string): number | null | 'bad' => {
+    if (s.trim() === '') return null;
+    const n = Number(s);
+    return Number.isFinite(n) && n >= 0 && n < 500 ? n : 'bad';
+  };
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    const g = parse(gas);
+    const el = parse(elec);
+    if (g === 'bad' || el === 'bad') return setErr('Enter a unit rate in pence per kWh, between 0 and 499.');
+    setErr(null);
+    lab.setAssumptions({ gas_price_p: g, elec_price_p: el });
+  };
+  const custom = a.gas_price_p != null || a.elec_price_p != null;
+  return (
+    <form className="lab-card" onSubmit={submit} noValidate>
+      <h3>Your tariff and grants</h3>
+      <p className="small muted">Blank = the Ofgem price cap{cap ? ` (${String(cap.gas_p_per_kwh)}p gas, ${String(cap.elec_p_per_kwh)}p electricity per kWh)` : ''}. A heat-pump tariff can change which plan pays back.</p>
+      <div className="lab-fields">
+        <div className="field">
+          <label htmlFor="gas-p">Gas, pence per kWh</label>
+          <input id="gas-p" className="input" inputMode="decimal" value={gas} onChange={(e) => setGas(e.target.value)} aria-describedby="tariff-err" />
+        </div>
+        <div className="field">
+          <label htmlFor="elec-p">Electricity, pence per kWh</label>
+          <input id="elec-p" className="input" inputMode="decimal" value={elec} onChange={(e) => setElec(e.target.value)} aria-describedby="tariff-err" />
+        </div>
+      </div>
+      <p id="tariff-err" className="field-error" role={err ? 'alert' : undefined}>{err}</p>
+      <div className="row">
+        <button className="btn btn-sm" type="submit">Recalculate with my tariff</button>
+        {custom && <button className="btn btn-sm btn-ghost" type="button" onClick={() => { setGas(''); setElec(''); lab.setAssumptions({ gas_price_p: null, elec_price_p: null }); }}>Back to the price cap</button>}
+      </div>
+      <div className="field">
+        <span className="label" id="grants-l">Grants in the cost</span>
+        <div className="seg" role="group" aria-labelledby="grants-l">
+          <button type="button" aria-pressed={a.apply_grants} onClick={() => lab.setAssumptions({ apply_grants: true })}>Include (default)</button>
+          <button type="button" aria-pressed={!a.apply_grants} onClick={() => lab.setAssumptions({ apply_grants: false })}>Leave out</button>
+        </div>
+      </div>
+      {t.kind === 'fixtures' && <p className="xsmall muted">Offline snapshot: tariffs and grant settings need the live engine.</p>}
+    </form>
   );
 }
 
@@ -125,10 +180,14 @@ function WhatIfBox({ lab, result }: { lab: Lab; result: ScenarioResult }) {
     setBusy(true);
     setErr(null);
     try {
-      const res = await t.whatif({ homeId: result.home.home_id, measures: result.request.measures, scenarioId: result.scenario_id, question: q.trim() });
+      const res = await t.whatif({ homeId: result.home.home_id, measures: result.request.measures, scenarioId: result.scenario_id, question: q.trim(), request: result.request });
       setOut(res);
-      if (res.outcome.kind === 'change_measures' && (res.outcome.added.length || res.outcome.removed.length)) {
-        lab.setMeasures(res.outcome.new_measures as MeasureId[]); // the engine recalculates; numbers never come from the LLM
+      const o = res.outcome;
+      // The engine recalculates through POST /api/scenario; numbers never come from the LLM.
+      if (res.recalculated && o.new_request && (o.kind === 'change_measures' || o.kind === 'change_assumptions')) {
+        lab.applyRequest(o.new_request);
+      } else if (o.kind === 'change_measures' && (o.added.length || o.removed.length)) {
+        lab.setMeasures(o.new_measures as MeasureId[]);
       }
     } catch (x) {
       setErr(x);
@@ -140,7 +199,7 @@ function WhatIfBox({ lab, result }: { lab: Lab; result: ScenarioResult }) {
   return (
     <form className="lab-card" onSubmit={ask}>
       <h3><MessageSquareText size={16} aria-hidden="true" /> Ask a what-if</h3>
-      <p className="small muted">The language model only turns your question into a measure change. The change is checked against feasibility, then the engine recalculates.</p>
+      <p className="small muted">The language model only turns your question into a change (measures, prices, your readings). The change is checked against feasibility and the engine’s request schema, then the engine recalculates.</p>
       <div className="row">
         <label htmlFor="whatif-q" className="sr-only">What-if question</label>
         <input id="whatif-q" className="input" style={{ flex: 1, minWidth: 200 }} placeholder="What if I add a heat pump but skip solar?" value={q} onChange={(e) => setQ(e.target.value)} maxLength={500} />
@@ -149,7 +208,11 @@ function WhatIfBox({ lab, result }: { lab: Lab; result: ScenarioResult }) {
       {err != null && <ErrorState error={err} />}
       {o && (
         <div className="small whatif-out" aria-live="polite">
-          {o.kind === 'out_of_scope' && <p>The system cannot answer that: it only changes the measure set.</p>}
+          {o.kind === 'out_of_scope' && <p>The system cannot answer that: it changes the plan, prices or your readings only.</p>}
+          {o.kind === 'invalid_request' && <p className="dir-increase">Not recalculated: {o.invalid_reason ?? 'the change is not valid for the engine'}.</p>}
+          {o.kind === 'change_assumptions' && Object.keys(o.request_changes).length > 0 && (
+            <p>Changed: {Object.entries(o.request_changes).map(([k, v]) => `${assumptionLabel(k)} ${String(v)}`).join(', ')}</p>
+          )}
           {o.added.length > 0 && <p>Added: {o.added.map(measureLabel).join(', ')}</p>}
           {o.removed.length > 0 && <p>Removed: {o.removed.map(measureLabel).join(', ')}</p>}
           {o.blocked.length > 0 && <p className="dir-increase">Blocked (not suitable): {o.blocked.map(measureLabel).join(', ')}</p>}
@@ -230,6 +293,8 @@ export function ScenarioLabSection({ lab, result }: { lab: Lab; result: Scenario
           </div>
 
           <ReadingForm key={`${result.home.home_id}-${JSON.stringify(draftOf(result).user_reading)}`} lab={lab} homeId={result.home.home_id} />
+
+          <TariffForm key={`${result.home.home_id}-${String(draftOf(result).assumptions.gas_price_p)}-${String(draftOf(result).assumptions.elec_price_p)}`} lab={lab} result={result} />
 
           {llmUp
             ? <WhatIfBox lab={lab} result={result} />

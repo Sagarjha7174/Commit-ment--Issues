@@ -27,8 +27,8 @@ const wrap = (t: Transport) => ({ children }: { children: ReactNode }) => <Trans
 
 const BASE = snapshotResult(HOME_A);
 const HP_ONLY = snapshotResult(HOME_A, 'default', 'heat_pump');
-const LOFT_HP = snapshotResult(HOME_A, 'default', 'heat_pump+loft_insulation');
-const LOFT_ONLY = snapshotResult(HOME_A, 'default', 'loft_insulation');
+const GLZ_HP = snapshotResult(HOME_A, 'default', 'double_glazing+heat_pump');
+const GLZ_ONLY = snapshotResult(HOME_A, 'default', 'double_glazing');
 
 async function loaded(t: Transport, calls: ReturnType<typeof controllable>['calls']) {
   const h = renderHook(() => useScenarioLab(HOME_A, { debounceMs: 0, transport: t }), { wrapper: wrap(t) });
@@ -66,14 +66,14 @@ describe('useScenarioLab', () => {
     const h = await loaded(t, calls);
     act(() => h.result.current.setMeasures(['heat_pump']));
     await waitFor(() => expect(calls).toHaveLength(2));
-    act(() => h.result.current.setMeasures(['loft_insulation', 'heat_pump']));
+    act(() => h.result.current.setMeasures(['double_glazing', 'heat_pump']));
     await waitFor(() => expect(calls).toHaveLength(3));
 
-    await act(async () => calls[2].d.resolve(LOFT_HP)); // newest first
-    await waitFor(() => expect(h.result.current.state.confirmed?.scenario_id).toBe(LOFT_HP.scenario_id));
+    await act(async () => calls[2].d.resolve(GLZ_HP)); // newest first
+    await waitFor(() => expect(h.result.current.state.confirmed?.scenario_id).toBe(GLZ_HP.scenario_id));
     await act(async () => calls[1].d.resolve(HP_ONLY)); // stale arrives late
     await new Promise((r) => setTimeout(r, 10));
-    expect(h.result.current.state.confirmed?.scenario_id).toBe(LOFT_HP.scenario_id);
+    expect(h.result.current.state.confirmed?.scenario_id).toBe(GLZ_HP.scenario_id);
     expect(h.result.current.status).toBe('ready');
   });
 
@@ -90,7 +90,7 @@ describe('useScenarioLab', () => {
 
     act(() => h.result.current.retry());
     await waitFor(() => expect(calls).toHaveLength(3));
-    await act(async () => calls[2].d.resolve(snapshotResult(HOME_A, 'default', 'cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat')));
+    await act(async () => calls[2].d.resolve(snapshotResult(HOME_A, 'default', 'cavity_wall+double_glazing+heat_pump+smart_thermostat')));
     await waitFor(() => expect(h.result.current.status).toBe('ready'));
     expect(h.result.current.state.failure).toBeNull();
   });
@@ -98,11 +98,11 @@ describe('useScenarioLab', () => {
   it('revert discards a pending change without recording a failure', async () => {
     const { t, calls } = controllable();
     const h = await loaded(t, calls);
-    act(() => h.result.current.setMeasures(['loft_insulation']));
+    act(() => h.result.current.setMeasures(['double_glazing']));
     await waitFor(() => expect(calls).toHaveLength(2));
     act(() => h.result.current.revert());
     await waitFor(() => expect(h.result.current.status).toBe('ready'));
-    await act(async () => calls[1].d.resolve(LOFT_ONLY)); // arrives after revert: ignored
+    await act(async () => calls[1].d.resolve(GLZ_ONLY)); // arrives after revert: ignored
     await new Promise((r) => setTimeout(r, 10));
     expect(h.result.current.state.confirmed?.scenario_id).toBe(BASE.scenario_id);
     expect(h.result.current.state.failure).toBeNull();
