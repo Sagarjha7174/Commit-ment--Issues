@@ -1,0 +1,8 @@
+{
+ "kind": "out_of_scope",
+ "add": [],
+ "remove": [],
+ "unsupported": [
+  "What's the weather like tomorrow?"
+ ]
+}

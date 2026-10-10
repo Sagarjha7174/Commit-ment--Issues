@@ -1,0 +1,13 @@
+{
+ "score": "Your home’s current Green Home Score is {green_home_score.before.total} and is rated {green_home_score.before.class}. The biggest pulls on the score are {derived.score_drags}. Because some parts are missing, the possible range is {green_home_score.before.range}. After the selected measures the score improves to {green_home_score.after.total} and is rated {green_home_score.after.class}.",
+ "issues": "Key issues identified are {derived.issues}.",
+ "plan": "The plan will apply the measures in this order: {derived.plan_order}. They are sequenced this way because {derived.order_reason}.",
+ "energy": "Gas use is estimated to {energy_results.change.gas_saving_kwh|change}. Grid electricity is estimated to {energy_results.change.grid_elec_saving_kwh|change}. Overall, the energy the home buys is estimated to {energy_results.change.purchased_saving_kwh|change}. Each measure’s saving is worked out on the energy left after the measures before it, so these figures already allow for how they interact.",
+ "carbon": "Estimated carbon emissions are {carbon_results.saving_kg|change}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property‑value change is not estimated because {valuation.reason}.",
+ "not_suitable": "Double glazing is not suitable because {feasibility.double_glazing.reason}. Cavity wall insulation needs checking first because {feasibility.cavity_wall.reason}. A smart thermostat needs checking first because {feasibility.smart_thermostat.reason}. Solid wall insulation needs checking first because {feasibility.solid_wall.reason}.",
+ "caveats": "Warnings: {warnings.0}, {warnings.1}, {warnings.2}, {warnings.3}, {warnings.4}. Missing details include {derived.missing_inputs}. Assumptions used are {assumptions}.",
+ "fit": "",
+ "next_steps": ""
+}

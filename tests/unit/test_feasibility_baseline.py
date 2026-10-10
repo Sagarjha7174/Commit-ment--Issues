@@ -134,8 +134,9 @@ def test_infeasible_has_no_suitability_and_every_item_has_reason():
 def test_demo_homes():
     from backend.app.data.loaders import get_home
     a = fz.as_map(fz.assess(get_home(DEMO_A)))
-    assert {m for m, i in a.items() if i.state == F.feasible} == {M.loft_insulation, M.cavity_wall, M.double_glazing,
+    assert {m for m, i in a.items() if i.state == F.feasible} == {M.cavity_wall, M.double_glazing,
                                                                    M.smart_thermostat, M.heat_pump, M.solar_pv}
+    assert a[M.loft_insulation].state == F.infeasible and a[M.loft_insulation].reason_code == "flat_roof"   # D20
     b = fz.as_map(fz.assess(get_home(DEMO_B)))
     assert b[M.loft_insulation].state == F.infeasible and b[M.solar_pv].state == F.infeasible
     assert b[M.heat_pump].suitability == Suitability.low

@@ -1,0 +1,13 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is classed as {green_home_score.before.class}. The biggest pulls on the score are {derived.score_drags}. After adding the selected measures the score is {green_home_score.after.total} and moves to the {green_home_score.after.class} class.",
+ "issues": "{derived.issues}",
+ "plan": "The plan applies loft insulation (needs checking on site first) and then a smart thermostat, in that order.",
+ "energy": "Gas use is estimated to {energy_results.change.gas_saving_kwh|change}. Grid electricity is estimated to {energy_results.change.grid_elec_saving_kwh|change}. Overall, the energy the home buys is estimated to {energy_results.change.purchased_saving_kwh|change}. Each measure’s saving is worked out on the energy left after the measures before it, so these figures already allow for how they interact.",
+ "carbon": "Estimated carbon emissions are {carbon_results.saving_kg|change}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property‑value range is not estimated because {valuation.reason}.",
+ "not_suitable": "cavity wall insulation is not suitable – Walls are already rated Good.; double glazing is not suitable – Windows are already double glazed.; solar panels are not suitable – Flats and maisonettes have no individual roof for panels.; solid wall insulation is not suitable – Walls are already rated Good.; loft insulation needs checking first – Roof type and insulation are not recorded; a survey must confirm there is a loft.",
+ "caveats": "The savings for a smart thermostat use typical published ranges, not measured UK data.; loft_insulation applied conditionally: verify roof_rating.; Combined insulation and controls savings may be overestimated: in national measured data, real combined savings were lower (by # to # percentage points). Missing details: {derived.missing_inputs}. Assumptions: {assumptions}.",
+ "fit": "",
+ "next_steps": ""
+}

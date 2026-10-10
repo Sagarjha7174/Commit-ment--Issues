@@ -1,0 +1,14 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "loft_insulation",
+  "cavity_wall",
+  "solid_wall",
+  "double_glazing",
+  "smart_thermostat",
+  "heat_pump",
+  "solar_pv"
+ ],
+ "remove": [],
+ "unsupported": []
+}

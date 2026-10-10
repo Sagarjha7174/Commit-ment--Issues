@@ -6,6 +6,7 @@ Missing values stay None (with their provenance); they are never filled with 0.
 from __future__ import annotations
 
 import math
+import re
 from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -59,6 +60,15 @@ SOURCE_COLUMNS: dict[str, str] = {
     "prov_solar_pv": "prov_solar_pv",
     "prov_controls": "prov_controls",
     "prov_smart_controls": "prov_smart_controls",
+    # certificate context used by the ML feature layer (backend/app/ml/features.py); all optional
+    "age_start": "age_start",
+    "windows_rating": "windows_rating",
+    "raw_floor_description": "floor_description",
+    "raw_main_fuel": "main_fuel",
+    "raw_mainheat_description": "mainheat_description",
+    "raw_number_habitable_rooms": "habitable_rooms",
+    "raw_transaction_type": "transaction_type",
+    "lodgement_date": "lodgement_date",
 }
 POSTCODE_COLUMN = "postcode"  # read only to derive the outward code, then dropped
 
@@ -69,6 +79,7 @@ class HomeRecord(BaseModel):
     home_id: str
     display_label: str = ""
     postcode_outward: Optional[str] = None
+    postcode_sector: Optional[str] = None      # outward code + first inward digit (e.g. "YO31 1"); never the full postcode
     split: Optional[str] = None
     rating: Optional[str] = None
     sap_score: Optional[float] = None
@@ -113,6 +124,14 @@ class HomeRecord(BaseModel):
     prov_solar_pv: Optional[str] = None
     prov_controls: Optional[str] = None
     prov_smart_controls: Optional[str] = None
+    age_start: Optional[float] = None
+    windows_rating: Optional[str] = None
+    floor_description: Optional[str] = None
+    main_fuel: Optional[str] = None
+    mainheat_description: Optional[str] = None
+    habitable_rooms: Optional[float] = None
+    transaction_type: Optional[str] = None
+    lodgement_date: Optional[str] = None       # ISO date of the latest certificate
     provenance: dict[str, Provenance] = Field(default_factory=dict)
 
     def state_dict(self) -> dict:
@@ -156,6 +175,16 @@ def _to_float(v: Any) -> Optional[float]:
         return None
 
 
+def _sector(pc: Any) -> Optional[str]:
+    """Postcode sector ("YO31 1") from a full postcode; the full postcode itself is never kept."""
+    if not isinstance(pc, str):
+        return None
+    s = "".join(pc.split()).upper()
+    if not re.fullmatch(r"[A-Z]{1,2}\d[A-Z\d]?\d[A-Z]{2}", s):
+        return None
+    return f"{s[:-3]} {s[-3]}"
+
+
 def home_from_row(row: dict) -> HomeRecord:
     d: dict[str, Any] = {}
     for col, field in SOURCE_COLUMNS.items():
@@ -165,13 +194,16 @@ def home_from_row(row: dict) -> HomeRecord:
     for f in ("flag_floor_area_implausible", "flag_conflict_gas_heating_no_mains_gas",
               "flag_energy_zero_or_negative", "flag_no_heating_description", "flag_stale_epc"):
         d[f] = bool(d[f]) if d[f] is not None else False
-    for f in ("sap_score", "age_end", "floor_area_m2", "multi_glaze_pct", "baseline_gas_kwh",
+    for f in ("sap_score", "age_start", "age_end", "floor_area_m2", "habitable_rooms", "multi_glaze_pct", "baseline_gas_kwh",
               "baseline_elec_kwh", "epc_age_years", "pv_roof_pct"):
         d[f] = _to_float(d[f])
     wt = _to_float(d["wind_turbines"])
     d["wind_turbines"] = None if wt is None or wt < 0 else int(wt)  # -1 = not recorded
     pc = _clean(row.get(POSTCODE_COLUMN))
     d["postcode_outward"] = pc.split()[0].upper() if isinstance(pc, str) and pc.strip() else None
+    d["postcode_sector"] = _sector(pc)
+    if d["lodgement_date"] is not None and not isinstance(d["lodgement_date"], str):
+        d["lodgement_date"] = str(getattr(d["lodgement_date"], "date", lambda: d["lodgement_date"])())
     age = d.get("age_band") or "unknown age"
     ptype = (d.get("property_type") or "home").lower()
     d["display_label"] = f"{age} {ptype}, {d['postcode_outward'] or 'York'}"

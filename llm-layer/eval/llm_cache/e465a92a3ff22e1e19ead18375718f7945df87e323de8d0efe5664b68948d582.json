@@ -1,0 +1,11 @@
+{
+ "score": "Your home currently scores {green_home_score.before.total} and is classed as {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. After adding the selected measures the score improves to {green_home_score.after.total} and moves to {green_home_score.after.class}.",
+ "issues": "Key issues identified are {derived.issues}.",
+ "plan": "The plan applies cavity wall insulation, then double glazing, then a heat pump, and finally solar panels, because insulation and glazing come before the heat pump to reduce the heat it must supply, and solar panels are added last as they only cut grid electricity purchases.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity is estimated to rise by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. The per‑measure contributions are: cavity wall insulation saves {energy_results.per_measure.0.gas_saving_kwh} of gas; double glazing saves {energy_results.per_measure.1.gas_saving_kwh} of gas; the heat pump saves {energy_results.per_measure.2.gas_saving_kwh} of gas but adds {energy_results.per_measure.2.elec_saving_kwh} of electricity; solar panels reduce electricity by {energy_results.per_measure.3.elec_saving_kwh}.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "Based on past sales the indicative property value change is between {valuation.uplift_low_pct} and {valuation.uplift_high_pct}.",
+ "not_suitable": "Solid wall insulation is not suitable because {feasibility.solid_wall.reason}.",
+ "caveats": "Gas and electricity use are modelled estimates from the NEED‑trained energy model, not meter readings. Assumptions used include {assumptions}. Baseline data are modelled."
+}

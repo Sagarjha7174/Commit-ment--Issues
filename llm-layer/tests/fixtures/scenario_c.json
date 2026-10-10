@@ -1,0 +1,20 @@
+{
+ "home_id": "U100050565716",
+ "expect": {
+  "score_status": "unavailable",
+  "completeness": "1/7",
+  "baseline_gas_kwh": null,
+  "baseline_elec_kwh": null,
+  "improvement_potential_status": "unavailable",
+  "needs_verification": [
+   "loft_insulation",
+   "cavity_wall",
+   "solid_wall",
+   "double_glazing",
+   "smart_thermostat",
+   "heat_pump",
+   "solar_pv"
+  ]
+ },
+ "generated_by": "tests/fixtures/hand_calc_demo.py (hand arithmetic, no engine imports)"
+}

@@ -1,0 +1,11 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "heat_pump",
+  "solar_pv"
+ ],
+ "remove": [
+  "loft_insulation"
+ ],
+ "unsupported": []
+}

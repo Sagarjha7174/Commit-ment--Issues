@@ -1,0 +1,11 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "solar_pv"
+ ],
+ "remove": [
+  "loft_insulation",
+  "cavity_wall"
+ ],
+ "unsupported": []
+}

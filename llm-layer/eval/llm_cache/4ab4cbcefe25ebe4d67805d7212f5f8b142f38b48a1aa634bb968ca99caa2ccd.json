@@ -1,0 +1,15 @@
+{
+ "kind": "out_of_scope",
+ "add": [],
+ "remove": [],
+ "role": null,
+ "horizon": null,
+ "budget_gbp": null,
+ "priorities": [],
+ "constraints": [],
+ "completed": [],
+ "rejected": [],
+ "unsupported": [
+  "Which mortgage should I get for this?"
+ ]
+}

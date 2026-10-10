@@ -1,0 +1,3 @@
+{
+ "whatif": "You added {diff.added} to your plan. Compared to your previous plan, gas use is estimated to {diff.gas_saving_kwh|change}, grid electricity use is estimated to {diff.grid_elec_saving_kwh|change}, and emissions are estimated to {diff.carbon_saving_kg|change}. Your estimated Green Home Score after the measures is {green_home_score.after.total}, placing the home in the {green_home_score.after.class} band."
+}

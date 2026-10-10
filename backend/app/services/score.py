@@ -153,7 +153,7 @@ def sub_smart_controls(home: HomeRecord):
 
 def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[float] = None,
                energy_provenance: Optional[Provenance] = None, use_home_baseline: bool = True,
-               epc_not_reassessed: bool = False) -> ScoreResult:
+               epc_not_reassessed: bool = False, modelled_sap: Optional[tuple[float, str]] = None) -> ScoreResult:
     """Score one home. Intensity uses (gas, elec) if given, else the home's tagged baseline."""
     mp = config.score_mappings()
     weights = mp["weights"]
@@ -179,7 +179,9 @@ def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[flo
     for k in PARTS:
         sub, prov, status, detail = raw[k]
         w = weights[k]
-        if k == "energy_efficiency" and epc_not_reassessed:
+        if k == "energy_efficiency" and modelled_sap is not None:
+            sub, prov, status, detail = min(max(modelled_sap[0], 0.0), 100.0), Provenance.modelled, "modelled_epc_change", modelled_sap[1]
+        elif k == "energy_efficiency" and epc_not_reassessed:
             status, detail = "unchanged_epc_not_reassessed", detail + "; EPC not re-assessed after retrofit"
         if sub is None:
             missing.append(k)
@@ -259,7 +261,17 @@ def apply_state_effects(home: HomeRecord, measures: list[MeasureId]) -> HomeReco
 
 
 def score_after(home: HomeRecord, measures: list[MeasureId], gas_after: Optional[float],
-                elec_after: Optional[float]) -> ScoreResult:
+                elec_after: Optional[float], use_modelled_epc: bool = False) -> ScoreResult:
+    """After-retrofit score. The modelled EPC change (SAP model, D34) is always attached as `epc_change` when the model
+    is available; it replaces the EPC part of the headline only when use_modelled_epc is set."""
+    from .sap_model import sap_change
     h = apply_state_effects(home, measures)
-    return score_home(h, gas_after, elec_after, energy_provenance=Provenance.derived,
-                      use_home_baseline=False, epc_not_reassessed=True)
+    ch = sap_change(home, measures)
+    modelled = None
+    if use_modelled_epc and ch["status"] == ValueStatus.ok.value:
+        modelled = (ch["sap_after_indicative"],
+                    f"SAP {home.sap_score:g} {ch['sap_change']:+.1f} modelled = {ch['sap_after_indicative']:g} "
+                    f"(indicative band {ch['rating_after_indicative']}; {ch['model_version']})")
+    res = score_home(h, gas_after, elec_after, energy_provenance=Provenance.derived,
+                     use_home_baseline=False, epc_not_reassessed=True, modelled_sap=modelled)
+    return res.model_copy(update={"epc_change": ch, "rating_after_indicative": ch["rating_after_indicative"]})

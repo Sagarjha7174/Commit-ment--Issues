@@ -1,0 +1,11 @@
+{
+ "score": "Your home currently scores {green_home_score.before.total} and is in the {green_home_score.before.class} band. The biggest score drags are {derived.score_drags}. Because one part of the score is missing, the possible range is {green_home_score.before.range}. After the selected measures the score improves to {green_home_score.after.total} and moves to the {green_home_score.after.class} band.",
+ "issues": "{derived.issues}",
+ "plan": "The plan follows this order: {derived.plan_order}. This sequence is chosen because {derived.order_reason}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity is estimated to rise by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. The measures contribute as follows: cavity wall insulation saves {energy_results.per_measure.0.gas_saving_kwh} of gas and {energy_results.per_measure.0.elec_saving_kwh} of electricity; a smart thermostat saves {energy_results.per_measure.1.gas_saving_kwh} of gas and {energy_results.per_measure.1.elec_saving_kwh} of electricity; a heat pump saves {energy_results.per_measure.2.gas_saving_kwh} of gas but increases electricity by {energy_results.per_measure.2.elec_saving_kwh}; solar panels reduce electricity by {energy_results.per_measure.3.elec_saving_kwh}.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property value change is not estimated because {valuation.reason}.",
+ "not_suitable": "cavity wall insulation needs verification: {feasibility.cavity_wall.reason}. solid wall insulation needs verification: {feasibility.solid_wall.reason}. double glazing is infeasible: {feasibility.double_glazing.reason}.",
+ "caveats": "Two warnings apply: {warnings.0} and {warnings.1}. Details missing about the home include {derived.missing_inputs}. The analysis assumes {assumptions}."
+}

@@ -1,0 +1,13 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is classed as {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. Because some parts are missing, the possible range is {green_home_score.after.range}. After the selected measures the score is {green_home_score.after.total} and moves to class {green_home_score.after.class}.",
+ "issues": "{derived.issues}",
+ "plan": "{derived.plan_order}. The order is chosen because {derived.order_reason}.",
+ "energy": "Gas use is estimated to {energy_results.change.gas_saving_kwh|change}. Grid electricity use is estimated to {energy_results.change.grid_elec_saving_kwh|change}. Overall, the energy the home buys is estimated to {energy_results.change.purchased_saving_kwh|change}. Each measure’s saving is worked out on the energy left after the previous measures, so the figures already reflect their interaction.",
+ "carbon": "Estimated carbon emissions change is {carbon_results.saving_kg} reduction.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property‑value range is not estimated because {valuation.reason}.",
+ "not_suitable": "{feasibility.cavity_wall.measure} is not suitable because {feasibility.cavity_wall.reason}. {feasibility.double_glazing.measure} is not suitable because {feasibility.double_glazing.reason}. {feasibility.solar_pv.measure} is not suitable because {feasibility.solar_pv.reason}. {feasibility.solid_wall.measure} is not suitable because {feasibility.solid_wall.reason}. {feasibility.loft_insulation.measure} needs checking first because {feasibility.loft_insulation.reason}.",
+ "caveats": "Assumptions: {assumptions}. Missing details: {derived.missing_inputs}. Warnings: {warnings.0} {warnings.1} {warnings.2} {warnings.3}.",
+ "fit": "",
+ "next_steps": ""
+}

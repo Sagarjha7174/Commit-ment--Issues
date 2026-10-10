@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "solid_wall"
+ ],
+ "remove": [],
+ "unsupported": []
+}

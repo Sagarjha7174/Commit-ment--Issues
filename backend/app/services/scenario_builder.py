@@ -1,7 +1,7 @@
 """build(request) -> ScenarioResult: the ONLY writer of numbers for a scenario.
 
 load home -> baseline -> feasibility -> simulate -> carbon -> score before/after -> packages -> sensitivity (optional)
--> valuation (gated) -> assemble with assumptions, warnings, versions and a deterministic scenario_id.
+-> valuation (services/valuation.py, gated by D10) -> assemble with assumptions, warnings, versions and a deterministic scenario_id.
 """
 from __future__ import annotations
 
@@ -12,11 +12,13 @@ from .. import config
 from ..data.loaders import get_home
 from ..schemas.enums import FABRIC, FeasibilityState, MeasureId, Provenance, ValueStatus, order_measures
 from ..schemas.property import HomeRecord
-from ..schemas.scenario import ScenarioRequest, ScenarioResult, Valuation, scenario_id
+from ..schemas.scenario import ScenarioRequest, ScenarioResult, scenario_id
 from . import audit as audit_mod
 from .combination import calibrated_view
 from .money import bill_change, finance_summary
 from .uncertainty import run as uncertainty_run
+from .valuation import estimate as valuation_estimate
+from . import recommender
 from . import packages as packages_mod
 from . import sensitivity as sens_mod
 from .baseline import get_baseline
@@ -39,17 +41,11 @@ def public_home(home: HomeRecord) -> dict:
     return out
 
 
-def valuation() -> Valuation:
-    g = config.value_gate()
-    if g.get("status") == "enabled":
-        return Valuation(status=ValueStatus.not_estimated, reason="value gate enabled but no value model is wired into the engine yet")
-    return Valuation(status=ValueStatus.not_estimated,
-                     reason=f"audit pending: property-value model gated off (value_gate status '{g.get('status')}', D10)")
-
-
 def _energy_prov(b) -> Provenance:
     if b.source == "user_provided":
         return Provenance.user_provided
+    if b.source == "modelled":
+        return Provenance.modelled
     if b.source == "mixed":
         return Provenance.derived
     return Provenance.population_benchmark
@@ -60,7 +56,7 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
     if home.home_id != request.home_id:
         raise ValueError("home does not match request.home_id")
     a = request.assumptions
-    baseline = get_baseline(home, request.user_reading)
+    baseline = get_baseline(home, request.user_reading, use_model=request.use_model_baseline)
     feas = assess(home)
     fmap = {f.measure: f for f in feas}
 
@@ -75,7 +71,7 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
     s_after = None
     if sim.status == ValueStatus.ok:
         done = [r.measure for r in sim.measures if r.status == ValueStatus.ok]
-        s_after = score_after(home, done, sim.after.gas_total, sim.after.elec_import)
+        s_after = score_after(home, done, sim.after.gas_total, sim.after.elec_import, request.use_modelled_epc)
 
     standalone = {}
     for m in applied:
@@ -94,6 +90,7 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
             "grants_gbp": f1.get("grants_gbp"), "net_cost_gbp": f1.get("net_cost_gbp"), "payback_years": f1.get("payback_years"),
         }
 
+    ranked = recommender.ranking(home, feas, standalone)
     bills = bill_change(sim, a)
     done_ok = [r.measure for r in sim.measures if r.status == ValueStatus.ok]
     finance = finance_summary(done_ok, home, bills) if done_ok else None
@@ -137,9 +134,10 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
     return ScenarioResult(
         scenario_id=sid, home=public_home(home), request=request, baseline=baseline, feasibility=feas,
         measures_applied=applied, measures_blocked=blocked, simulation=sim, standalone=standalone, carbon=carbon,
-        score_before=s_before, score_after=s_after, packages=pkg, sensitivity=sens, valuation=valuation(),
+        score_before=s_before, score_after=s_after, packages=pkg, sensitivity=sens,
+        valuation=valuation_estimate(home, done_ok),
         combination_check=calibrated_view(baseline, home, applied, a, feas), bills=bills, finance=finance,
-        uncertainty=unc,
+        uncertainty=unc, recommendation_ranking=ranked, install_sequence=recommender.install_sequence(ranked),
         audit=aud, assumptions=assumptions, warnings=warnings, versions=versions,
         data_timestamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )

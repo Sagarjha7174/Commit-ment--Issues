@@ -27,3 +27,32 @@ parquet files are not in the repo at present (see docs/DATA.md 1.2 and 1.4 for t
 8. `pipelines/audit_sales_matches.py` -> `configs/value_gate.json` (reads the manual audit in `match_audit_sample.csv`)
 
 Rerunning gives identical outputs (build_region compares a fingerprint with the previous run; homes_tagged content hash verified).
+
+## ML phase (models, evaluation)
+Data notes and model cards `docs/ML.md`; decisions `docs/DECISIONS.md` (D30+); results `docs/EVALUATION.md`.
+
+```bash
+.venv/bin/pip install -r requirements.txt
+make ml-inspect   # schema-only inventory (no address columns are ever loaded)
+make ml-data      # certificate features + counterfactual EPC pairs
+make ml-train     # SAP, value, energy (NEED) and recommender models; gates on validation only
+make ml-predict   # York energy and recommender predictions (data/processed, git-ignored)
+make ml-explain   # SHAP and validation slices
+make ml-eval      # test split scored ONCE, value coverage check, eval/test_predictions.csv, docs/EVALUATION.md
+make test
+```
+Trained models are committed under `models/` (LightGBM text + meta.json); only models listed as shipped in
+`configs/model_registry.json` are loaded, and every model version enters the scenario id.
+
+## API and LLM explanations
+```bash
+cp .env.example .env            # optional: add ANTHROPIC_API_KEY (or GROQ_API_KEY / GEMINI_API_KEY); without a key
+                                # every route works with the deterministic template explainer
+make api                        # http://localhost:8000/docs
+curl -s localhost:8000/explain -H 'content-type: application/json' \
+     -d '{"home_id": "U100050529765", "question": "How much could I save?"}'
+curl -s localhost:8000/whatif -H 'content-type: application/json' \
+     -d '{"home_id": "U100050529765", "question": "What if electricity was on a 15p tariff?"}'
+make llm-eval                   # held-out question set -> docs/LLM_EVALUATION.md (real LLM when a key is set)
+```
+Answers return `{answer, cited_values, scenario_id, grounded}`; every number comes from the engine (`docs/DECISIONS.md` D39).

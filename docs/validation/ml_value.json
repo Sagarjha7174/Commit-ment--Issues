@@ -1,0 +1,240 @@
+{
+ "model": "value_gbm",
+ "version": "value_gbm-22f686dedf",
+ "shipped": true,
+ "gates": {
+  "val_mdape_below_b0": true,
+  "hedonic_beta_interval_reported": true
+ },
+ "coverage_check": "evaluated on test in M7 (pass if 0.75 <= empirical coverage of the 80% interval <= 0.85)",
+ "data": {
+  "train": 2792,
+  "val": 585,
+  "test_held_out": 619,
+  "filter": "match_status linked, at-sale EPC observed, Land Registry category A",
+  "features_from": "at-sale certificate (epc_cert_at_sale)"
+ },
+ "val": {
+  "model": {
+   "n": 585,
+   "mdape": 0.0901,
+   "ppe10": 0.5556,
+   "ppe20": 0.8188,
+   "r2_log": 0.8093,
+   "median_bias": -0.0056
+  },
+  "b0_median_sector_type": {
+   "n": 585,
+   "mdape": 0.1831,
+   "ppe10": 0.2957,
+   "ppe20": 0.5248,
+   "r2_log": 0.432,
+   "median_bias": -0.0131
+  },
+  "b1_hedonic": {
+   "n": 585,
+   "mdape": 0.1028,
+   "ppe10": 0.4889,
+   "ppe20": 0.7658,
+   "r2_log": 0.756,
+   "median_bias": -0.0017
+  }
+ },
+ "cv": {
+  "home_groupkfold_l1_log": 0.1308,
+  "spatial_sector_groupkfold_l1_log": 0.1462,
+  "spatial_sector_groupkfold_mdape": 0.1085,
+  "home_groupkfold_mdape": 0.0949
+ },
+ "time_split": {
+  "train": "train-split sales 2025-01..2025-12",
+  "evaluate": "val-split sales 2026",
+  "n_train": 1955,
+  "n_eval": 162,
+  "model": {
+   "n": 162,
+   "mdape": 0.0988,
+   "ppe10": 0.5185,
+   "ppe20": 0.8148,
+   "r2_log": 0.8379,
+   "median_bias": -0.0184
+  },
+  "b0": {
+   "n": 162,
+   "mdape": 0.1892,
+   "ppe10": 0.2901,
+   "ppe20": 0.5247,
+   "r2_log": 0.4327,
+   "median_bias": -0.0107
+  }
+ },
+ "hedonic": {
+  "beta_sap": 0.00194,
+  "pct_per_sap_point": 0.1942,
+  "bootstrap": {
+   "n_boot": 500,
+   "cluster": "postcode_sector",
+   "n_clusters": 37,
+   "p10": 0.001124,
+   "p50": 0.001916,
+   "p90": 0.002737,
+   "mean": 0.001904,
+   "share_positive": 0.996
+  },
+  "version": "value_hedonic-efee5ed00a"
+ },
+ "uplift_illustration_val_homes": {
+  "+1_sap": {
+   "gbm_mean_pct": 0.1182,
+   "hedonic_p10_p50_p90_pct": [
+    0.1125,
+    0.1918,
+    0.274
+   ]
+  },
+  "+10_sap": {
+   "gbm_mean_pct": 0.7733,
+   "hedonic_p10_p50_p90_pct": [
+    1.1308,
+    1.9344,
+    2.7743
+   ]
+  }
+ },
+ "conformal": {
+  "level": 0.8,
+  "abs_log_residual_q": 0.1921,
+  "val_coverage_in_sample": 0.8034,
+  "interval_pct": [
+   -17.48,
+   21.18
+  ]
+ },
+ "slices_val_mdape": {
+  "lr_type": {
+   "Detached": {
+    "n": 133,
+    "model": 0.0879,
+    "b0": 0.2111,
+    "b1": 0.0949
+   },
+   "Flat/Maisonette": {
+    "n": 84,
+    "model": 0.1495,
+    "b0": 0.1746,
+    "b1": 0.1565
+   },
+   "Semi-detached": {
+    "n": 205,
+    "model": 0.092,
+    "b0": 0.1753,
+    "b1": 0.0966
+   },
+   "Terraced": {
+    "n": 163,
+    "model": 0.0769,
+    "b0": 0.175,
+    "b1": 0.0954
+   }
+  },
+  "postcode_district": {
+   "YO10": {
+    "n": 52,
+    "model": 0.1102,
+    "b0": 0.2284,
+    "b1": 0.1165
+   },
+   "YO19": {
+    "n": 28,
+    "model": 0.0661,
+    "b0": 0.1982,
+    "b1": 0.0642
+   },
+   "YO23": {
+    "n": 76,
+    "model": 0.1079,
+    "b0": 0.2439,
+    "b1": 0.1169
+   },
+   "YO24": {
+    "n": 83,
+    "model": 0.068,
+    "b0": 0.1673,
+    "b1": 0.1031
+   },
+   "YO26": {
+    "n": 69,
+    "model": 0.0745,
+    "b0": 0.1571,
+    "b1": 0.1056
+   },
+   "YO30": {
+    "n": 88,
+    "model": 0.0933,
+    "b0": 0.1317,
+    "b1": 0.0949
+   },
+   "YO31": {
+    "n": 85,
+    "model": 0.1,
+    "b0": 0.1871,
+    "b1": 0.1089
+   },
+   "YO32": {
+    "n": 86,
+    "model": 0.0846,
+    "b0": 0.1845,
+    "b1": 0.0956
+   }
+  }
+ },
+ "params": {
+  "seed": 42,
+  "bagging_seed": 42,
+  "feature_fraction_seed": 42,
+  "data_random_seed": 42,
+  "deterministic": true,
+  "force_row_wise": true,
+  "num_threads": 8,
+  "verbosity": -1,
+  "max_bin": 255,
+  "cat_smooth": 10,
+  "min_data_per_group": 50,
+  "objective": "regression",
+  "metric": "l1",
+  "monotone_constraints": [
+   0,
+   1,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "num_leaves": 99,
+  "learning_rate": 0.02828980383409454,
+  "min_data_in_leaf": 26,
+  "feature_fraction": 0.6412528882773525,
+  "bagging_fraction": 0.8545693899388495,
+  "lambda_l2": 6.633225519871395,
+  "bagging_freq": 1
+ },
+ "n_rounds": 279,
+ "n_trials": 40,
+ "runtime_s": 190.7
+}

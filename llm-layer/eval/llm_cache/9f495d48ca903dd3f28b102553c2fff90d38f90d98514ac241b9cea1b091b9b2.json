@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "smart_thermostat"
+ ],
+ "remove": [],
+ "unsupported": []
+}

@@ -1,0 +1,106 @@
+"""Hand arithmetic for demo homes A, B, C -> tests/fixtures/scenario_{a,b,c}.json.
+
+Independent of the engine: imports nothing from backend/, reads only the public demo inputs (configs/demo_homes.json)
+and the documented constants, and applies the formulas in docs/SCORE.md and docs/ENGINE.md by hand.
+Run: .venv/bin/python tests/fixtures/hand_calc_demo.py
+"""
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = Path(__file__).resolve().parent
+demo = {h["case"][0]: h for h in json.loads((ROOT / "configs/demo_homes.json").read_text())["homes"]}
+
+# documented constants (cat-v3, score-params-v1, DESNZ 2026)
+EFF, OTHER, SPACE, WATER, SCOP = 0.85, 0.0305, 0.77, 0.23, 3.0
+LOFT, CAV, GLZ, THERM, PV = 0.032117, 0.11982, 0.10, 0.075, 0.12228
+EF_GAS, EF_ELEC = 0.18231, 0.14395
+P10, P90 = 75.749, 186.022
+
+# ---------- demo A: 1967-75 detached house, gas boiler, cavity walls Poor, roof Very Poor, partial 87% ----------
+pa = demo["a"]["public_fields"]
+G, E, AREA = pa["baseline_gas_kwh"], pa["baseline_elec_kwh"], pa["floor_area_m2"]
+other = OTHER * G
+hw = G - other
+space, water = SPACE * hw, WATER * hw
+# standalone
+loft_alone = LOFT * G
+cav_alone = CAV * G
+glz_alone = GLZ * (1 - 0.87) * space
+therm_alone = THERM * space
+hp_alone_gas = hw
+hp_alone_elec = -(hw * EFF / SCOP)
+pv_alone = PV * E
+# full feasible package, fixed order
+s1 = space - LOFT * G
+g1 = G - LOFT * G
+s2 = s1 - CAV * g1
+s3 = s2 * (1 - GLZ * (1 - 0.87))
+s4 = s3 * (1 - THERM)
+hp_elec = (s4 + water) * EFF / SCOP
+pv = PV * (E + hp_elec)
+gas_saving = G - other
+elec_saving = -hp_elec + pv
+purchased_before = G + E
+purchased_after = other + E + hp_elec - pv
+ip = 100 * (purchased_before - purchased_after) / purchased_before
+carbon = gas_saving * EF_GAS + elec_saving * EF_ELEC
+x = (G + E) / AREA
+s_int = 100 * (P90 - x) / (P90 - P10)
+s_ins = (0.5 * 30 + 0.35 * 10) / 0.85
+score_raw = 0.25 * 48 + 0.20 * s_int + 0.15 * s_ins + 0.15 * 80 + 0.10 * (10 + 65 * 0.87) + 0.10 * 0 + 0.05 * 70
+# after score: EPC unchanged 48; intensity from after energy; insulation walls/roof Good -> 80; heating Good 80 (HP floor 75);
+# windows double 75; renewables some PV 60; controls smart 100
+x_after = purchased_after / AREA
+s_int_after = min(max(100 * (P90 - x_after) / (P90 - P10), 0), 100)
+after_raw = 0.25 * 48 + 0.20 * s_int_after + 0.15 * 80 + 0.15 * 80 + 0.10 * 75 + 0.10 * 60 + 0.05 * 100
+
+A = {
+    "home_id": demo["a"]["home_id"],
+    "expect": {
+        "score_before": 44, "score_before_raw": score_raw, "class_before": "Poor",
+        "score_after_raw": after_raw, "score_after": int(after_raw + 0.5),
+        "end_uses_before": {"gas_space": space, "gas_water": water, "gas_other": other, "elec_base": E},
+        "standalone_gas_saving_kwh": {"loft_insulation": loft_alone, "cavity_wall": cav_alone, "double_glazing": glz_alone,
+                                      "smart_thermostat": therm_alone, "heat_pump": hp_alone_gas, "solar_pv": 0.0},
+        "standalone_elec_saving_kwh": {"loft_insulation": 0.0, "cavity_wall": 0.0, "double_glazing": 0.0,
+                                       "smart_thermostat": 0.0, "heat_pump": hp_alone_elec, "solar_pv": pv_alone},
+        "package_gas_saving_kwh": gas_saving, "package_elec_saving_kwh": elec_saving,
+        "improvement_potential_pct": ip, "carbon_saving_kg": carbon,
+        "feasible": ["loft_insulation", "cavity_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"],
+        "infeasible": ["solid_wall"],
+    },
+}
+
+# ---------- demo B: 2003-06 flat, electric heating, no mains gas ----------
+pb = demo["b"]["public_fields"]
+xb = (pb["baseline_gas_kwh"] + pb["baseline_elec_kwh"]) / pb["floor_area_m2"]
+sb_int = 100 * (P90 - xb) / (P90 - P10)
+b_raw = 0.25 * 81 + 0.20 * sb_int + 0.15 * 80 + 0.15 * 10 + 0.10 * 75 + 0.10 * 0 + 0.05 * 40
+B = {
+    "home_id": demo["b"]["home_id"],
+    "expect": {
+        "score_before_raw": b_raw, "score_before": int(b_raw + 0.5), "class_before": "Moderate",
+        "baseline_gas_kwh": 0.0, "baseline_elec_kwh": pb["baseline_elec_kwh"],
+        "infeasible": ["loft_insulation", "cavity_wall", "solid_wall", "double_glazing", "solar_pv"],
+        "feasible": ["smart_thermostat", "heat_pump"],
+        "not_estimated": {"smart_thermostat": "heating_not_on_gas", "heat_pump": "no_gas_to_displace"},
+        "improvement_potential_status": "not_estimated",
+    },
+}
+
+# ---------- demo C: missing data ----------
+C = {
+    "home_id": demo["c"]["home_id"],
+    "expect": {
+        "score_status": "unavailable", "completeness": "1/7",
+        "baseline_gas_kwh": None, "baseline_elec_kwh": None,
+        "improvement_potential_status": "unavailable",
+        "needs_verification": ["loft_insulation", "cavity_wall", "solid_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"],
+    },
+}
+
+for name, d in (("a", A), ("b", B), ("c", C)):
+    d["generated_by"] = "tests/fixtures/hand_calc_demo.py (hand arithmetic, no engine imports)"
+    (OUT / f"scenario_{name}.json").write_text(json.dumps(d, indent=1))
+    print("wrote", f"scenario_{name}.json")

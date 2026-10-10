@@ -5,11 +5,21 @@
  },
  "matched_sales_count": 4000,
  "n_rows": 50,
- "value_model_enabled_pending_coverage": true,
- "coverage_check": "pending (evaluated after value-model training)",
+ "value_model_enabled_pending_coverage": false,
+ "coverage_check": {
+  "result": "pass",
+  "empirical_coverage": 0.8207,
+  "nominal": 0.8,
+  "accept_range": [
+   0.75,
+   0.85
+  ],
+  "n_test": 619,
+  "evaluated": "test split, once (M7)"
+ },
  "rows_filled": 50,
  "rows_blank": 0,
- "status": "audited",
+ "status": "enabled",
  "precision": 1.0,
  "correct": 50,
  "n_audited": 50,
@@ -40,5 +50,6 @@
  "precision_ok": true,
  "count_ok": true,
  "uncertainty_note": "precision from only 50 audited matches: 95% Wilson interval 0.929-1.000",
- "audit_file": "data/processed/region=york/match_audit_sample.csv"
+ "audit_file": "data/processed/region=york/match_audit_sample.csv",
+ "decision": "all three D10 conditions pass: value estimate enabled"
 }

@@ -79,13 +79,19 @@ def run(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], measu
     scop = config.catalogue_globals()["heat_pump_scop"]
     eff0 = units.resolve(a, home).boiler_efficiency
     spread = ((config.engine_calibration() or {}).get("baseline_spread") or {})
+    from .energy_model import quantile_sigmas
+    # per-home P10-P90 from the NEED quantile models (M4) replaces the calibrated lognormal spread where one exists (D36)
+    q_sig = {k: v for k, v in quantile_sigmas(home).items() if spread.get(k)} if spread else {}
+    if q_sig:
+        spread = {**spread, **q_sig}
     varied = ["NEED impacts (headline range + segment posterior)", "brief ranges (glazing, thermostat)",
               "heat-pump SCOP 2.44-2.80-3.5", "boiler efficiency +/-0.05", "space/water split 0.65-0.85"]
     # every baseline except the customer's own reading is an estimate for a typical home of this kind
     vary_gas = baseline.gas_provenance.value != "user_provided" and baseline.gas_status != "no_mains_gas" and spread.get("gas_sigma_log")
     vary_elec = baseline.elec_provenance.value != "user_provided" and spread.get("elec_sigma_log")
     if vary_gas or vary_elec:
-        varied.append("baseline household spread around the NEED benchmark")
+        varied.append("baseline household spread around the NEED benchmark" +
+                      (" (per-home P10-P90 from the NEED quantile models)" if q_sig else ""))
     not_varied = ["occupancy and behaviour", "weather", "installation quality", "prices",
                   *([] if (vary_gas or vary_elec) else ["baseline spread (run make engine-cal)"])]
 

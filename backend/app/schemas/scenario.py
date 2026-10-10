@@ -44,6 +44,8 @@ class ScenarioRequest(BaseModel):
     include_packages: bool = True
     include_sensitivity: bool = False
     include_uncertainty: bool = False   # Monte Carlo ranges for the requested package (D28)
+    use_modelled_epc: bool = False      # after-score EPC part = observed SAP + modelled ΔSAP (D34); default unchanged
+    use_model_baseline: bool = False    # modelled baseline energy (M4) when configs/model_switch.json allows it
 
 
 class Baseline(BaseModel):
@@ -88,6 +90,9 @@ class ScoreResult(BaseModel):
     parts: list[PartScore]
     key_issues: list[str]
     notes: list[str] = Field(default_factory=list)
+    # modelled EPC change after retrofit (M2 SAP model, provenance modelled); None when not computed (D34)
+    epc_change: Optional[dict] = None
+    rating_after_indicative: Optional[str] = None
 
     @model_validator(mode="after")
     def _check(self):
@@ -101,11 +106,41 @@ class ScoreResult(BaseModel):
 
 
 class Valuation(BaseModel):
+    """Indicative property-value impact (M3). Association from historical York sales, not a causal effect.
+    Percentages are of the current value; GBP values are null (with value_reason) when the location is unseen."""
     model_config = ConfigDict(extra="forbid")
     status: ValueStatus
     reason: str
     low_pct: Optional[float] = None
+    mid_pct: Optional[float] = None
     high_pct: Optional[float] = None
+    sap_before: Optional[float] = None
+    sap_change: Optional[float] = None
+    sap_after_indicative: Optional[float] = None
+    rating_before: Optional[str] = None
+    rating_after_indicative: Optional[str] = None
+    current_value_gbp: Optional[float] = None
+    current_value_low_gbp: Optional[float] = None
+    current_value_high_gbp: Optional[float] = None
+    potential_value_low_gbp: Optional[float] = None
+    potential_value_high_gbp: Optional[float] = None
+    value_status: Optional[ValueStatus] = None      # status of the GBP figures
+    value_reason: Optional[str] = None
+    measures: list[MeasureId] = Field(default_factory=list)
+    provenance: Optional[Provenance] = None
+    basis: str = ""
+    caveats: list[str] = Field(default_factory=list)
+    model_versions: dict[str, str] = Field(default_factory=dict)
+    explanation: Optional[list[dict]] = None        # top-5 TreeSHAP contributions to the current value (explain=True)
+
+    @model_validator(mode="after")
+    def _ordered(self):
+        if self.status == ValueStatus.ok:
+            if None in (self.low_pct, self.mid_pct, self.high_pct):
+                raise ValueError("ok valuation needs low, mid and high")
+            if not (self.low_pct <= self.mid_pct <= self.high_pct):
+                raise ValueError("valuation range must satisfy low <= mid <= high")
+        return self
 
 
 class ScenarioResult(BaseModel):
@@ -129,6 +164,8 @@ class ScenarioResult(BaseModel):
     bills: Optional[dict] = None               # annual bill before/after per fuel (D26)
     finance: Optional[dict] = None             # gross/net cost, grants, payback, illustrative loan (D27)
     uncertainty: Optional[dict] = None         # Monte Carlo ranges (D28)
+    recommendation_ranking: Optional[list[dict]] = None   # assessor-relevance priority of feasible measures (M5)
+    install_sequence: Optional[list[str]] = None          # "do in this order": the engine's fixed physical order
     audit: dict
     assumptions: dict
     warnings: list[str]

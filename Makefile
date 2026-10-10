@@ -46,3 +46,41 @@ combo-cal:    # needs only docs/validation/simulator_vs_need.json
 .PHONY: engine-cal
 engine-cal:
 	$(PY) pipelines/build_engine_calibration.py
+
+# ---- ML phase (docs/ML.md, docs/EVALUATION.md) ----
+.PHONY: ml-inspect
+ml-inspect:   # schema-only inventory -> docs/validation/ml_data_inventory.txt
+	$(PY) pipelines/ml/inspect_data.py
+
+.PHONY: ml-data ml-train ml-predict ml-explain ml-eval ml
+ml-data:      # certificate feature table and counterfactual EPC pairs
+	$(PY) pipelines/ml/build_feature_tables.py
+	$(PY) pipelines/ml/build_epc_pairs.py
+
+ml-train:     # tune + train every model on train, gates on val only (writes models/, configs/model_registry.json)
+	$(PY) pipelines/ml/train_sap_model.py
+	$(PY) pipelines/ml/train_value_model.py
+	$(PY) pipelines/ml/train_energy_model.py
+	$(PY) pipelines/ml/train_recommender.py
+
+ml-predict:   # York predictions with the shipped models (data/processed, git-ignored)
+	$(PY) pipelines/ml/predict_energy_york.py
+	$(PY) pipelines/ml/score_recommender_york.py
+
+ml-explain:   # SHAP and validation slices
+	$(PY) pipelines/ml/explain_models.py
+
+ml-eval:      # test split scored ONCE, value coverage check, test predictions
+	$(PY) pipelines/ml/evaluate_models.py
+	$(PY) pipelines/ml/write_test_predictions.py
+	$(PY) pipelines/ml/write_evaluation_md.py
+
+ml: ml-data ml-train ml-predict ml-explain ml-eval
+
+# ---- LLM layer and API (docs/LLM_EVALUATION.md) ----
+.PHONY: api llm-eval
+api:          # FastAPI on :8000 (works without an LLM key: template explainer)
+	$(PY) -m uvicorn backend.app.main:app --port 8000
+
+llm-eval:     # held-out question set -> docs/validation/llm_eval.json + docs/LLM_EVALUATION.md (LLM if a key is set)
+	$(PY) pipelines/llm/evaluate_llm.py

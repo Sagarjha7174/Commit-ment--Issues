@@ -1,0 +1,292 @@
+{
+ "model": "energy",
+ "scope": "NEED homes (England and Wales); transfer to York EPC homes is unproven (LABELS.md 1)",
+ "features": [
+  "need_property_type",
+  "need_age_band",
+  "need_floor_area_band",
+  "need_epc_band",
+  "need_main_heat_gas",
+  "solar_pv",
+  "need_region"
+ ],
+ "excluded_features": "council tax band, IMD, insulation scheme flags (not available for York homes)",
+ "fuels": {
+  "gas": {
+   "fuel": "gas",
+   "shipped_point": false,
+   "shipped_quantiles": true,
+   "version": null,
+   "quantile_versions": {
+    "energy_gas_q10": "energy_gas_q10-82012900eb",
+    "energy_gas_q50": "energy_gas_q50-0405ea2f8d",
+    "energy_gas_q90": "energy_gas_q90-e5b4febb60"
+   },
+   "gates": {
+    "mae_at_least_2pct_below_b0_overall": false,
+    "mae_not_worse_on_yorkshire": true,
+    "quantiles_mean_pinball_below_b0_cell_quantiles": true
+   },
+   "objective_selected_on_val": "regression_l1",
+   "objective_val_mae": {
+    "regression": 3587.8,
+    "huber": 3576.8,
+    "regression_l1": 3569.5
+   },
+   "data": {
+    "train": 1517399,
+    "val": 325636,
+    "val_yorkshire": 32354,
+    "val_rows_with_b0_cell": 325636,
+    "b0_level_used": {
+     "L1": 324871,
+     "L2": 756,
+     "L3": 9
+    }
+   },
+   "val_overall": {
+    "model": {
+     "n": 325636,
+     "mae_kwh": 3569.5,
+     "mdape": 0.2825,
+     "r2_log": 0.3098
+    },
+    "b0": {
+     "n": 325636,
+     "mae_kwh": 3626.1,
+     "mdape": 0.2876,
+     "r2_log": 0.2935
+    },
+    "model_quantiles": {
+     "coverage_p10_p90": 0.7991,
+     "pinball_kwh": {
+      "0.1": 670.2,
+      "0.5": 1784.8,
+      "0.9": 994.0
+     },
+     "mean_pinball_kwh": 1149.6
+    },
+    "b0_cell_quantiles": {
+     "coverage_p10_p90": 0.7989,
+     "pinball_kwh": {
+      "0.1": 674.0,
+      "0.5": 1813.1,
+      "0.9": 1021.7
+     },
+     "mean_pinball_kwh": 1169.6
+    }
+   },
+   "val_yorkshire": {
+    "model": {
+     "n": 32354,
+     "mae_kwh": 3645.2,
+     "mdape": 0.2814,
+     "r2_log": 0.2506
+    },
+    "b0": {
+     "n": 32354,
+     "mae_kwh": 3699.1,
+     "mdape": 0.2849,
+     "r2_log": 0.2345
+    },
+    "model_quantiles": {
+     "coverage_p10_p90": 0.802,
+     "pinball_kwh": {
+      "0.1": 691.1,
+      "0.5": 1822.6,
+      "0.9": 1012.0
+     },
+     "mean_pinball_kwh": 1175.2
+    },
+    "b0_cell_quantiles": {
+     "coverage_p10_p90": 0.8001,
+     "pinball_kwh": {
+      "0.1": 694.6,
+      "0.5": 1849.6,
+      "0.9": 1043.7
+     },
+     "mean_pinball_kwh": 1196.0
+    }
+   },
+   "tuning": {
+    "n_trials": 40,
+    "n_complete": 40,
+    "cv_l1_log": 0.3781,
+    "subsample_rows": 500001,
+    "folds": 3
+   },
+   "params": {
+    "seed": 42,
+    "bagging_seed": 42,
+    "feature_fraction_seed": 42,
+    "data_random_seed": 42,
+    "deterministic": true,
+    "force_row_wise": true,
+    "num_threads": 8,
+    "verbosity": -1,
+    "max_bin": 255,
+    "cat_smooth": 10,
+    "min_data_per_group": 50,
+    "objective": "regression",
+    "metric": "l1",
+    "num_leaves": 23,
+    "learning_rate": 0.04210359325842777,
+    "min_data_in_leaf": 167,
+    "feature_fraction": 0.8657313766783076,
+    "bagging_fraction": 0.8649870589469981,
+    "lambda_l2": 7.855139006176002,
+    "bagging_freq": 1
+   },
+   "n_rounds": 598
+  },
+  "elec": {
+   "fuel": "elec",
+   "shipped_point": false,
+   "shipped_quantiles": true,
+   "version": null,
+   "quantile_versions": {
+    "energy_elec_q10": "energy_elec_q10-ab346cd53b",
+    "energy_elec_q50": "energy_elec_q50-2f7a17dfd5",
+    "energy_elec_q90": "energy_elec_q90-a8992acb31"
+   },
+   "gates": {
+    "mae_at_least_2pct_below_b0_overall": false,
+    "mae_not_worse_on_yorkshire": true,
+    "quantiles_mean_pinball_below_b0_cell_quantiles": true
+   },
+   "objective_selected_on_val": "regression_l1",
+   "objective_val_mae": {
+    "regression": 1392.2,
+    "huber": 1390.8,
+    "regression_l1": 1389.7
+   },
+   "data": {
+    "train": 1890361,
+    "val": 405361,
+    "val_yorkshire": 37488,
+    "val_rows_with_b0_cell": 405361,
+    "b0_level_used": {
+     "L1": 403359,
+     "L2": 1952,
+     "L3": 50
+    }
+   },
+   "val_overall": {
+    "model": {
+     "n": 405361,
+     "mae_kwh": 1389.7,
+     "mdape": 0.3482,
+     "r2_log": 0.2063
+    },
+    "b0": {
+     "n": 405361,
+     "mae_kwh": 1410.5,
+     "mdape": 0.3533,
+     "r2_log": 0.1847
+    },
+    "model_quantiles": {
+     "coverage_p10_p90": 0.7988,
+     "pinball_kwh": {
+      "0.1": 218.5,
+      "0.5": 694.8,
+      "0.9": 446.5
+     },
+     "mean_pinball_kwh": 453.3
+    },
+    "b0_cell_quantiles": {
+     "coverage_p10_p90": 0.8019,
+     "pinball_kwh": {
+      "0.1": 220.0,
+      "0.5": 705.2,
+      "0.9": 453.1
+     },
+     "mean_pinball_kwh": 459.4
+    }
+   },
+   "val_yorkshire": {
+    "model": {
+     "n": 37488,
+     "mae_kwh": 1278.0,
+     "mdape": 0.3417,
+     "r2_log": 0.1873
+    },
+    "b0": {
+     "n": 37488,
+     "mae_kwh": 1300.5,
+     "mdape": 0.3464,
+     "r2_log": 0.1597
+    },
+    "model_quantiles": {
+     "coverage_p10_p90": 0.7964,
+     "pinball_kwh": {
+      "0.1": 202.9,
+      "0.5": 639.0,
+      "0.9": 414.0
+     },
+     "mean_pinball_kwh": 418.6
+    },
+    "b0_cell_quantiles": {
+     "coverage_p10_p90": 0.7983,
+     "pinball_kwh": {
+      "0.1": 204.7,
+      "0.5": 650.2,
+      "0.9": 419.7
+     },
+     "mean_pinball_kwh": 424.9
+    }
+   },
+   "tuning": {
+    "n_trials": 40,
+    "n_complete": 37,
+    "cv_l1_log": 0.4387,
+    "subsample_rows": 500003,
+    "folds": 3
+   },
+   "params": {
+    "seed": 42,
+    "bagging_seed": 42,
+    "feature_fraction_seed": 42,
+    "data_random_seed": 42,
+    "deterministic": true,
+    "force_row_wise": true,
+    "num_threads": 8,
+    "verbosity": -1,
+    "max_bin": 255,
+    "cat_smooth": 10,
+    "min_data_per_group": 50,
+    "objective": "regression",
+    "metric": "l1",
+    "num_leaves": 56,
+    "learning_rate": 0.037581251578944486,
+    "min_data_in_leaf": 274,
+    "feature_fraction": 0.8779233303755631,
+    "bagging_fraction": 0.9029957097674784,
+    "lambda_l2": 6.823613407004931,
+    "bagging_freq": 1
+   },
+   "n_rounds": 452
+  }
+ },
+ "model_switch": {
+  "use_model_baseline": false,
+  "beat_benchmark": false,
+  "model_version": {
+   "gas": null,
+   "elec": null
+  },
+  "per_fuel_gate": {
+   "gas": false,
+   "elec": false
+  },
+  "val_mae": {
+   "gas": 3569.5,
+   "elec": 1389.7
+  },
+  "benchmark_val_mae": {
+   "gas": 3626.1,
+   "elec": 1410.5
+  },
+  "rule": "on only if both fuels beat the benchmark MAE by >= 2% overall and are not worse on Yorkshire (D36)"
+ },
+ "runtime_s": 1759.0
+}

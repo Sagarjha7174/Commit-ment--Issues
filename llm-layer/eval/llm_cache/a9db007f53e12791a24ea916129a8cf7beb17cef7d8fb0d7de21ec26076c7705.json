@@ -1,0 +1,8 @@
+{
+ "kind": "out_of_scope",
+ "add": [],
+ "remove": [],
+ "unsupported": [
+  "Guarantee me the value goes up if I add solar"
+ ]
+}

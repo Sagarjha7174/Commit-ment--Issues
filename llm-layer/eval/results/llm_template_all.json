@@ -1,0 +1,150 @@
+{
+  "meta": {
+    "date": "2026-10-11",
+    "providers": null,
+    "generator_models": null,
+    "judge_models": null,
+    "judge_prompt": null,
+    "prompt_version": "explain_v5",
+    "mode": "template-only",
+    "split": "all",
+    "engine": "synthetic_homes:run",
+    "scenarios_file": "eval/scenarios.jsonl"
+  },
+  "by_type": {
+    "normal": {
+      "n": 25,
+      "passed": 25,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.867,
+        1.0
+      ]
+    },
+    "missing_data": {
+      "n": 15,
+      "passed": 15,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.796,
+        1.0
+      ]
+    },
+    "conflicting": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    },
+    "infeasible_whatif": {
+      "n": 15,
+      "passed": 15,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.796,
+        1.0
+      ]
+    },
+    "heat_pump_rise": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    },
+    "insufficient_data": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    },
+    "unsupported": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    },
+    "injection": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    },
+    "persona": {
+      "n": 16,
+      "passed": 16,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.806,
+        1.0
+      ]
+    },
+    "stale": {
+      "n": 10,
+      "passed": 10,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.722,
+        1.0
+      ]
+    }
+  },
+  "cases": 131,
+  "all_checks_pass_rate": 1.0,
+  "all_checks_pass_rate_ci95": [
+    0.972,
+    1.0
+  ],
+  "explanation_sources": {
+    "llm": 0,
+    "llm_patched": 0,
+    "template": 121
+  },
+  "llm_used_rate": 0.0,
+  "clean_llm_rate": 0.0,
+  "template_fallback_rate": 1.0,
+  "llm_sentence_acceptance": null,
+  "llm_sentence_acceptance_ci95": null,
+  "llm_sentences": {
+    "written": 0,
+    "rejected": 0,
+    "template_filled": 0
+  },
+  "multi_attempt_rate": 0.0,
+  "providers_used": {},
+  "cases_answered_from_cache": 0,
+  "rejections_by_code": {},
+  "numeric_groundedness": "100% by construction: the LLM never sees or writes numbers; every displayed number is filled in by code from the scenario result (see LLM.md).",
+  "llm_call_ms": null,
+  "tokens": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_estimate_usd": null
+}

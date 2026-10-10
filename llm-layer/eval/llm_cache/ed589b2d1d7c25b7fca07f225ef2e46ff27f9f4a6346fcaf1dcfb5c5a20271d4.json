@@ -1,0 +1,9 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "heat_pump",
+  "double_glazing"
+ ],
+ "remove": [],
+ "unsupported": []
+}

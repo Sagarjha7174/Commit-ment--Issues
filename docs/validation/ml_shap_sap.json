@@ -1,0 +1,69 @@
+{
+ "model": "sap",
+ "version": "sap-fd2a47149d",
+ "n_rows": 2000,
+ "method": "shap.TreeExplainer, mean |SHAP| on val rows",
+ "units": "c_sap_score (EPC SAP 1-110)",
+ "top15": [
+  {
+   "feature": "heating_ord",
+   "mean_abs_shap": 2.8405
+  },
+  {
+   "feature": "walls_ord",
+   "mean_abs_shap": 1.75216
+  },
+  {
+   "feature": "type_form",
+   "mean_abs_shap": 1.65252
+  },
+  {
+   "feature": "wall_ins_level",
+   "mean_abs_shap": 1.59937
+  },
+  {
+   "feature": "floor_ins_level",
+   "mean_abs_shap": 1.51141
+  },
+  {
+   "feature": "age_mid_year",
+   "mean_abs_shap": 1.48525
+  },
+  {
+   "feature": "loft_mm",
+   "mean_abs_shap": 1.20239
+  },
+  {
+   "feature": "lodgement_year",
+   "mean_abs_shap": 1.04311
+  },
+  {
+   "feature": "windows_ord",
+   "mean_abs_shap": 0.97963
+  },
+  {
+   "feature": "pv_roof_pct",
+   "mean_abs_shap": 0.92304
+  },
+  {
+   "feature": "roof_ord",
+   "mean_abs_shap": 0.61183
+  },
+  {
+   "feature": "roof_type",
+   "mean_abs_shap": 0.60587
+  },
+  {
+   "feature": "floor_type",
+   "mean_abs_shap": 0.57555
+  },
+  {
+   "feature": "solar_pv",
+   "mean_abs_shap": 0.5458
+  },
+  {
+   "feature": "controls_ord",
+   "mean_abs_shap": 0.50845
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "double_glazing"
+ ],
+ "remove": [],
+ "unsupported": []
+}

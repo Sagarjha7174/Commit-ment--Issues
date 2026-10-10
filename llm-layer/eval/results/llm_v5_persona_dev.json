@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "date": "2026-10-11",
+    "providers": [
+      "groq",
+      "gemini"
+    ],
+    "generator_models": {
+      "groq": "openai/gpt-oss-120b",
+      "gemini": "gemini-3.5-flash"
+    },
+    "judge_models": null,
+    "judge_prompt": null,
+    "prompt_version": "explain_v5",
+    "mode": "llm",
+    "split": "dev",
+    "engine": "synthetic_homes:run",
+    "scenarios_file": "eval/scenarios.jsonl"
+  },
+  "by_type": {
+    "normal": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "missing_data": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "conflicting": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "infeasible_whatif": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "heat_pump_rise": {
+      "n": 3,
+      "passed": 2,
+      "failed_checks": {
+        "engine_shows_rise": 1
+      },
+      "pass_rate": 0.667,
+      "pass_rate_ci95": [
+        0.208,
+        0.939
+      ]
+    },
+    "insufficient_data": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "unsupported": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "injection": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "persona": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    },
+    "stale": {
+      "n": 3,
+      "passed": 3,
+      "failed_checks": {},
+      "pass_rate": 1.0,
+      "pass_rate_ci95": [
+        0.438,
+        1.0
+      ]
+    }
+  },
+  "cases": 30,
+  "all_checks_pass_rate": 0.967,
+  "all_checks_pass_rate_ci95": [
+    0.833,
+    0.994
+  ],
+  "explanation_sources": {
+    "llm": 8,
+    "llm_patched": 4,
+    "template": 15
+  },
+  "llm_used_rate": 0.444,
+  "clean_llm_rate": 0.296,
+  "template_fallback_rate": 0.556,
+  "llm_sentence_acceptance": 1.0,
+  "llm_sentence_acceptance_ci95": [
+    0.983,
+    1.0
+  ],
+  "llm_sentences": {
+    "written": 218,
+    "rejected": 0,
+    "template_filled": 10
+  },
+  "multi_attempt_rate": 0.0,
+  "providers_used": {
+    "groq": 11,
+    "gemini": 1
+  },
+  "cases_answered_from_cache": 3,
+  "rejections_by_code": {
+    "DIRECTION": 1
+  },
+  "numeric_groundedness": "100% by construction: the LLM never sees or writes numbers; every displayed number is filled in by code from the scenario result (see LLM.md).",
+  "llm_call_ms": {
+    "p50": 2496,
+    "p95": 2795,
+    "n": 10
+  },
+  "tokens": {
+    "input_tokens": 35328,
+    "output_tokens": 7400,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_estimate_usd": null
+}

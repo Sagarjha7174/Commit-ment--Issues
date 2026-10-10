@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is rated {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. After adding the selected measure the score is {green_home_score.after.total} and remains {green_home_score.after.class}.",
+ "issues": "Key issues identified are {derived.issues}.",
+ "plan": "The plan applies a smart thermostat, as listed in {derived.plan_order}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity use does not change. Overall, the energy the home purchases is estimated to fall by {energy_results.change.purchased_saving_kwh}. The smart thermostat contributes a gas saving of {energy_results.per_measure.0.gas_saving_kwh} and no change in electricity use.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measure is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "The indicative property value change is between {valuation.uplift_low_pct} and {valuation.uplift_high_pct}, based on an exploratory valuation.",
+ "not_suitable": "Solid wall insulation is not suitable because {feasibility.solid_wall.reason}.",
+ "caveats": "Gas and electricity use are modelled estimates from the NEED‑trained energy model, not meter readings. Assumptions used include {assumptions}."
+}

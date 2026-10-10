@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is rated {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. After the selected measures the score rises to {green_home_score.after.total} and moves to a {green_home_score.after.class} rating.",
+ "issues": "{derived.issues}",
+ "plan": "The plan applies the measures in this order: {derived.plan_order}. They are sequenced this way because {derived.order_reason}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity use is estimated to fall by {energy_results.change.grid_elec_saving_kwh} as the solar panels generate electricity. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. Each measure’s saving is worked out on the energy left after the measures before it, so the figures already allow for how they interact.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property value change is not estimated because the valuation is exploratory.",
+ "not_suitable": "Solid wall insulation is not suitable because {feasibility.solid_wall.reason}.",
+ "caveats": "Gas and electricity use are modelled estimates from the NEED‑trained energy model, not meter readings. Assumptions used include {assumptions}."
+}

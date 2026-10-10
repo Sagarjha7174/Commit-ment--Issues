@@ -85,10 +85,12 @@ def test_reconciliation_and_carbon_signs_heat_pump():
     assert r.score_after.parts[0].status == "unchanged_epc_not_reassessed"
 
 
-def test_valuation_gated():
+def test_valuation_gated(monkeypatch):
+    from backend.app import config
+    monkeypatch.setattr(config, "value_gate", lambda: {"status": "audited", "coverage_check": "pending"})
     h = make_home()
     v = build(req(h), h).valuation
-    assert v.status == ValueStatus.not_estimated and v.reason.startswith("audit pending")
+    assert v.status == ValueStatus.not_estimated and v.reason.startswith("value gate closed")
 
 
 def test_audit_generated_from_result():

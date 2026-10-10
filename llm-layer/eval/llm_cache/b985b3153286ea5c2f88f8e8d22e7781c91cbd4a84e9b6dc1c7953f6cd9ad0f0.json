@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is class {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. Because one part of the score is missing, the possible range is {green_home_score.before.range}. After adding the selected measures the score improves to {green_home_score.after.total} and is class {green_home_score.after.class}.",
+ "issues": "The key issues identified are {derived.issues}.",
+ "plan": "The plan applies the measures in this order: {derived.plan_order}. They are ordered this way because {derived.order_reason}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity use is also estimated to fall by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. The loft insulation contributes a gas saving of {energy_results.per_measure.0.gas_saving_kwh} and an electricity saving of {energy_results.per_measure.0.elec_saving_kwh}. The solar panels contribute an electricity saving of {energy_results.per_measure.1.elec_saving_kwh}.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property value change is not estimated because {valuation.uplift_low_pct.reason}.",
+ "not_suitable": "Double glazing is not suitable because the home already has double glazing. Cavity wall insulation needs verification because the wall construction is not recorded. Solid wall insulation needs verification because the wall construction is not recorded.",
+ "caveats": "Two months of meter data are missing; the annual figures are annualised from the ten available months. Wall construction is unknown, so the insulation part of the score uses a neutral value. Missing details about the home include {derived.missing_inputs}. The analysis assumes {assumptions}."
+}

@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "date": "2026-10-10",
+    "provider": "gemini",
+    "generator_model": "gemini-3.5-flash",
+    "judge_model": null,
+    "prompt_version": "explain_v1",
+    "mode": "llm",
+    "split": "dev",
+    "engine": "fake_engine:run",
+    "scenarios_file": "eval/scenarios.jsonl"
+  },
+  "by_type": {
+    "normal": {
+      "n": 8,
+      "passed": 8,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    },
+    "missing_data": {
+      "n": 2,
+      "passed": 2,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    }
+  },
+  "cases": 10,
+  "all_checks_pass_rate": 1.0,
+  "explanation_sources": {
+    "llm": 7,
+    "llm_retry": 1,
+    "template": 2
+  },
+  "first_pass_rate": 0.7,
+  "retry_rate": 0.1,
+  "template_fallback_rate": 0.2,
+  "checker_rejections_by_code": {
+    "SIGN": 3
+  },
+  "numeric_groundedness": "100% by construction: the LLM never sees or writes numbers; every displayed number is filled in by code from the scenario result (see LLM.md).",
+  "latency_ms_live_calls": null,
+  "tokens": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_estimate_usd": null
+}

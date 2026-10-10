@@ -1,0 +1,66 @@
+{
+ "split": "val",
+ "n_pairs": 761,
+ "n_train_pairs_for_baseline": 3689,
+ "model": {
+  "mae": 4.96,
+  "pearson_r": 0.8499,
+  "sign_agreement": 0.6807,
+  "mean_bias": -1.9245
+ },
+ "baseline_delta0": {
+  "mae": 6.8222,
+  "pearson_r": 0.6211,
+  "definition": "mean observed \u0394SAP of train pairs with the same change key (n >= 20), else the sum of single-measure upgrade means, else the overall train mean"
+ },
+ "by_measure_upgrade": {
+  "loft": {
+   "n": 348,
+   "obs_mean": 7.9052,
+   "pred_mean": 6.0477,
+   "mean_bias": -1.8575,
+   "mae_model": 4.9103,
+   "mae_delta0": 6.8437
+  },
+  "walls": {
+   "n": 116,
+   "obs_mean": 13.6293,
+   "pred_mean": 12.1777,
+   "mean_bias": -1.4516,
+   "mae_model": 5.1453,
+   "mae_delta0": 8.2687
+  },
+  "glazing": {
+   "n": 98,
+   "obs_mean": 12.5,
+   "pred_mean": 9.6884,
+   "mean_bias": -2.8116,
+   "mae_model": 6.6541,
+   "mae_delta0": 10.4833
+  },
+  "heating": {
+   "n": 161,
+   "obs_mean": 15.6957,
+   "pred_mean": 14.5217,
+   "mean_bias": -1.174,
+   "mae_model": 6.0446,
+   "mae_delta0": 11.7162
+  },
+  "controls": {
+   "n": 95,
+   "obs_mean": 19.3684,
+   "pred_mean": 17.1376,
+   "mean_bias": -2.2308,
+   "mae_model": 6.4258,
+   "mae_delta0": 12.7861
+  },
+  "pv": {
+   "n": 12,
+   "obs_mean": 16.25,
+   "pred_mean": 12.3602,
+   "mean_bias": -3.8898,
+   "mae_model": 5.2319,
+   "mae_delta0": 7.4884
+  }
+ }
+}

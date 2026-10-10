@@ -47,6 +47,8 @@ EF_GAS, EF_ELEC = 0.18231, 0.14395
 P10, P90 = 75.749, 186.022
 
 # ---------- demo A: 1967-75 detached house, gas boiler, cavity walls Poor, roof Very Poor, partial 87% ----------
+# Its certificate's roof description is "Flat, limited insulation (assumed)": a flat roof has no loft, so loft
+# insulation is infeasible (D20) and the roof stays Very Poor after the package.
 pa = demo["a"]["public_fields"]
 G, E, AREA = pa["baseline_gas_kwh"], pa["baseline_elec_kwh"], pa["floor_area_m2"]
 THERM = THERM_BY_CONTROLS[pa["controls"]]   # demo A has 'full' controls -> 5%
@@ -62,8 +64,8 @@ hp_alone_gas = hw
 hp_alone_elec = -(hw * EFF / SCOP)
 pv_alone = PV * E
 # full feasible package, fixed order
-s1 = space - LOFT * G
-g1 = G - LOFT * G
+s1 = space        # no loft step (flat roof, D20)
+g1 = G
 s2 = s1 - CAV * g1
 s3 = s2 * (1 - GLZ * (1 - 0.87))
 s4 = s3 * (1 - THERM)
@@ -79,11 +81,13 @@ x = (G + E) / AREA
 s_int = 100 * (P90 - x) / (P90 - P10)
 s_ins = (0.5 * 30 + 0.35 * 10) / 0.85
 score_raw = 0.25 * 48 + 0.20 * s_int + 0.15 * s_ins + 0.15 * 80 + 0.10 * (10 + 65 * 0.87) + 0.10 * 0 + 0.05 * 70
-# after score: EPC unchanged 48; intensity from after energy; insulation walls/roof Good -> 80; heating Good 80 (HP floor 75);
+# after score: EPC unchanged 48; intensity from after energy; insulation walls Good 80, roof stays Very Poor 10 (no loft
+# measure), floor N/A -> (0.5*80 + 0.35*10)/0.85; heating Good 80 (HP floor 75);
 # windows double 75; renewables some PV 60; controls smart 100
 x_after = purchased_after / AREA
 s_int_after = min(max(100 * (P90 - x_after) / (P90 - P10), 0), 100)
-after_raw = 0.25 * 48 + 0.20 * s_int_after + 0.15 * 80 + 0.15 * 80 + 0.10 * 75 + 0.10 * 60 + 0.05 * 100
+s_ins_after = (0.5 * 80 + 0.35 * 10) / 0.85
+after_raw = 0.25 * 48 + 0.20 * s_int_after + 0.15 * s_ins_after + 0.15 * 80 + 0.10 * 75 + 0.10 * 60 + 0.05 * 100
 
 A = {
     "home_id": demo["a"]["home_id"],
@@ -92,14 +96,14 @@ A = {
         "impacts_used": {"loft_insulation": LOFT, "cavity_wall": CAV, "solar_pv": PV, "smart_thermostat": THERM, "scop": SCOP},
         "score_after_raw": after_raw, "score_after": int(after_raw + 0.5),
         "end_uses_before": {"gas_space": space, "gas_water": water, "gas_other": other, "elec_base": E},
-        "standalone_gas_saving_kwh": {"loft_insulation": loft_alone, "cavity_wall": cav_alone, "double_glazing": glz_alone,
+        "standalone_gas_saving_kwh": {"cavity_wall": cav_alone, "double_glazing": glz_alone,
                                       "smart_thermostat": therm_alone, "heat_pump": hp_alone_gas, "solar_pv": 0.0},
-        "standalone_elec_saving_kwh": {"loft_insulation": 0.0, "cavity_wall": 0.0, "double_glazing": 0.0,
+        "standalone_elec_saving_kwh": {"cavity_wall": 0.0, "double_glazing": 0.0,
                                        "smart_thermostat": 0.0, "heat_pump": hp_alone_elec, "solar_pv": pv_alone},
         "package_gas_saving_kwh": gas_saving, "package_elec_saving_kwh": elec_saving,
         "improvement_potential_pct": ip, "carbon_saving_kg": carbon,
-        "feasible": ["loft_insulation", "cavity_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"],
-        "infeasible": ["solid_wall"],
+        "feasible": ["cavity_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"],
+        "infeasible": ["loft_insulation", "solid_wall"],
     },
 }
 

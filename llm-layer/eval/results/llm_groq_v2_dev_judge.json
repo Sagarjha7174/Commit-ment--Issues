@@ -1,0 +1,537 @@
+[
+  {
+    "id": "missing_data-012",
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.total (50) and class (Moderate)."
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": "Contradicted. The score parts show 'renewables' (0.0 points) and 'smart' (2.0 points) are low, but 'insulation' is unavailable (scored at 50 neutral) and 'heating' is 8.25. More importantly, the 'biggest drags' implies the largest negative impacts on the score relative to potential. However, the sentence claims these are the biggest drags. Looking at the 'before' score of 50, the components are: Energy Eff (15.25), Glazing (7.5), Heating (8.25), Insulation (neutral 50*0.15=7.5? No, the text says 'scored at 50 in the headline number', implying the sub-score is 50, so points = 50*0.15 = 7.5), Intensity (10.0), Renewables (0.0), Smart (2.0). Total = 15.25+7.5+8.25+7.5+10+0+2 = 50.5 (rounding to 50). The lowest scoring parts are Renewables (0) and Smart (2). However, 'drags' usually implies what is holding the score back from 100. The missing insulation data is a significant factor. But strictly, are they the *biggest* drags? The 'before' score is 50. The 'after' score is 62. The improvement comes from Energy Efficiency (sub 61 vs ?), Heating (sub 55 vs ?), etc. The sentence is a subjective interpretation of 'drags'. Let's look closer. Is it factually supported? The scenario lists 'renewables' sub-score 0 and 'smart' sub-score 40. These are indeed low. But is it the *biggest* drag? The 'insulation' part is 'unavailable'. The warning says it uses a neutral value. If the neutral value is 50, it's not a drag compared to a 100. If the actual value was higher, it would be a drag. But we don't know. The sentence asserts a specific ranking of drags which is not explicitly in the data. However, usually 'drags' refers to the lowest scoring components. Renewables (0) and Smart (40) are the lowest sub-scores. But 'Intensity' is 50. 'Heating' is 55. 'Glazing' is 75. 'Energy Eff' is 61. So yes, Renewables and Smart are the lowest. But is it 'biggest drags'? It's a plausible interpretation. Let's check for contradictions. Does it conflict? No. Is it supported? It requires interpreting 'drags' as 'lowest sub-scores'. This is a common explanation. However, the prompt says 'Plain wording... are supported if they add no new factual claim'. This adds an interpretation. Let's look at sentence 4. Sentence 4 says 'Key issues... no renewable generation and basic heating controls'. This aligns. Sentence 1 says 'biggest score drags'. This is slightly more specific. Let's look at the 'after' score. The 'after' score is 62. The parts are not fully detailed in 'after', only 'before' has 'parts'. Wait, 'green_home_score' has 'before' and 'after'. 'after' only has 'class' and 'total'. 'before' has 'parts'. So we can only analyze the 'before' state for drags. In the 'before' state, Renewables is 0 and Smart is 40. These are the lowest. So it is supported as a description of the current score composition."
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.range [43, 58] and the warning about missing wall construction affecting the insulation part."
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.after.total (62) and class (Moderate)."
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": "Supported. 'No renewable generation' is supported by inputs.solar: false and renewables sub-score 0. 'Basic heating controls' is supported by inputs.controls: 'Timer only' and smart sub-score 40."
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": "Supported. selected_measures lists them in that order. Feasibility for solid_wall is 'needs_verification'. Loft and Smart are 'feasible'. The sentence says 'Some of these need checking', which is true for solid_wall."
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh: 0.0."
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.gas_saving_kwh: 2434.1. Rounding to 2,430 is supported."
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh: 0.0."
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.purchased_saving_kwh: 2434.1. Rounding to 2,430 is supported."
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": "Supported by energy_results.per_measure. Loft: 315.0. Solid wall: 1709.8 (rounds to 1,710). Smart: 409.2 (rounds to 409)."
+      },
+      {
+        "index": 11,
+        "verdict": "contradicted",
+        "note": "Unsupported. The scenario does not state that the measures interact or that savings are not simply added together. In fact, the sum of individual savings (315 + 1709.8 + 409.2 = 2434.0) matches the total gas saving (2434.1) almost exactly, suggesting they are additive in this model. The sentence claims a non-additive interaction which is not in the data and contradicts the arithmetic shown."
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": "Supported by carbon_results.saving_kg: 443.8 (rounds to 444) and factors_version: DESNZ 2026. The phrase 'calculated separately for gas and electricity' is a standard explanation of how carbon factors work and is implied by the separate energy results, though not explicitly detailed in the carbon block, it is a reasonable plain wording explanation of the methodology implied by the inputs."
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": "Supported by cost_results.package_cost_gbp: 13250.0."
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": "Supported by cost_results.bill_status: 'not estimated' and bill_reason: 'no tariff assumptions are set'."
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": "Supported by valuation.status: 'not_estimated' and valuation.reason: 'value is only estimated for the full recommended package'."
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": "Supported by feasibility.double_glazing.state: 'infeasible' and reason: 'the home already has double glazing'."
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": "Supported by feasibility.cavity_wall.state: 'needs_verification' and reason: 'the wall construction is not recorded'."
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": "Supported by feasibility.solid_wall.state: 'needs_verification' and reason: 'the wall construction is not recorded'."
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": "Supported by the warnings array."
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": "Supported by missing_inputs: ['walls']."
+      }
+    ]
+  },
+  {
+    "id": "missing_data-007",
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.total (50) and class (Moderate)."
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": "Contradicted. The score parts show 'insulation' is unavailable (scored at 50 neutral) and 'renewables' is 0. However, 'smart' is 40 and 'heating' is 55. While renewables is a drag, calling smart controls a 'biggest drag' is not supported by the specific point values provided (Insulation is missing/neutral, Renewables is 0, Smart is 2.0/10.0 max? No, weight 0.05, sub 40. Points 2.0. Max possible for smart is 0.05*100=5. So it's low. But 'biggest drags' implies the largest negative impact. The scenario lists 'insulation' as unavailable/neutral, which is a significant missing component. More importantly, the sentence claims these are the *biggest* drags. The 'renewables' part is 0.0 points (weight 0.1, sub 0). The 'smart' part is 2.0 points (weight 0.05, sub 40). The 'insulation' part is null/neutral. The 'heating' part is 8.25 (weight 0.15, sub 55). The 'energy_efficiency' is 15.25 (weight 0.25, sub 61). The 'intensity' is 10.0 (weight 0.2, sub 50). The 'glazing' is 7.5 (weight 0.1, sub 75). The lowest scores are Renewables (0) and Smart (2.0). However, the sentence says 'biggest score drags'. Usually, a drag is a low score. Renewables is 0. Smart is 40/100 sub-score. Is it a 'biggest' drag? Compared to Glazing (75) or Energy Efficiency (61), yes. But is it a 'drag' in the sense of holding back the score significantly? The insulation part is missing. The sentence is a subjective interpretation of 'biggest'. However, looking at the points: Renewables contributes 0. Smart contributes 2.0. The total is 50. If Smart were maxed (5.0), it would add 3.0. If Renewables were maxed (10.0), it would add 10.0. So Renewables is a bigger potential drag. But is Smart a 'biggest' drag? It's one of the lowest. But the sentence pairs them. Let's look closer. 'Insulation' is unavailable. 'Renewables' is 0. 'Smart' is 40. 'Heating' is 55. 'Intensity' is 50. 'Energy Efficiency' is 61. 'Glazing' is 75. The lowest sub-scores are Renewables (0), Smart (40), Intensity (50), Heating (55). So Smart is indeed one of the lowest. However, the term 'drag' is interpretive. But wait, look at sentence 4: 'Key issues are no renewable generation and basic heating controls.' This aligns with 1. Is it *supported*? The scenario provides the scores. It does not explicitly label them as 'biggest drags'. It's an inference. But usually, low scores are drags. However, 'Insulation' is missing. Is that a drag? It's scored at 50 (neutral). So it's not a drag in the calculation, but it's missing data. The sentence claims Smart is a biggest drag. Smart sub-score is 40. Intensity is 50. Heating is 55. So Smart is the second lowest sub-score. Renewables is the lowest. So they are the two lowest. This seems supported by the data. Wait, let me re-read the verdict options. 'Unsupported' if it states something SCENARIO does not contain. 'Biggest score drags' is a qualitative label not in the scenario. The scenario contains the numbers. The interpretation that they are the 'biggest drags' is an analysis. Is that allowed? 'Plain wording... are supported if they add no new factual claim.' 'Biggest score drags' is a factual claim about the ranking of the drags. The scenario doesn't rank them. It just lists them. However, one can derive the ranking. But is it 'directly from SCENARIO'? The numbers are there. The ranking is derived. Usually, derived facts are supported if the derivation is trivial. But 'drag' is a specific term. Let's look at Sentence 4. 'Key issues'. Also interpretive. Let's look at Sentence 9. 'Measures interact'. This is a claim about the model behavior. The scenario shows per_measure savings and total savings. Loft: 315. Cavity: 1206.9. Sum: 1521.9. Total change: 1521.9. They add up exactly. So they do *not* interact in a way that changes the sum (no synergy or penalty). Sentence 9 says 'savings are not simply added together'. This is **contradicted** because 315 + 1206.9 = 1521.9, which is exactly the total. So 9 is contradicted. Back to 1. If 9 is contradicted, maybe 1 is unsupported because 'drag' is not a defined term? Or is it supported because they are the lowest scores? Let's check the points. Renewables: 0. Smart: 2.0. Next lowest is Intensity: 10.0. So yes, they are the two lowest contributors. I will mark 1 as supported based on the data showing they are the lowest scoring components. Wait, 'Insulation' is null. It is scored at 50. So it's not a drag. So 1 is likely supported. Let's re-evaluate 9. 315.0 + 1206.9 = 1521.9. The total is 1521.9. So they *are* simply added together. Sentence 9 says they are *not*. So 9 is contradicted. Now back to 1. Is 'biggest score drags' a factual claim? It implies a ranking. The data supports the ranking. I'll say supported. Wait, looking at Sentence 4: 'Key issues are no renewable generation and basic heating controls.' 'Basic heating controls' corresponds to 'Timer only' in inputs. 'No renewable generation' corresponds to 'solar': false and renewables score 0. So "
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.range [43, 58] and the warning about missing wall construction affecting the score."
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.after.total (58) and class (Moderate)."
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": "Supported. 'No renewable generation' is supported by inputs.solar=false and score.renewables=0. 'Basic heating controls' is supported by inputs.controls='Timer only' and score.smart=40 (low)."
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": "Supported. selected_measures lists loft_insulation and cavity_wall. Feasibility for cavity_wall is 'needs_verification'. The order in the list is loft then cavity. The sentence says 'in the order they are applied'. The scenario lists them in that order. It doesn't explicitly state application order, but the list order is the only order provided. 'Some of these need checking' is supported by cavity_wall status."
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": "Supported. energy_results.change.gas_saving_kwh is 1521.9. Rounded to 1,520."
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": "Supported. energy_results.change.grid_elec_saving_kwh is 0.0."
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": "Supported. energy_results.change.purchased_saving_kwh is 1521.9. Rounded to 1,520."
+      },
+      {
+        "index": 9,
+        "verdict": "contradicted",
+        "note": "Contradicted. The per-measure savings (315.0 + 1206.9) sum exactly to the total saving (1521.9). Therefore, the savings *are* simply added together in this model output."
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": "Supported. carbon_results.saving_kg is 277.5. Rounded to 278."
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": "Supported. cost_results.package_cost_gbp is 3500.0."
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": "Supported. cost_results.bill_status is 'not estimated' and bill_reason is 'no tariff assumptions are set'."
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": "Supported. valuation.status is 'not_estimated' and reason is 'value is only estimated for the full recommended package'."
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": "Supported. feasibility.cavity_wall.state is 'needs_verification' and reason is 'the wall construction is not recorded'. 'Not suitable at this stage' is a fair interpretation of 'needs_verification' in the context of a recommendation list where it is selected but flagged."
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": "Supported. feasibility.double_glazing.state is 'infeasible' and reason is 'the home already has double glazing'."
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": "Supported. feasibility.solid_wall.state is 'needs_verification' and reason is 'the wall construction is not recorded'."
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": "Supported. Matches the warnings array exactly."
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": "Supported. missing_inputs contains 'walls'."
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": "Supported. Matches the assumptions array exactly."
+      }
+    ]
+  },
+  {
+    "id": "normal-017",
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.total (38) and class (Poor)."
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.parts showing low sub-scores for intensity (45), insulation (30), and renewables (0)."
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.after.total (44) and class (Poor)."
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": "Supported by inputs (glazing: Single, controls: Timer only, solar: false) and green_home_score.parts (low scores for intensity, insulation, renewables, glazing, heating)."
+      },
+      {
+        "index": 4,
+        "verdict": "unsupported",
+        "note": "The scenario lists selected_measures as a set [\"loft_insulation\", \"smart_thermostat\"] but does not specify an implementation order or sequence. The claim that one is applied 'first' is not supported by the data."
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh (0.0) and energy_results.after.grid_elec_kwh (4800.0) matching baseline."
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.gas_saving_kwh (974.2)."
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh (0.0)."
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.purchased_saving_kwh (974.2)."
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": "Supported by energy_results.per_measure values for loft_insulation (360.0) and smart_thermostat (614.2)."
+      },
+      {
+        "index": 10,
+        "verdict": "unsupported",
+        "note": "The scenario provides individual savings that sum to the total (360 + 614.2 = 974.2). It does not state that measures interact or that savings are not simply added. In fact, the data implies they are additive in this model output."
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": "Supported by carbon_results.saving_kg (177.6), which rounds to 178."
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": "Supported by cost_results.package_cost_gbp (1250.0)."
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": "Supported by cost_results.bill_status ('not estimated') and bill_reason ('no tariff assumptions are set')."
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": "Supported by valuation.status ('exploratory'), valuation.label ('indicative, not causal'), and uplift percentages (1.0% to 4.0%)."
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": "Supported by feasibility.solid_wall.state ('infeasible') and reason ('the walls are cavity walls, so solid wall insulation does not apply')."
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": "Supported by warnings array containing the exact text."
+      }
+    ]
+  },
+  {
+    "id": "missing_data-011",
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.total (50) and class (Moderate)."
+      },
+      {
+        "index": 1,
+        "verdict": "contradicted",
+        "note": "Contradicted. The score parts show 'insulation' is unavailable (neutral 50) and 'renewables' is 0. 'Smart' is 40. The sentence claims renewables and smart are the biggest drags, ignoring the missing insulation data which is explicitly flagged as a limitation in the scenario warnings and score parts."
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.range [43, 58] and the warning about missing wall construction affecting the score."
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.after.total (53) and class (Moderate)."
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": "Supported. 'No renewable generation' matches inputs.solar: false and renewables sub-score 0. 'Basic heating controls' matches inputs.controls: 'Timer only'."
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": "Supported by selected_measures: ['loft_insulation']."
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.gas_saving_kwh: 315.0."
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh: 0.0."
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.purchased_saving_kwh: 315.0."
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": "Supported by energy_results.per_measure[0] for loft_insulation."
+      },
+      {
+        "index": 10,
+        "verdict": "unsupported",
+        "note": "Unsupported. The scenario lists only one selected measure (loft_insulation). There are no interactions to calculate or explain. This statement introduces a concept (interaction) not present in the data for this specific scenario."
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": "Supported by carbon_results.saving_kg: 57.4 (rounded to 57)."
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": "Supported by cost_results.package_cost_gbp: 1000.0."
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": "Supported by cost_results.bill_status: 'not estimated' and bill_reason: 'no tariff assumptions are set'."
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": "Supported by valuation.status: 'not_estimated' and valuation.reason: 'value is only estimated for the full recommended package'."
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": "Supported by feasibility.double_glazing.state: 'infeasible' and reason: 'the home already has double glazing'."
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": "Supported by feasibility.cavity_wall.state: 'needs_verification' and reason: 'the wall construction is not recorded'."
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": "Supported by feasibility.solid_wall.state: 'needs_verification' and reason: 'the wall construction is not recorded'."
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": "Supported by warnings and green_home_score.parts.insulation.reason."
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": "Supported by the assumptions list in the scenario."
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": "Supported by the first item in the warnings list."
+      },
+      {
+        "index": 21,
+        "verdict": "supported",
+        "note": "Supported by the second item in the warnings list."
+      }
+    ]
+  },
+  {
+    "id": "missing_data-005",
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.total (50) and class (Moderate)."
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": "Contradicted. The score parts show 'renewables' (0.0 points) and 'smart' (2.0 points) are low, but 'insulation' is unavailable (scored at 50 neutral) and 'heating' is 8.25. More importantly, 'renewables' is 0.0 points out of 10 (weight 0.1 * 100), while 'insulation' is effectively 7.5 points (0.15 * 50). The sentence claims renewables and smart controls are the *biggest* drags. However, looking at the points: Energy Efficiency (15.25), Intensity (10.0), Heating (8.25), Glazing (7.5), Insulation (7.5 implied), Renewables (0.0), Smart (2.0). The 'drags' are the lowest scoring components relative to their potential or absolute points? Usually 'drag' means low score. Renewables (0) and Smart (2) are indeed the lowest. But is it a 'drag' on the total? Yes. Is it the *biggest*? Compared to others, yes, they are the lowest. However, the sentence implies these are the primary reasons for the score being 50. Let's look closer. The 'insulation' part is 'unavailable' and scored at 50 (neutral). If it were high, the score would be higher. If it were low, it would be lower. The 'renewables' part is 0. The 'smart' part is 2. These are indeed the lowest contributing factors. The statement is factually consistent with the data showing these are the lowest scoring sub-components."
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.before.range [43, 58] and the warning about missing wall construction affecting the insulation part."
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": "Supported by green_home_score.after.total (56) and class (Moderate)."
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": "Supported. Inputs show 'solar': false (no renewable generation) and 'controls': 'Timer only' (basic heating controls)."
+      },
+      {
+        "index": 5,
+        "verdict": "unsupported",
+        "note": "Unsupported. The scenario lists 'selected_measures' as a set ['loft_insulation', 'smart_thermostat']. It does not specify an order of implementation ('first', 'then'). The phrase 'as shown by' is also vague and not supported by the data structure which is a list, not a sequence."
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.gas_saving_kwh (852.5, rounded to 852)."
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.grid_elec_saving_kwh (0.0)."
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": "Supported by energy_results.change.purchased_saving_kwh (852.5, rounded to 852)."
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": "Supported. Loft insulation gas saving is 315.0. Smart thermostat gas saving is 537.5 (rounded to 538). Electricity effects are 0.0 for both."
+      },
+      {
+        "index": 10,
+        "verdict": "unsupported",
+        "note": "Unsupported. The scenario provides individual measure savings (315.0 + 537.5 = 852.5) which sum exactly to the total change (852.5). There is no indication of interaction or non-additivity in the data; the numbers are additive."
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": "Supported by carbon_results.saving_kg (155.4, rounded to 155)."
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": "Supported by cost_results.package_cost_gbp (1250.0)."
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": "Supported by cost_results.bill_status ('not estimated') and bill_reason ('no tariff assumptions are set')."
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": "Supported by valuation.status ('not_estimated') and valuation.reason ('value is only estimated for the full recommended package')."
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": "Supported by feasibility.double_glazing.state ('infeasible') and reason ('the home already has double glazing')."
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": "Supported by feasibility.cavity_wall.state ('needs_verification') and reason ('the wall construction is not recorded')."
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": "Supported by feasibility.solid_wall.state ('needs_verification') and reason ('the wall construction is not recorded')."
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": "Supported by warnings and green_home_score.parts.insulation.reason ('input missing; scored at 50 in the headline number')."
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": "Supported by the 'assumptions' list in the scenario."
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": "Supported by the 'warnings' list in the scenario."
+      },
+      {
+        "index": 21,
+        "verdict": "supported",
+        "note": "Supported by the 'warnings' list in the scenario."
+      }
+    ]
+  }
+]

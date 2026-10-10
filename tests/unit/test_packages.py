@@ -170,6 +170,8 @@ def test_sensitivity_runs_and_labels():
 def test_demo_a_packages():
     from backend.app.data.loaders import get_home
     s, _, _ = _search(get_home(DEMO_A))
-    assert len(s.packages) == 64 and s.excluded_measures == {"solid_wall": "infeasible: not_solid_wall"}
+    # demo A's roof is flat (D20): loft insulation is infeasible, so 5 candidate measures -> 32 packages
+    assert len(s.packages) == 32 and s.excluded_measures == {"loft_insulation": "infeasible: flat_roof",
+                                                             "solid_wall": "infeasible: not_solid_wall"}
     assert {f.objective: f.package_id for f in s.featured}["lowest_cost_meeting_threshold"] == "cavity_wall"
     assert all(p.status == ValueStatus.ok for p in s.packages)

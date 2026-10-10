@@ -221,7 +221,7 @@ Measured on 300 random test homes:
   - NEED-calibrated reference: carbon 3,216.8 kg/yr (pooled factor 0.484).
 - **Timing:** for a test home with 6 candidate measures (64 packages), `build()` with packages takes ~23 ms and with sensitivity ~181 ms (engine-v1 on the same home: 11 ms and 105 ms). Not yet re-measured on the 300 random York test homes.
 
-## 20. engine-v3 (docs/IMPROVEMENT_PLAN.md, D19–D29)
+## 20. engine-v3 (D19–D29)
 | Area | Change | Switch / config |
 |---|---|---|
 | PV (D19) | NEED % applies to baseline electricity, not heat-pump electricity; capped at import | — |

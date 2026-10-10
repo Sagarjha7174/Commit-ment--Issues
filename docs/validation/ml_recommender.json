@@ -1,0 +1,834 @@
+{
+ "model": "recommender",
+ "label_meaning": "agreement = consistent with the EPC assessor's software, not feasible or worth doing",
+ "rows": "homes where the engine rule is not infeasible (per measure); latest certificate state",
+ "gates": {
+  "ndcg3_above_b2_engine_order": true,
+  "per_measure_pr_auc_above_b1": {
+   "loft_insulation": true,
+   "cavity_wall": true,
+   "solid_wall": true,
+   "double_glazing": true,
+   "smart_thermostat": true,
+   "heat_pump": false,
+   "solar_pv": true
+  }
+ },
+ "ranking_val": {
+  "model": {
+   "ndcg@3": 0.9944,
+   "precision@1": 0.997,
+   "map": 0.9951,
+   "n_homes": 7710,
+   "n_excluded": 2082
+  },
+  "b0_rules_random_ties": {
+   "ndcg@3": 0.6482,
+   "precision@1": 0.4261,
+   "map": 0.6435,
+   "n_homes": 7710,
+   "n_excluded": 2082
+  },
+  "b1_prevalence": {
+   "ndcg@3": 0.9817,
+   "precision@1": 0.9868,
+   "map": 0.9811,
+   "n_homes": 7710,
+   "n_excluded": 2082
+  },
+  "b2_engine_order": {
+   "ndcg@3": 0.5239,
+   "precision@1": 0.3741,
+   "map": 0.5471,
+   "n_homes": 7710,
+   "n_excluded": 2082
+  }
+ },
+ "per_measure_val": {
+  "loft_insulation": {
+   "label": "rec_loft_insulation",
+   "train_rows": 13142,
+   "train_positives": 6454,
+   "val_rows": 2812,
+   "val_positives": 1397,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.4968,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 2812,
+    "positives": 1397,
+    "roc_auc": 0.9065,
+    "pr_auc": 0.9097,
+    "brier": 0.12,
+    "f1_at_train_threshold": 0.8256,
+    "threshold": 0.414
+   },
+   "b1": {
+    "n": 2812,
+    "positives": 1397,
+    "roc_auc": 0.5971,
+    "pr_auc": 0.5994,
+    "brier": 0.2407,
+    "f1_at_train_threshold": 0.6638,
+    "threshold": 0.367
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 620,
+     "mean_pred": 0.05864973353859544,
+     "observed": 0.07419354838709677
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 236,
+     "mean_pred": 0.1509403223432248,
+     "observed": 0.1440677966101695
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 401,
+     "mean_pred": 0.23486298000387812,
+     "observed": 0.2718204488778055
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 61,
+     "mean_pred": 0.3539686085524375,
+     "observed": 0.3114754098360656
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 203,
+     "mean_pred": 0.42444612299856793,
+     "observed": 0.3694581280788177
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 204,
+     "mean_pred": 0.5844735959215321,
+     "observed": 0.5686274509803921
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 32,
+     "mean_pred": 0.68184467991998,
+     "observed": 0.75
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 182,
+     "mean_pred": 0.7498308000570354,
+     "observed": 0.7692307692307693
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 212,
+     "mean_pred": 0.8649088992491067,
+     "observed": 0.9056603773584906
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 661,
+     "mean_pred": 0.9732477794495689,
+     "observed": 0.9712556732223904
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.3822,
+    "n_trials": 30,
+    "n_rounds": 434
+   }
+  },
+  "cavity_wall": {
+   "label": "rec_cavity_wall",
+   "train_rows": 11668,
+   "train_positives": 5403,
+   "val_rows": 2492,
+   "val_positives": 1161,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.4659,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 2492,
+    "positives": 1161,
+    "roc_auc": 0.9911,
+    "pr_auc": 0.9862,
+    "brier": 0.0213,
+    "f1_at_train_threshold": 0.9741,
+    "threshold": 0.375
+   },
+   "b1": {
+    "n": 2492,
+    "positives": 1161,
+    "roc_auc": 0.6261,
+    "pr_auc": 0.6125,
+    "brier": 0.2265,
+    "f1_at_train_threshold": 0.6375,
+    "threshold": 0.3436
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 1296,
+     "mean_pred": 0.009850575180431743,
+     "observed": 0.011574074074074073
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 2,
+     "mean_pred": 0.16666666666666666,
+     "observed": 0.0
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 2,
+     "mean_pred": 0.22213116161657015,
+     "observed": 0.0
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 3,
+     "mean_pred": 0.375,
+     "observed": 0.3333333333333333
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 9,
+     "mean_pred": 0.5741362261285663,
+     "observed": 0.2222222222222222
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 7,
+     "mean_pred": 0.7903225806451611,
+     "observed": 1.0
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 28,
+     "mean_pred": 0.8895574534161489,
+     "observed": 0.7857142857142857
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 1145,
+     "mean_pred": 0.9807240260449052,
+     "observed": 0.9729257641921397
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.0836,
+    "n_trials": 30,
+    "n_rounds": 288
+   }
+  },
+  "solid_wall": {
+   "label": "rec_solid_wall",
+   "train_rows": 8853,
+   "train_positives": 8493,
+   "val_rows": 1835,
+   "val_positives": 1764,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.9613,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 1835,
+    "positives": 1764,
+    "roc_auc": 0.9351,
+    "pr_auc": 0.995,
+    "brier": 0.0164,
+    "f1_at_train_threshold": 0.9901,
+    "threshold": 0.8642
+   },
+   "b1": {
+    "n": 1835,
+    "positives": 1764,
+    "roc_auc": 0.7617,
+    "pr_auc": 0.9821,
+    "brier": 0.0346,
+    "f1_at_train_threshold": 0.9791,
+    "threshold": 0.8268
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 42,
+     "mean_pred": 0.0031746031746031746,
+     "observed": 0.047619047619047616
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 1,
+     "mean_pred": 0.1481292114440843,
+     "observed": 1.0
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 3,
+     "mean_pred": 0.625,
+     "observed": 0.3333333333333333
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 37,
+     "mean_pred": 0.8582868582868581,
+     "observed": 0.7567567567567568
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 1752,
+     "mean_pred": 0.9869319317147011,
+     "observed": 0.9885844748858448
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.0853,
+    "n_trials": 30,
+    "n_rounds": 556
+   }
+  },
+  "double_glazing": {
+   "label": "rec_double_glazing",
+   "train_rows": 4990,
+   "train_positives": 3141,
+   "val_rows": 1003,
+   "val_positives": 678,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.676,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 1003,
+    "positives": 678,
+    "roc_auc": 0.9937,
+    "pr_auc": 0.9958,
+    "brier": 0.0219,
+    "f1_at_train_threshold": 0.9787,
+    "threshold": 0.4898
+   },
+   "b1": {
+    "n": 1003,
+    "positives": 678,
+    "roc_auc": 0.6772,
+    "pr_auc": 0.7947,
+    "brier": 0.2015,
+    "f1_at_train_threshold": 0.8107,
+    "threshold": 0.4184
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 290,
+     "mean_pred": 0.01534847561684705,
+     "observed": 0.010344827586206896
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 18,
+     "mean_pred": 0.14922443811332697,
+     "observed": 0.1111111111111111
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 1,
+     "mean_pred": 0.2,
+     "observed": 1.0
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 24,
+     "mean_pred": 0.4574332657039424,
+     "observed": 0.5416666666666666
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 4,
+     "mean_pred": 0.5416666666666666,
+     "observed": 1.0
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 17,
+     "mean_pred": 0.763037894961174,
+     "observed": 0.7647058823529411
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 4,
+     "mean_pred": 0.8571428571428571,
+     "observed": 0.75
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 645,
+     "mean_pred": 0.9810118162622854,
+     "observed": 0.9906976744186047
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.1249,
+    "n_trials": 30,
+    "n_rounds": 113
+   }
+  },
+  "smart_thermostat": {
+   "label": "rec_smart_thermostat",
+   "train_rows": 43254,
+   "train_positives": 6067,
+   "val_rows": 9221,
+   "val_positives": 1306,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.1416,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 9221,
+    "positives": 1306,
+    "roc_auc": 0.8757,
+    "pr_auc": 0.5257,
+    "brier": 0.089,
+    "f1_at_train_threshold": 0.5322,
+    "threshold": 0.2656
+   },
+   "b1": {
+    "n": 9221,
+    "positives": 1306,
+    "roc_auc": 0.6747,
+    "pr_auc": 0.2039,
+    "brier": 0.1148,
+    "f1_at_train_threshold": 0.3251,
+    "threshold": 0.1727
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 5351,
+     "mean_pred": 0.02508758099004285,
+     "observed": 0.02149131003550738
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 1098,
+     "mean_pred": 0.15075416970257535,
+     "observed": 0.11748633879781421
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 1007,
+     "mean_pred": 0.24816113929690586,
+     "observed": 0.2502482621648461
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 551,
+     "mean_pred": 0.35190506918654013,
+     "observed": 0.2885662431941924
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 290,
+     "mean_pred": 0.4493058598489112,
+     "observed": 0.3896551724137931
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 350,
+     "mean_pred": 0.5737286097600861,
+     "observed": 0.4657142857142857
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 327,
+     "mean_pred": 0.656629228552572,
+     "observed": 0.5779816513761468
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 114,
+     "mean_pred": 0.7732938987307301,
+     "observed": 0.7368421052631579
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 76,
+     "mean_pred": 0.8562404073420168,
+     "observed": 0.7236842105263158
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 57,
+     "mean_pred": 0.9453482545901764,
+     "observed": 0.8245614035087719
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.3375,
+    "n_trials": 30,
+    "n_rounds": 25
+   }
+  },
+  "heat_pump": {
+   "label": "rec_heat_pump",
+   "train_rows": 45615,
+   "train_positives": 23,
+   "val_rows": 9698,
+   "val_positives": 6,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.0006,
+    "recall": 1.0
+   },
+   "status": "insufficient labels: rules only (B1 prevalence used for ranking)",
+   "shipped": false
+  },
+  "solar_pv": {
+   "label": "rec_solar_pv",
+   "train_rows": 34412,
+   "train_positives": 32933,
+   "val_rows": 7348,
+   "val_positives": 7064,
+   "b0_rules": {
+    "precision_feasible_implies_recommended": 0.9614,
+    "recall": 1.0
+   },
+   "model": {
+    "n": 7348,
+    "positives": 7064,
+    "roc_auc": 0.9913,
+    "pr_auc": 0.9994,
+    "brier": 0.0027,
+    "f1_at_train_threshold": 0.9984,
+    "threshold": 0.3333
+   },
+   "b1": {
+    "n": 7348,
+    "positives": 7064,
+    "roc_auc": 0.7235,
+    "pr_auc": 0.9799,
+    "brier": 0.033,
+    "f1_at_train_threshold": 0.9813,
+    "threshold": 0.4324
+   },
+   "shipped": true,
+   "calibration_val": [
+    {
+     "bin": [
+      0.0,
+      0.1
+     ],
+     "n": 265,
+     "mean_pred": 0.004663801509749741,
+     "observed": 0.0
+    },
+    {
+     "bin": [
+      0.1,
+      0.2
+     ],
+     "n": 5,
+     "mean_pred": 0.1539882295433817,
+     "observed": 0.8
+    },
+    {
+     "bin": [
+      0.2,
+      0.30000000000000004
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.30000000000000004,
+      0.4
+     ],
+     "n": 2,
+     "mean_pred": 0.3333333333333333,
+     "observed": 1.0
+    },
+    {
+     "bin": [
+      0.4,
+      0.5
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.5,
+      0.6000000000000001
+     ],
+     "n": 0,
+     "mean_pred": null,
+     "observed": null
+    },
+    {
+     "bin": [
+      0.6000000000000001,
+      0.7000000000000001
+     ],
+     "n": 5,
+     "mean_pred": 0.6428571428571429,
+     "observed": 0.4
+    },
+    {
+     "bin": [
+      0.7000000000000001,
+      0.8
+     ],
+     "n": 4,
+     "mean_pred": 0.7619047619047619,
+     "observed": 0.75
+    },
+    {
+     "bin": [
+      0.8,
+      0.9
+     ],
+     "n": 28,
+     "mean_pred": 0.8914491775832373,
+     "observed": 0.9285714285714286
+    },
+    {
+     "bin": [
+      0.9,
+      1.0
+     ],
+     "n": 7039,
+     "mean_pred": 0.9981432006497853,
+     "observed": 0.9982952123881234
+    }
+   ],
+   "tuning": {
+    "cv_logloss": 0.0189,
+    "n_trials": 30,
+    "n_rounds": 866
+   }
+  }
+ },
+ "shipped_versions": {
+  "loft_insulation": "rec_loft_insulation-191b038222",
+  "cavity_wall": "rec_cavity_wall-e5e5e46152",
+  "solid_wall": "rec_solid_wall-8f82aadfd2",
+  "double_glazing": "rec_double_glazing-dca7b16dc7",
+  "smart_thermostat": "rec_smart_thermostat-0ffe5f9c0a",
+  "solar_pv": "rec_solar_pv-c899ef13c9"
+ },
+ "fallback": "measures without a shipped classifier are scored by their train prevalence (B1) so scores stay comparable (D37)",
+ "runtime_s": 1838.3
+}

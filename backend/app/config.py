@@ -121,6 +121,7 @@ def measure_spec(measure_id: str) -> dict:
 
 def versions() -> dict:
     ef = emission_factors()
+    from .ml import registry   # shipped ML models (configs/model_registry.json): a new model version changes the scenario_id
     return {
         "catalogue": catalogue()["version"],
         "score_params": score_params()["version"],
@@ -136,4 +137,5 @@ def versions() -> dict:
         **{k: v["version"] for k, v in (("electric_heating_split", electric_heating_split()),
                                         ("combination_calibration", combination_calibration()),
                                         ("engine_calibration", engine_calibration())) if v},
+        **{f"model_{k}": v for k, v in sorted(registry.shipped_versions().items())},
     }

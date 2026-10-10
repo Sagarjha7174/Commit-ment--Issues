@@ -1,0 +1,400 @@
+{
+ "split": "test",
+ "scored_once": true,
+ "frozen_models": {
+  "energy_elec_q10": "energy_elec_q10-ab346cd53b",
+  "energy_elec_q50": "energy_elec_q50-2f7a17dfd5",
+  "energy_elec_q90": "energy_elec_q90-a8992acb31",
+  "energy_gas_q10": "energy_gas_q10-82012900eb",
+  "energy_gas_q50": "energy_gas_q50-0405ea2f8d",
+  "energy_gas_q90": "energy_gas_q90-e5b4febb60",
+  "rec_cavity_wall": "rec_cavity_wall-e5e5e46152",
+  "rec_double_glazing": "rec_double_glazing-dca7b16dc7",
+  "rec_loft_insulation": "rec_loft_insulation-191b038222",
+  "rec_smart_thermostat": "rec_smart_thermostat-0ffe5f9c0a",
+  "rec_solar_pv": "rec_solar_pv-c899ef13c9",
+  "rec_solid_wall": "rec_solid_wall-8f82aadfd2",
+  "recommender_ranking": "recommender_ranking-a7b0ca2720",
+  "sap": "sap-fd2a47149d",
+  "value_gbm": "value_gbm-22f686dedf",
+  "value_hedonic": "value_hedonic-efee5ed00a"
+ },
+ "sap": {
+  "n": 9919,
+  "model": {
+   "n": 9919,
+   "mae": 3.4561,
+   "rmse": 4.8292,
+   "r2": 0.8038,
+   "within_3": 0.5638,
+   "within_5": 0.7723,
+   "band_exact": 0.7246,
+   "band_within_one": 0.9975
+  },
+  "b0": {
+   "n": 9919,
+   "mae": 5.9608,
+   "rmse": 8.8574,
+   "r2": 0.3398,
+   "within_3": 0.4389,
+   "within_5": 0.6176,
+   "band_exact": 0.5964,
+   "band_within_one": 0.9627
+  },
+  "b1": {
+   "n": 9919,
+   "mae": 4.4844,
+   "rmse": 6.0,
+   "r2": 0.6971,
+   "within_3": 0.4358,
+   "within_5": 0.6606,
+   "band_exact": 0.6604,
+   "band_within_one": 0.9926
+  },
+  "pairs": {
+   "split": "test",
+   "n_pairs": 880,
+   "n_train_pairs_for_baseline": 3689,
+   "model": {
+    "mae": 5.0285,
+    "pearson_r": 0.8114,
+    "sign_agreement": 0.6943,
+    "mean_bias": -2.3141
+   },
+   "baseline_delta0": {
+    "mae": 6.6619,
+    "pearson_r": 0.5633,
+    "definition": "mean observed \u0394SAP of train pairs with the same change key (n >= 20), else the sum of single-measure upgrade means, else the overall train mean"
+   },
+   "by_measure_upgrade": {
+    "loft": {
+     "n": 396,
+     "obs_mean": 8.4167,
+     "pred_mean": 6.1011,
+     "mean_bias": -2.3156,
+     "mae_model": 5.0885,
+     "mae_delta0": 7.1266
+    },
+    "walls": {
+     "n": 156,
+     "obs_mean": 10.359,
+     "pred_mean": 7.9547,
+     "mean_bias": -2.4043,
+     "mae_model": 4.8657,
+     "mae_delta0": 6.5249
+    },
+    "glazing": {
+     "n": 122,
+     "obs_mean": 8.7131,
+     "pred_mean": 7.5868,
+     "mean_bias": -1.1263,
+     "mae_model": 5.3429,
+     "mae_delta0": 7.9148
+    },
+    "heating": {
+     "n": 166,
+     "obs_mean": 16.6265,
+     "pred_mean": 14.422,
+     "mean_bias": -2.2045,
+     "mae_model": 5.9364,
+     "mae_delta0": 10.4382
+    },
+    "controls": {
+     "n": 104,
+     "obs_mean": 20.0577,
+     "pred_mean": 16.3652,
+     "mean_bias": -3.6925,
+     "mae_model": 7.1007,
+     "mae_delta0": 12.1504
+    },
+    "pv": {
+     "n": 15,
+     "obs_mean": 12.2,
+     "pred_mean": 13.5144,
+     "mean_bias": 1.3144,
+     "mae_model": 3.5918,
+     "mae_delta0": 8.8576
+    }
+   }
+  }
+ },
+ "value": {
+  "n": 619,
+  "model": {
+   "n": 619,
+   "mdape": 0.0897,
+   "ppe10": 0.5477,
+   "ppe20": 0.8449,
+   "r2_log": 0.8153,
+   "median_bias": -0.0106
+  },
+  "b0": {
+   "n": 619,
+   "mdape": 0.1668,
+   "ppe10": 0.3554,
+   "ppe20": 0.5703,
+   "r2_log": 0.4174,
+   "median_bias": -0.0157
+  },
+  "b1": {
+   "n": 619,
+   "mdape": 0.1048,
+   "ppe10": 0.4766,
+   "ppe20": 0.7754,
+   "r2_log": 0.7794,
+   "median_bias": -0.0077
+  },
+  "coverage_check": {
+   "result": "pass",
+   "empirical_coverage": 0.8207,
+   "nominal": 0.8,
+   "accept_range": [
+    0.75,
+    0.85
+   ],
+   "n_test": 619,
+   "evaluated": "test split, once (M7)"
+  }
+ },
+ "energy": {
+  "gas": {
+   "n": 324810,
+   "n_yorkshire": 32156,
+   "b0": {
+    "overall": {
+     "n": 324810,
+     "mae_kwh": 3610.7,
+     "mdape": 0.2874,
+     "r2_log": 0.2959
+    },
+    "yorkshire": {
+     "n": 32156,
+     "mae_kwh": 3682.1,
+     "mdape": 0.2874,
+     "r2_log": 0.2417
+    },
+    "cell_quantiles": {
+     "coverage_p10_p90": 0.8019,
+     "pinball_kwh": {
+      "0.1": 671.5,
+      "0.5": 1805.3,
+      "0.9": 1019.7
+     },
+     "mean_pinball_kwh": 1165.5
+    }
+   },
+   "model": "not shipped (failed its validation gate): benchmark kept",
+   "quantiles": {
+    "overall": {
+     "coverage_p10_p90": 0.8013,
+     "pinball_kwh": {
+      "0.1": 667.7,
+      "0.5": 1777.9,
+      "0.9": 992.4
+     },
+     "mean_pinball_kwh": 1146.0
+    },
+    "yorkshire": {
+     "coverage_p10_p90": 0.8036,
+     "pinball_kwh": {
+      "0.1": 681.4,
+      "0.5": 1816.7,
+      "0.9": 1018.1
+     },
+     "mean_pinball_kwh": 1172.1
+    }
+   }
+  },
+  "elec": {
+   "n": 404457,
+   "n_yorkshire": 37431,
+   "b0": {
+    "overall": {
+     "n": 404457,
+     "mae_kwh": 1404.7,
+     "mdape": 0.3521,
+     "r2_log": 0.1863
+    },
+    "yorkshire": {
+     "n": 37431,
+     "mae_kwh": 1311.5,
+     "mdape": 0.3487,
+     "r2_log": 0.161
+    },
+    "cell_quantiles": {
+     "coverage_p10_p90": 0.8033,
+     "pinball_kwh": {
+      "0.1": 219.2,
+      "0.5": 702.4,
+      "0.9": 451.1
+     },
+     "mean_pinball_kwh": 457.5
+    }
+   },
+   "model": "not shipped (failed its validation gate): benchmark kept",
+   "quantiles": {
+    "overall": {
+     "coverage_p10_p90": 0.7999,
+     "pinball_kwh": {
+      "0.1": 217.8,
+      "0.5": 692.2,
+      "0.9": 445.2
+     },
+     "mean_pinball_kwh": 451.7
+    },
+    "yorkshire": {
+     "coverage_p10_p90": 0.7929,
+     "pinball_kwh": {
+      "0.1": 204.1,
+      "0.5": 644.1,
+      "0.9": 416.4
+     },
+     "mean_pinball_kwh": 421.5
+    }
+   }
+  }
+ },
+ "recommender": {
+  "n_homes": 9924,
+  "ranking": {
+   "model": {
+    "ndcg@3": 0.9952,
+    "precision@1": 0.9971,
+    "map": 0.9957,
+    "n_homes": 7840,
+    "n_excluded": 2079
+   },
+   "b2_engine_order": {
+    "ndcg@3": 0.5208,
+    "precision@1": 0.3777,
+    "map": 0.5467,
+    "n_homes": 7840,
+    "n_excluded": 2079
+   },
+   "b1_prevalence": {
+    "ndcg@3": 0.9813,
+    "precision@1": 0.9865,
+    "map": 0.9812,
+    "n_homes": 7840,
+    "n_excluded": 2079
+   },
+   "b0_rules_random_ties": {
+    "ndcg@3": 0.653,
+    "precision@1": 0.4366,
+    "map": 0.6491,
+    "n_homes": 7840,
+    "n_excluded": 2079
+   }
+  },
+  "per_measure": {
+   "loft_insulation": {
+    "n": 2797,
+    "positives": 1326,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.9126,
+     "pr_auc": 0.9039
+    },
+    "b1": {
+     "roc_auc": 0.6084,
+     "pr_auc": 0.5861
+    }
+   },
+   "cavity_wall": {
+    "n": 2529,
+    "positives": 1121,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.9909,
+     "pr_auc": 0.9856
+    },
+    "b1": {
+     "roc_auc": 0.6218,
+     "pr_auc": 0.5883
+    }
+   },
+   "solid_wall": {
+    "n": 1978,
+    "positives": 1902,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.9122,
+     "pr_auc": 0.9927
+    },
+    "b1": {
+     "roc_auc": 0.784,
+     "pr_auc": 0.9844
+    }
+   },
+   "double_glazing": {
+    "n": 1023,
+    "positives": 651,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.9877,
+     "pr_auc": 0.988
+    },
+    "b1": {
+     "roc_auc": 0.6947,
+     "pr_auc": 0.7763
+    }
+   },
+   "smart_thermostat": {
+    "n": 9335,
+    "positives": 1278,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.8727,
+     "pr_auc": 0.5086
+    },
+    "b1": {
+     "roc_auc": 0.6665,
+     "pr_auc": 0.1943
+    }
+   },
+   "heat_pump": {
+    "n": 9814,
+    "positives": 2,
+    "shipped_classifier": false,
+    "model": {
+     "roc_auc": 0.8555,
+     "pr_auc": 0.0009
+    },
+    "b1": {
+     "roc_auc": 0.8555,
+     "pr_auc": 0.0009
+    }
+   },
+   "solar_pv": {
+    "n": 7406,
+    "positives": 7118,
+    "shipped_classifier": true,
+    "model": {
+     "roc_auc": 0.9944,
+     "pr_auc": 0.9997
+    },
+    "b1": {
+     "roc_auc": 0.7182,
+     "pr_auc": 0.979
+    }
+   }
+  },
+  "ranking_model_shipped": true,
+  "label_meaning": "consistent with the EPC assessor, not feasibility"
+ },
+ "value_gate_after_m7": {
+  "status": "enabled",
+  "coverage_check": {
+   "result": "pass",
+   "empirical_coverage": 0.8207,
+   "nominal": 0.8,
+   "accept_range": [
+    0.75,
+    0.85
+   ],
+   "n_test": 619,
+   "evaluated": "test split, once (M7)"
+  }
+ },
+ "runtime_s": 48.1
+}

@@ -79,9 +79,26 @@ def get_baseline(home: HomeRecord, user_reading: Optional[UserReading] = None, u
     if elec is None:
         elec_prov = Provenance.unavailable
 
+    model_used = []
     if use_model:
-        notes.append("modelled baseline requested; " + ("enabled by switch file but no model output is wired in this engine version, benchmark used"
-                                                       if model_enabled() else "switch file absent or model did not beat the benchmark, benchmark used"))
+        if not model_enabled():
+            notes.append("modelled baseline requested; switch file absent or model did not beat the benchmark, benchmark used")
+        else:
+            from .energy_model import point
+            for fuel in ("gas", "elec"):
+                cur, prov = (gas, gas_prov) if fuel == "gas" else (elec, elec_prov)
+                if prov != Provenance.population_benchmark:
+                    continue   # an observed 0 (no mains gas) or missing value stays as it is
+                v = point(home, fuel)
+                if v is None:
+                    continue
+                if fuel == "gas":
+                    gas, gas_prov, gas_status = v, Provenance.modelled, "modelled"
+                else:
+                    elec, elec_prov, elec_status = v, Provenance.modelled, "modelled"
+                model_used.append(fuel)
+            notes.append("modelled baseline (NEED model, M4) for " + (", ".join(model_used) or "no fuel") +
+                         "; transfer from NEED to York homes is unproven")
     if user_reading is not None:
         if user_reading.gas_kwh is not None:
             gas, gas_prov, gas_status = float(user_reading.gas_kwh), Provenance.user_provided, "user_provided"
@@ -93,8 +110,10 @@ def get_baseline(home: HomeRecord, user_reading: Optional[UserReading] = None, u
         source = "unavailable"
     elif provs == {Provenance.user_provided}:
         source = "user_provided"
-    elif Provenance.user_provided in provs:
+    elif Provenance.user_provided in provs or (Provenance.modelled in provs and len(provs - {Provenance.unavailable}) > 1):
         source = "mixed"
+    elif Provenance.modelled in provs:
+        source = "modelled"
     else:
         source = "population_benchmark"
 

@@ -1,0 +1,15 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "cavity_wall"
+ ],
+ "remove": [],
+ "role": null,
+ "horizon": null,
+ "budget_gbp": null,
+ "priorities": [],
+ "constraints": [],
+ "completed": [],
+ "rejected": [],
+ "unsupported": []
+}

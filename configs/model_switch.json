@@ -1,0 +1,21 @@
+{
+ "use_model_baseline": false,
+ "beat_benchmark": false,
+ "model_version": {
+  "gas": null,
+  "elec": null
+ },
+ "per_fuel_gate": {
+  "gas": false,
+  "elec": false
+ },
+ "val_mae": {
+  "gas": 3569.5,
+  "elec": 1389.7
+ },
+ "benchmark_val_mae": {
+  "gas": 3626.1,
+  "elec": 1410.5
+ },
+ "rule": "on only if both fuels beat the benchmark MAE by >= 2% overall and are not worse on Yorkshire (D36)"
+}

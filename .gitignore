@@ -4,6 +4,7 @@
 !.env.example
 *.pem
 *.key
+*.git2
 
 # ---- data (raw and processed; anchored to the repo root so tests/data/ is NOT ignored) ----
 /dataset/
@@ -63,3 +64,6 @@ data/
 !/backend/app/data/
 # data-integrity tests (code, not data)
 !/tests/data/
+
+# ---- LLM call log and answer cache (local only) ----
+backend/.cache/

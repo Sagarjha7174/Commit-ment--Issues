@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "date": "2026-10-10",
+    "providers": [
+      "groq"
+    ],
+    "generator_models": {
+      "groq": "openai/gpt-oss-120b"
+    },
+    "judge_models": [
+      "gemini:gemini-3.8-flash",
+      "groq:openai/gpt-oss-20b"
+    ],
+    "judge_prompt": "judge_v2",
+    "prompt_version": "explain_v3",
+    "mode": "llm",
+    "split": "dev",
+    "engine": "fake_engine:run",
+    "scenarios_file": "eval/scenarios.jsonl"
+  },
+  "by_type": {
+    "normal": {
+      "n": 8,
+      "passed": 8,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    },
+    "missing_data": {
+      "n": 12,
+      "passed": 12,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    }
+  },
+  "cases": 20,
+  "all_checks_pass_rate": 1.0,
+  "explanation_sources": {
+    "llm": 0,
+    "llm_patched": 20,
+    "template": 0
+  },
+  "llm_used_rate": 1.0,
+  "clean_llm_rate": 0.0,
+  "template_fallback_rate": 0.0,
+  "llm_sentence_acceptance": 0.942,
+  "llm_sentences": {
+    "written": 382,
+    "rejected": 22,
+    "template_filled": 30
+  },
+  "multi_attempt_rate": 0.0,
+  "providers_used": {
+    "groq": 20
+  },
+  "cases_answered_from_cache": 3,
+  "rejections_by_code": {
+    "VERIFY": 8,
+    "NUMBER_WORD": 6,
+    "DIGIT": 5,
+    "SYMBOL": 5,
+    "DIRECTION": 2,
+    "CONTRADICTION": 1
+  },
+  "numeric_groundedness": "100% by construction: the LLM never sees or writes numbers; every displayed number is filled in by code from the scenario result (see LLM.md).",
+  "llm_call_ms": {
+    "p50": 2636,
+    "p95": 3132,
+    "n": 17
+  },
+  "tokens": {
+    "input_tokens": 49014,
+    "output_tokens": 13783,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_estimate_usd": null,
+  "judge": {
+    "cases": 20,
+    "sentences": 390,
+    "sentences_shown": 390,
+    "groundedness": 0.995,
+    "factual_accuracy": 0.995,
+    "unsupported_claim_rate": 0.0,
+    "targets": {
+      "groundedness": ">= 0.90",
+      "factual_accuracy": ">= 0.90",
+      "unsupported_claim_rate": "< 0.05"
+    },
+    "note": "Supplementary: judged by a second model on a sample; see human review for agreement."
+  }
+}

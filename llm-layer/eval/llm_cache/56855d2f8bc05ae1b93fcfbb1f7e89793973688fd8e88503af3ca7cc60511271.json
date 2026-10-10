@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [],
+ "remove": [
+  "loft_insulation"
+ ],
+ "unsupported": []
+}

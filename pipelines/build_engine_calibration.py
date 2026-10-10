@@ -1,4 +1,4 @@
-"""Data-derived engine calibration -> configs/engine_calibration.json (docs/IMPROVEMENT_PLAN.md A3-A5, B4, C1).
+"""Data-derived engine calibration -> configs/engine_calibration.json (DECISIONS D15, D21, D22, D23, D28).
 
 Stages (each recorded with its source and n):
 1. area_elasticity (D21): beta per fuel from NEED, log(kWh) on log(representative floor area) within

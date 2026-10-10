@@ -1,4 +1,4 @@
-"""engine-v3 (docs/IMPROVEMENT_PLAN.md): correctness fixes A1-A9."""
+"""engine-v3 (docs/ENGINE.md §20, D19-D29): correctness fixes A1-A9."""
 import pytest
 
 from backend.app import config

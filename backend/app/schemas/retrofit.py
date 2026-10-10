@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, computed_field, model_validator
 
 from .enums import FeasibilityState, MeasureId, Provenance, Suitability, ValueStatus
 
@@ -36,19 +36,31 @@ class EndUses(BaseModel):
     hp_elec: float = 0.0            # electricity added by a heat pump
     pv_offset: float = 0.0          # grid import avoided by solar PV
 
+    @model_validator(mode="before")
+    @classmethod
+    def _drop_computed(cls, data):
+        """Totals are computed fields (exported in JSON so consumers never recompute them); ignore them on input."""
+        if isinstance(data, dict):
+            return {k: v for k, v in data.items() if k not in ("gas_total", "elec_import", "elec_gross", "purchased")}
+        return data
+
+    @computed_field
     @property
     def gas_total(self) -> float:
         return self.gas_space + self.gas_water + self.gas_other
 
+    @computed_field
     @property
     def elec_import(self) -> float:
         return self.elec_base + self.elec_space + self.elec_water + self.hp_elec - self.pv_offset
 
+    @computed_field
     @property
     def elec_gross(self) -> float:
         """Electricity used before any PV offset (what PV % of grid electricity applies to)."""
         return self.elec_base + self.elec_space + self.elec_water + self.hp_elec
 
+    @computed_field
     @property
     def purchased(self) -> float:
         return self.gas_total + self.elec_import

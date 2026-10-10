@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [],
+ "remove": [
+  "cavity_wall"
+ ],
+ "unsupported": []
+}

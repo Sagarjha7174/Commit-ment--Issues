@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is classed as {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. Because one part of the score is missing, the possible range is {green_home_score.before.range}. After applying the selected measures the score improves to {green_home_score.after.total} and moves to a {green_home_score.after.class} class.",
+ "issues": "The key issues identified are {derived.issues}.",
+ "plan": "The plan applies loft insulation first, then solid wall insulation, and finally a smart thermostat, as shown in {derived.plan_order}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity use does not change, as shown by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home purchases is estimated to fall by {energy_results.change.purchased_saving_kwh}. The per‑measure contributions are: loft insulation saves {energy_results.per_measure.0.gas_saving_kwh} of gas, solid wall insulation saves {energy_results.per_measure.1.gas_saving_kwh} of gas, and the smart thermostat saves {energy_results.per_measure.2.gas_saving_kwh} of gas.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost for the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property value change is not estimated because {valuation.reason}.",
+ "not_suitable": "Double glazing is not suitable because {feasibility.double_glazing.reason}. Cavity wall insulation needs verification because {feasibility.cavity_wall.reason}. Solid wall insulation also needs verification because {feasibility.solid_wall.reason}.",
+ "caveats": "Two months of meter data are missing; the annual figures are annualised from the ten available months ({warnings.0}). Wall construction is unknown, so the insulation part of the score uses a neutral value ({warnings.1}). Missing details about the home include {derived.missing_inputs}. The analysis assumes {assumptions}."
+}

@@ -1,0 +1,378 @@
+ML data inventory (schema only; restricted address columns listed by name, never loaded)
+
+## homes_tagged  (data/processed/region=york/homes_tagged.parquet; 65,872 rows, 151 columns)
+column                                           dtype                      null %   distinct  note
+property_id                                      str                          0.00     65,872  
+certificate_number                               str                          0.00     65,872  
+uprn                                             large_string                                  restricted, not loaded
+address                                          large_string                                  restricted, not loaded
+postcode                                         large_string                                  restricted, not loaded
+rating                                           str                          0.00          7  
+sap_score                                        int64                        0.00        112  
+potential_rating                                 str                          0.00          7  
+potential_sap                                    int64                        0.00        116  
+floor_area_m2                                    float64                      0.02        480  
+property_type                                    str                          0.00          5  
+built_form                                       str                          2.55          6  
+age_band                                         str                          0.06         46  
+age_start                                        float64                      0.06         38  
+age_end                                          float64                      0.06         40  
+need_age_band                                    Int64                        0.06          4  
+walls_rating                                     str                          0.05          5  
+walls_rating_status                              str                          0.00          2  
+roof_rating                                      str                         14.41          5  
+roof_rating_status                               str                          0.00          2  
+floor_rating                                     str                         92.64          5  
+floor_rating_status                              str                          0.00          2  
+windows_rating                                   str                          0.05          5  
+windows_rating_status                            str                          0.00          2  
+glazing                                          str                          0.05          4  
+multi_glaze_pct                                  float64                      1.53        100  
+heating_type                                     str                          0.08          5  
+heating_rating                                   str                          0.09          5  
+controls                                         str                          0.09          4  
+solar_pv                                         boolean                     12.31          2  
+solar_pv_roof_pct                                float64                     98.51         56  
+mains_gas                                        boolean                     10.64          2  
+epc_predicted_consumption_kwh_m2_primary         int64                        0.00        931  
+epc_predicted_consumption_status                 str                          0.00          2  
+lodgement_date                                   datetime64[us]               0.00      6,116  
+raw_uprn_source                                  large_string                                  restricted, not loaded
+raw_address1                                     large_string                                  restricted, not loaded
+raw_address2                                     large_string                                  restricted, not loaded
+raw_address3                                     large_string                                  restricted, not loaded
+raw_posttown                                     large_string                                  restricted, not loaded
+raw_local_authority                              str                          0.00          1  
+raw_local_authority_label                        str                          0.04          2  
+raw_region                                       str                          0.00          1  
+raw_inspection_date                              str                          0.00      5,619  
+raw_transaction_type                             str                          0.01         20  
+raw_tenure                                       str                         14.37          8  
+raw_property_type                                str                          0.00          5  
+raw_built_form                                   str                          0.71          7  
+raw_construction_age_band                        str                          0.00         59  
+raw_total_floor_area                             str                          0.02        480  
+raw_number_habitable_rooms                       str                         10.59         35  
+raw_current_energy_rating                        str                          0.00          7  
+raw_current_energy_efficiency                    str                          0.00        112  
+raw_potential_energy_rating                      str                          0.00          7  
+raw_potential_energy_efficiency                  str                          0.00        116  
+raw_energy_consumption_current                   str                          0.00        931  
+raw_co2_emissions_current                        str                          0.00        175  
+raw_walls_description                            str                          0.00        213  
+raw_walls_energy_eff                             str                          0.00          6  
+raw_roof_description                             str                          0.00        145  
+raw_roof_energy_eff                              str                          0.00          6  
+raw_floor_description                            str                          0.00        155  
+raw_floor_energy_eff                             str                          0.00          6  
+raw_windows_description                          str                          0.00         22  
+raw_windows_energy_eff                           str                          0.00          6  
+raw_glazed_type                                  str                         19.42          9  
+raw_multi_glaze_proportion                       str                          1.53        100  
+raw_main_fuel                                    str                          1.48         31  
+raw_mainheat_description                         str                          0.00        137  
+raw_mainheat_energy_eff                          str                          0.00          6  
+raw_mainheatcont_description                     str                          0.00         46  
+raw_mainheatc_energy_eff                         str                          0.00          6  
+raw_mains_gas_flag                               str                         10.64          2  
+raw_photo_supply                                 str                         12.31         57  
+raw_solar_water_heating_flag                     str                         10.59          2  
+raw_wind_turbine_count                           str                          0.88          4  
+n_certificates                                   int64                        0.00         14  
+need_property_type                               str                          0.13          6  
+need_floor_area_band                             Int64                        0.02          5  
+need_region                                      str                          0.00          1  
+need_epc_band                                    str                          0.00          5  
+need_main_fuel                                   float64                      0.08          2  
+flag_floor_area_implausible                      bool                         0.00          2  
+flag_missing_rating                              bool                         0.00          1  
+flag_missing_heating                             bool                         0.00          2  
+baseline_gas_kwh                                 float64                      6.49        123  
+gas_benchmark_level                              str                         18.30          3  
+gas_benchmark_n                                  float64                     18.30        129  
+baseline_elec_kwh                                float64                      0.08        143  
+elec_benchmark_level                             str                          0.08          3  
+elec_benchmark_n                                 float64                      0.08        213  
+flag_conflict_gas_heating_no_mains_gas           bool                         0.00          2  
+gas_status                                       str                          0.00          4  
+elec_status                                      str                          0.00          2  
+baseline_source                                  str                          0.00          1  
+modelled_gas_kwh                                 float64                    100.00          0  
+modelled_elec_kwh                                float64                    100.00          0  
+rec_loft_insulation                              int64                        0.00          2  
+rec_cavity_wall                                  int64                        0.00          2  
+rec_solid_wall                                   int64                        0.00          2  
+rec_double_glazing                               int64                        0.00          2  
+rec_smart_thermostat                             int64                        0.00          2  
+rec_heat_pump                                    int64                        0.00          2  
+rec_solar_pv                                     int64                        0.00          2  
+rec_other                                        int64                        0.00          2  
+n_recommendations                                int64                        0.00         15  
+has_recommendations                              bool                         0.00          2  
+split                                            str                          0.00          3  
+prov_rating                                      str                          0.00          1  
+prov_sap_score                                   str                          0.00          1  
+prov_potential_rating                            str                          0.00          1  
+prov_potential_sap                               str                          0.00          1  
+prov_floor_area_m2                               str                          0.00          2  
+prov_property_type                               str                          0.00          1  
+prov_built_form                                  str                          0.00          2  
+prov_age_band                                    str                          0.00          2  
+prov_walls_rating                                str                          0.00          2  
+prov_roof_rating                                 str                          0.00          2  
+prov_floor_rating                                str                          0.00          2  
+prov_windows_rating                              str                          0.00          2  
+prov_glazing                                     str                          0.00          2  
+prov_heating_type                                str                          0.00          2  
+prov_heating_rating                              str                          0.00          2  
+prov_solar_pv                                    str                          0.00          2  
+prov_mains_gas                                   str                          0.00          2  
+prov_lodgement_date                              str                          0.00          1  
+prov_controls                                    str                          0.00          2  
+prov_smart_controls                              str                          0.00          2  
+smart_controls                                   boolean                      0.09          2  
+epc_modelled_energy_kwh_m2                       int64                        0.00        931  
+prov_epc_modelled_energy_kwh_m2                  str                          0.00          1  
+note_epc_modelled_energy_kwh_m2                  str                          0.00          1  
+prov_epc_predicted_consumption                   str                          0.00          1  
+prov_need_property_type                          str                          0.00          2  
+prov_need_age_band                               str                          0.00          2  
+prov_need_floor_area_band                        str                          0.00          2  
+prov_need_epc_band                               str                          0.00          1  
+prov_need_main_fuel                              str                          0.00          2  
+prov_need_region                                 str                          0.00          1  
+prov_baseline_gas_kwh                            str                          0.00          3  
+prov_baseline_elec_kwh                           str                          0.00          2  
+benchmark_cell_level                             str                          0.08          3  
+flag_gas_boiler_no_mains_gas                     bool                         0.00          2  
+flag_energy_zero_or_negative                     bool                         0.00          2  
+flag_no_heating_description                      bool                         0.00          2  
+flag_gas_connection_unknown                      bool                         0.00          2  
+epc_age_years                                    float64                      0.00      1,800  
+flag_stale_epc                                   bool                         0.00          2  
+data_warnings                                    object                       0.00         13  
+n_data_warnings                                  int64                        0.00          4  
+improvement_potential_status                     str                          0.00          2  
+
+## epc_certs_all  (data/processed/region=york/epc_certs_all.parquet; 95,348 rows, 78 columns)
+column                                           dtype                      null %   distinct  note
+certificate_number                               str                          0.00     95,348  
+uprn                                             large_string                                  restricted, not loaded
+uprn_source                                      large_string                                  restricted, not loaded
+address1                                         large_string                                  restricted, not loaded
+address2                                         large_string                                  restricted, not loaded
+address3                                         large_string                                  restricted, not loaded
+address                                          large_string                                  restricted, not loaded
+postcode                                         large_string                                  restricted, not loaded
+posttown                                         large_string                                  restricted, not loaded
+local_authority                                  str                          0.00          1  
+local_authority_label                            str                          0.03          2  
+region                                           str                          0.00          1  
+lodgement_date                                   str                          0.00      6,299  
+inspection_date                                  str                          0.00      5,839  
+transaction_type                                 str                          0.01         20  
+tenure                                           str                         27.90          8  
+property_type                                    str                          0.00          5  
+built_form                                       str                          1.08          7  
+construction_age_band                            str                          0.00         61  
+total_floor_area                                 str                          0.07        506  
+number_habitable_rooms                           str                          9.24         37  
+current_energy_rating                            str                          0.00          7  
+current_energy_efficiency                        str                          0.00        112  
+potential_energy_rating                          str                          0.00          7  
+potential_energy_efficiency                      str                          0.00        125  
+energy_consumption_current                       str                          0.00      1,101  
+co2_emissions_current                            str                          0.00        193  
+walls_description                                str                          0.00        262  
+walls_energy_eff                                 str                          0.00          6  
+roof_description                                 str                          0.01        172  
+roof_energy_eff                                  str                          0.00          6  
+floor_description                                str                          0.00        184  
+floor_energy_eff                                 str                          0.00          6  
+windows_description                              str                          0.00         26  
+windows_energy_eff                               str                          0.00          6  
+glazed_type                                      str                         15.46          9  
+multi_glaze_proportion                           str                          2.42        101  
+main_fuel                                        str                          1.29         33  
+mainheat_description                             str                          0.00        164  
+mainheat_energy_eff                              str                          0.00          6  
+mainheatcont_description                         str                          0.00         50  
+mainheatc_energy_eff                             str                          0.00          6  
+mains_gas_flag                                   str                          9.50          2  
+photo_supply                                     str                         10.76         57  
+solar_water_heating_flag                         str                          9.24          2  
+wind_turbine_count                               str                          0.65          4  
+source_member                                    str                          0.00         19  
+property_id                                      str                          0.00     65,872  
+c_rating                                         str                          0.00          7  
+c_sap_score                                      int64                        0.00        112  
+c_potential_rating                               str                          0.00          7  
+c_potential_sap                                  int64                        0.00        125  
+c_floor_area_m2                                  float64                      0.07        506  
+c_property_type                                  str                          0.00          5  
+c_built_form                                     str                          2.38          6  
+c_age_band                                       str                          0.19         48  
+c_age_start                                      float64                      0.19         40  
+c_age_end                                        float64                      0.19         42  
+c_need_age_band                                  Int64                        0.19          4  
+c_walls_rating                                   str                          0.16          5  
+c_walls_rating_status                            str                          0.00          2  
+c_roof_rating                                    str                         14.81          5  
+c_roof_rating_status                             str                          0.00          2  
+c_floor_rating                                   str                         93.79          5  
+c_floor_rating_status                            str                          0.00          2  
+c_windows_rating                                 str                          0.17          5  
+c_windows_rating_status                          str                          0.00          2  
+c_glazing                                        str                          0.16          4  
+c_multi_glaze_pct                                float64                      2.42        101  
+c_heating_type                                   str                          0.19          5  
+c_heating_rating                                 str                          0.21          5  
+c_controls                                       str                          0.20          4  
+c_solar_pv                                       boolean                     10.76          2  
+c_solar_pv_roof_pct                              float64                     98.76         56  
+c_mains_gas                                      boolean                      9.50          2  
+c_epc_predicted_consumption_kwh_m2_primary       int64                        0.00      1,101  
+c_epc_predicted_consumption_status               str                          0.00          2  
+c_lodgement_date                                 datetime64[us]               0.00      6,299  
+
+## retrofit_history  (data/processed/region=york/retrofit_history.parquet; 32,051 rows, 6 columns)
+column                                           dtype                      null %   distinct  note
+property_id                                      str                          0.00     17,615  
+from_date                                        datetime64[us]               0.00      4,157  
+to_date                                          datetime64[us]               0.00      4,815  
+field                                            str                          0.00          6  
+old                                              str                          0.00         20  
+new                                              str                          0.00         20  
+
+## sales_matched  (data/processed/region=york/sales_matched.parquet; 4,095 rows, 31 columns)
+column                                           dtype                      null %   distinct  note
+transaction_id                                   str                          0.00      4,095  
+price                                            int64                        0.00        893  
+sale_date_raw                                    object                       0.00        405  
+postcode                                         large_string                                  restricted, not loaded
+new_build                                        int64                        0.00          2  
+tenure                                           str                          0.00          2  
+paon                                             large_string                                  restricted, not loaded
+saon                                             large_string                                  restricted, not loaded
+street                                           large_string                                  restricted, not loaded
+locality                                         large_string                                  restricted, not loaded
+town                                             large_string                                  restricted, not loaded
+district                                         large_string                                  restricted, not loaded
+county                                           large_string                                  restricted, not loaded
+property_type                                    str                          0.00          4  
+postcode_district                                str                          0.02         13  
+postcode_sector                                  str                          0.02         41  
+address_key                                      large_string                                  restricted, not loaded
+sale_addr                                        large_string                                  restricted, not loaded
+sale_addr_loc                                    large_string                                  restricted, not loaded
+property_id                                      str                          2.32      3,986  
+match_status                                     str                          0.00          3  
+match_method                                     str                          0.00          6  
+match_score                                      float64                      1.10         66  
+epc_address                                      large_string                                  restricted, not loaded
+sale_date                                        datetime64[ns]               0.00        405  
+epc_cert_at_sale                                 str                          2.42      3,984  
+epc_lodged_at_sale                               datetime64[ns]               2.42      1,830  
+epc_rating_at_sale                               str                          2.42          7  
+epc_sap_at_sale                                  float64                      2.42         81  
+epc_rating_at_sale_status                        str                          0.00          3  
+split                                            str                          2.32          3  
+
+## need_4m  (data/processed/need_4m.parquet; 4,000,000 rows, 29 columns)
+column                                           dtype                      null %   distinct  note
+property_id                                      str                          0.00  4,000,000  
+property_type                                    str                          0.00          6  
+age_band                                         str                          0.00          4  
+age_band_code                                    int64                        0.00          4  
+floor_area_band                                  str                          0.00          5  
+floor_area_band_code                             int64                        0.00          5  
+floor_area_m2_rep                                float64                      0.00          5  
+conservatory                                     float64                     80.92          2  
+council_tax_band                                 str                          0.00          9  
+imd_quintile                                     float64                      0.00          5  
+region_code                                      str                          0.00         10  
+region                                           str                          0.00         10  
+epc_band                                         str                         30.03          5  
+loft_insulation_scheme                           int64                        0.00          2  
+loft_insulation_year                             float64                     85.62         25  
+cavity_wall_insulation_scheme                    int64                        0.00          2  
+cavity_wall_insulation_year                      float64                     85.80         25  
+solar_pv                                         int64                        0.00          2  
+solar_pv_year                                    float64                     98.36         15  
+main_heat_gas                                    int64                        0.00          2  
+gas_status                                       str                          0.00          3  
+gas_kwh                                          float64                      3.28      1,951  
+gas_years_valid                                  int64                        0.00          4  
+elec_status                                      str                          0.00          3  
+elec_kwh                                         float64                      3.48        972  
+elec_years_valid                                 int64                        0.00          4  
+purchased_kwh                                    float64                      6.20      6,062  
+energy_intensity_kwh_m2                          float64                      6.20     22,801  
+split                                            str                          0.00          3  
+
+## need_50k  (data/processed/need_50k.parquet; 50,000 rows, 29 columns)
+column                                           dtype                      null %   distinct  note
+property_id                                      str                          0.00     50,000  
+property_type                                    str                          0.00          6  
+age_band                                         str                          0.00          4  
+age_band_code                                    int64                        0.00          4  
+floor_area_band                                  str                          0.00          5  
+floor_area_band_code                             int64                        0.00          5  
+floor_area_m2_rep                                float64                      0.00          5  
+conservatory                                     float64                     80.92          2  
+council_tax_band                                 str                          0.00          9  
+imd_quintile                                     float64                      0.00          5  
+region_code                                      str                          0.00         10  
+region                                           str                          0.00         10  
+epc_band                                         str                         30.17          5  
+loft_insulation_scheme                           int64                        0.00          2  
+loft_insulation_year                             float64                     85.64         25  
+cavity_wall_insulation_scheme                    int64                        0.00          2  
+cavity_wall_insulation_year                      float64                     85.67         25  
+solar_pv                                         int64                        0.00          2  
+solar_pv_year                                    float64                     98.40         15  
+main_heat_gas                                    int64                        0.00          2  
+gas_status                                       str                          0.00          3  
+gas_kwh                                          float64                      3.36      1,519  
+gas_years_valid                                  int64                        0.00          4  
+elec_status                                      str                          0.00          3  
+elec_kwh                                         float64                      3.63        719  
+elec_years_valid                                 int64                        0.00          4  
+purchased_kwh                                    float64                      6.38      3,169  
+energy_intensity_kwh_m2                          float64                      6.38      7,791  
+split                                            str                          0.00          3  
+
+## benchmarks  (data/processed/region=york/benchmarks.parquet; 489 rows, 10 columns)
+column                                           dtype                      null %   distinct  note
+need_main_fuel                                   int64                        0.00          2  
+need_property_type                               str                          3.07          6  
+need_epc_band                                    str                          0.00          5  
+need_floor_area_band                             float64                     21.47          5  
+median                                           float64                      0.00        338  
+q1                                               float64                      0.00        327  
+q3                                               float64                      0.00        408  
+n                                                int64                        0.00        359  
+fuel                                             str                          0.00          2  
+level                                            str                          0.00          3  
+
+## Plan assumption checks (counts only)
+homes_tagged split: train=46,151, test=9,924, val=9,797
+homes_tagged derived postcode_outward: 65,872 non-null, 11 distinct; postcode_sector 40 distinct
+homes_tagged rec_heat_pump positives: 31
+epc_certs_all has no split column: split joined from homes_tagged on property_id
+epc_certs_all certificates by home split: train=66,631, test=14,585, val=14,132
+epc_certs_all certificates per home: max 67, homes with >1 certificate 24,485
+epc_certs_all c_sap_score: missing 0, outside 1-110 19
+epc_certs_all lodgement year range: 2008-2026
+epc_certs_all transaction_type distinct: 20
+retrofit_history fields: roof_rating=12,366, walls_rating=9,295, controls=4,339, glazing=4,034, heating_type=1,580, solar_pv=437
+sales_matched match_status: linked=4,000, unmatched=94, ambiguous=1
+sales_matched epc_rating_at_sale_status: observed=3,996, no_link=95, unavailable_no_epc_before_sale=4
+sales_matched split: train=2,794, test=619, val=587, <null>=95
+sales_matched postcode_district outward-code format: 4,094/4,094; postcode_sector sector format: 4,094/4,094
+sales_matched sale months: 2025-01 to 2026-08
+sales_matched new_build: 0=3,970, 1=125; tenure: F=3,479, L=616; property_type: Semi-detached=1,377, Terraced=1,206, Detached=927, Flat/Maisonette=585
+sales_matched has no PPD category column: ppd.parquet keeps category A only (docs/DATA.md 1.4)
+need_4m split: train=2,800,395, val=599,919, test=599,686
+need_4m Yorkshire and The Humber (E12000003): 369,297
+need_4m gas_status: metered=3,175,891, no_gas_meter=692,763, unavailable=131,346; elec_status: metered=3,860,836, unavailable=79,129, no_elec_meter=60,035

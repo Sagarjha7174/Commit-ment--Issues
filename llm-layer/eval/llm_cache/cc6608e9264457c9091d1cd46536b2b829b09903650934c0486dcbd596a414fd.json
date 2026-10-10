@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is rated {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. With the selected measures the score improves to {green_home_score.after.total} and moves to a {green_home_score.after.class} rating.",
+ "issues": "{derived.issues}",
+ "plan": "The plan follows the order {derived.plan_order} because {derived.order_reason}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity is estimated to rise by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. The measures contribute as follows: loft insulation saves {energy_results.per_measure.0.gas_saving_kwh} of gas and {energy_results.per_measure.0.elec_saving_kwh} of electricity; cavity wall insulation saves {energy_results.per_measure.1.gas_saving_kwh} of gas; the heat pump saves {energy_results.per_measure.2.gas_saving_kwh} of gas but adds {energy_results.per_measure.2.elec_saving_kwh} of electricity; solar panels reduce electricity by {energy_results.per_measure.3.elec_saving_kwh}.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "The indicative property value change is between {valuation.uplift_low_pct} and {valuation.uplift_high_pct}.",
+ "not_suitable": "Solid wall insulation is not suitable because {feasibility.solid_wall.reason}.",
+ "caveats": "Gas and electricity use are modelled estimates from the NEED‑trained energy model, not meter readings. Assumptions used include {assumptions}."
+}

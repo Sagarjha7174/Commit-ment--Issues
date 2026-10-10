@@ -1,0 +1,15 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "double_glazing"
+ ],
+ "remove": [],
+ "role": null,
+ "horizon": null,
+ "budget_gbp": null,
+ "priorities": [],
+ "constraints": [],
+ "completed": [],
+ "rejected": [],
+ "unsupported": []
+}

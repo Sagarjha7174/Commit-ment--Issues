@@ -1,6 +1,6 @@
 {
  "version": "engine-params-v2",
- "description": "Engine refinements on top of the catalogue (DECISIONS D15-D29, docs/IMPROVEMENT_PLAN.md). Kept out of retrofit_catalogue.json so pipelines/build_catalogue.py never overwrites them.",
+ "description": "Engine refinements on top of the catalogue (DECISIONS D15-D29). Kept out of retrofit_catalogue.json so pipelines/build_catalogue.py never overwrites them.",
  "boiler_efficiency_by_heating_rating": {
   "values": {
    "Very Good": 0.89,

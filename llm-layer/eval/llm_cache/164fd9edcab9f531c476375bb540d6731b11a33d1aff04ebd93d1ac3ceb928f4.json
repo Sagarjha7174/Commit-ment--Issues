@@ -1,0 +1,13 @@
+{
+ "kind": "question_about_current",
+ "add": [],
+ "remove": [],
+ "role": null,
+ "horizon": null,
+ "budget_gbp": null,
+ "priorities": [],
+ "constraints": [],
+ "completed": [],
+ "rejected": [],
+ "unsupported": []
+}

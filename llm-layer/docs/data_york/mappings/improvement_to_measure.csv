@@ -1,0 +1,70 @@
+improvement_id,improvement_summary,measure
+1,Insulate hot water cylinder with 80 mm jacket,other
+2,Increase hot water cylinder insulation,other
+3,Add additional 80 mm jacket to hot water cylinder,other
+4,Hot water cylinder thermostat,other
+5,Increase loft insulation to 270 mm,loft_insulation
+6,Cavity wall insulation,cavity_wall
+7,50 mm internal or external wall insulation,solid_wall
+8,Replace single glazed windows with low-E double glazed windows,double_glazing
+9,Secondary glazing to single glazed windows,double_glazing
+10,Draught proof single-glazed windows,other
+11,Upgrade heating controls,smart_thermostat
+12,Upgrade heating controls,smart_thermostat
+13,Upgrade heating controls,smart_thermostat
+14,Upgrade heating controls,smart_thermostat
+15,Upgrade heating controls,smart_thermostat
+16,Time and temperature zone control,smart_thermostat
+17,Upgrade heating controls,smart_thermostat
+18,Upgrade heating controls,smart_thermostat
+19,Solar water heating,other
+20,Replace boiler with new condensing boiler,other
+21,Replace boiler with new condensing boiler,other
+22,Replace boiler with biomass boiler,other
+23,Wood pellet stove with boiler and radiators,other
+24,Fan assisted storage heaters and dual immersion cylinder,other
+25,Fan-assisted storage heaters,other
+26,Replacement warm air unit,other
+27,Change heating to gas condensing boiler,other
+28,Condensing oil boiler with radiators,other
+29,Change heating to gas condensing boiler,other
+30,Fan assisted storage heaters and dual immersion cylinder,other
+31,Fan-assisted storage heaters,other
+32,Change heating to gas condensing boiler,other
+34,"Solar photovoltaic panels, 2.5 kWp",solar_pv
+35,Low energy lighting for all fixed outlets,other
+36,Replace heating unit with condensing unit,other
+37,Install condensing boiler,other
+38,Install condensing boiler,other
+39,Wood pellet stove with boiler and radiators,other
+40,Change room heaters to condensing boiler,other
+41,Change room heaters to condensing boiler,other
+42,Replace heating unit with mains gas condensing unit,other
+43,Condensing oil boiler with radiators,other
+44,Wind turbine,other
+45,Flat roof or sloping ceiling insulation,loft_insulation
+46,Room-in-roof insulation,loft_insulation
+47,Floor insulation,other
+48,High performance external doors,other
+49,Heat recovery system for mixer showers,other
+50,Flue gas heat recovery in conjunction with boiler,other
+51,Air or ground source heat pump,heat_pump
+52,Air or ground source heat pump with underfloor heating,heat_pump
+53,Micro CHP,other
+54,Biomass boiler (Exempted Appliance if in Smoke Control Area),other
+55,External insulation with cavity wall insulation,solid_wall
+56,Replacement glazing units,double_glazing
+57,Floor insulation (suspended floor),other
+58,Floor insulation (solid floor),other
+59,High heat retention storage heaters and dual immersion cylinder,other
+60,High heat retention storage heaters,other
+61,High heat retention storage heaters and dual immersion cylinder,other
+62,High heat retention storage heaters,other
+63,Party wall insulation,other
+65,External wall insulation,solid_wall
+66,Internal insulation with cavity wall insulation,solid_wall
+70,Water heating controls,other
+72,Add PV battery,other
+73,Add PV diverter,other
+75,Air or ground source heat pump,heat_pump
+76,Air or ground source heat pump with underfloor heating,heat_pump

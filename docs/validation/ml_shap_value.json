@@ -1,0 +1,69 @@
+{
+ "model": "value_gbm",
+ "version": "value_gbm-22f686dedf",
+ "n_rows": 585,
+ "method": "shap.TreeExplainer, mean |SHAP| on val rows",
+ "units": "log(price)",
+ "top15": [
+  {
+   "feature": "log_floor_area",
+   "mean_abs_shap": 0.17901
+  },
+  {
+   "feature": "habitable_rooms",
+   "mean_abs_shap": 0.04877
+  },
+  {
+   "feature": "postcode_district",
+   "mean_abs_shap": 0.03319
+  },
+  {
+   "feature": "te_sector",
+   "mean_abs_shap": 0.03159
+  },
+  {
+   "feature": "tenure_leasehold",
+   "mean_abs_shap": 0.02809
+  },
+  {
+   "feature": "type_form",
+   "mean_abs_shap": 0.02245
+  },
+  {
+   "feature": "area_per_room",
+   "mean_abs_shap": 0.02243
+  },
+  {
+   "feature": "lr_type",
+   "mean_abs_shap": 0.02164
+  },
+  {
+   "feature": "age_mid_year",
+   "mean_abs_shap": 0.01614
+  },
+  {
+   "feature": "built_form",
+   "mean_abs_shap": 0.01154
+  },
+  {
+   "feature": "sap_score",
+   "mean_abs_shap": 0.01064
+  },
+  {
+   "feature": "floor_type",
+   "mean_abs_shap": 0.01039
+  },
+  {
+   "feature": "heating_family",
+   "mean_abs_shap": 0.00982
+  },
+  {
+   "feature": "property_type",
+   "mean_abs_shap": 0.0076
+  },
+  {
+   "feature": "sale_month_index",
+   "mean_abs_shap": 0.00581
+  }
+ ]
+}

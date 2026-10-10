@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "solar_pv"
+ ],
+ "remove": [],
+ "unsupported": []
+}

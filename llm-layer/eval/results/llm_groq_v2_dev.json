@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "date": "2026-10-10",
+    "providers": [
+      "groq"
+    ],
+    "generator_models": {
+      "groq": "openai/gpt-oss-120b"
+    },
+    "judge_model": "qwen/qwen3.8-27b",
+    "prompt_version": "explain_v2",
+    "mode": "llm",
+    "split": "dev",
+    "engine": "fake_engine:run",
+    "scenarios_file": "eval/scenarios.jsonl"
+  },
+  "by_type": {
+    "normal": {
+      "n": 8,
+      "passed": 8,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    },
+    "missing_data": {
+      "n": 12,
+      "passed": 12,
+      "failed_checks": {},
+      "pass_rate": 1.0
+    }
+  },
+  "cases": 20,
+  "all_checks_pass_rate": 1.0,
+  "explanation_sources": {
+    "llm": 3,
+    "llm_patched": 17,
+    "template": 0
+  },
+  "llm_used_rate": 1.0,
+  "clean_llm_rate": 0.15,
+  "template_fallback_rate": 0.0,
+  "llm_sentence_acceptance": 0.956,
+  "llm_sentences": {
+    "written": 389,
+    "rejected": 17,
+    "template_filled": 30
+  },
+  "multi_attempt_rate": 0.0,
+  "providers_used": {
+    "groq": 20
+  },
+  "cases_answered_from_cache": 20,
+  "rejections_by_code": {
+    "VERIFY": 8,
+    "NUMBER_WORD": 7,
+    "DIRECTION": 3
+  },
+  "numeric_groundedness": "100% by construction: the LLM never sees or writes numbers; every displayed number is filled in by code from the scenario result (see LLM.md).",
+  "llm_call_ms": null,
+  "tokens": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 0
+  },
+  "cost_estimate_usd": null,
+  "judge": {
+    "cases": 5,
+    "sentences": 102,
+    "groundedness": 0.922,
+    "factual_accuracy": 0.971,
+    "unsupported_claim_rate": 0.049,
+    "targets": {
+      "groundedness": ">= 0.90",
+      "factual_accuracy": ">= 0.90",
+      "unsupported_claim_rate": "< 0.05"
+    },
+    "note": "Supplementary: judged by a second model on a sample; see human review for agreement."
+  }
+}

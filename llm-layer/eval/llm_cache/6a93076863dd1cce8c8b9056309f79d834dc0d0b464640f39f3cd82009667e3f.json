@@ -1,0 +1,11 @@
+{
+ "score": "Your home’s Green Home Score today is {green_home_score.before.total} and is classed as {green_home_score.before.class}. The biggest score drags are {derived.score_drags}. Because one part of the score is missing, the possible range is {green_home_score.before.range}. After adding the selected measures the score is {green_home_score.after.total} and moves to {green_home_score.after.class}.",
+ "issues": "The key issues are {derived.issues}.",
+ "plan": "The measures will be applied in this order: {derived.plan_order}.",
+ "energy": "Gas use is estimated to fall by {energy_results.change.gas_saving_kwh}. Grid electricity change is estimated by {energy_results.change.grid_elec_saving_kwh}. Overall, the energy the home buys is estimated to fall by {energy_results.change.purchased_saving_kwh}. Loft insulation contributes a gas saving of {energy_results.per_measure.0.gas_saving_kwh} and cavity wall insulation contributes a gas saving of {energy_results.per_measure.1.gas_saving_kwh}.",
+ "carbon": "Estimated carbon emissions are estimated to fall by {carbon_results.saving_kg}.",
+ "cost": "The estimated cost of the selected measures is {cost_results.package_cost_gbp}. Changes to energy bills are not estimated because {cost_results.bill_reason}.",
+ "value": "An indicative property value change is not estimated because {valuation.reason}.",
+ "not_suitable": "Cavity wall insulation needs verification as {feasibility.cavity_wall.reason}. Double glazing is not suitable because {feasibility.double_glazing.reason}. Solid wall insulation needs verification as {feasibility.solid_wall.reason}.",
+ "caveats": "Warnings: {warnings.0} {warnings.1}. Missing details: {derived.missing_inputs}. Assumptions used: {assumptions}."
+}

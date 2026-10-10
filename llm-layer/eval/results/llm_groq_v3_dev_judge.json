@@ -1,0 +1,2112 @@
+[
+  {
+    "id": "missing_data-012",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-020",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 18,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-007",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 20,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-017",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 17,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-002",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-006",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 23,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 21,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 22,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-008",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "contradicted",
+        "note": "Cavity wall insulation needs verification, it is not marked as unsuitable/infeasible."
+      },
+      {
+        "index": 17,
+        "verdict": "contradicted",
+        "note": "Solid wall insulation needs verification, it is not marked as unsuitable/infeasible."
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-011",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-022",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 17,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-005",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-010",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-003",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 19,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-006",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 18,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-004",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-012",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 17,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-009",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 20,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-025",
+    "type": "normal",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 18,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "missing_data-001",
+    "type": "missing_data",
+    "judge": "gemini:gemini-3.8-flash",
+    "sentences": 21,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 18,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 19,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 20,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-001",
+    "type": "normal",
+    "judge": "groq:openai/gpt-oss-20b",
+    "sentences": 17,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  },
+  {
+    "id": "normal-015",
+    "type": "normal",
+    "judge": "groq:openai/gpt-oss-20b",
+    "sentences": 18,
+    "verdicts": [
+      {
+        "index": 0,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 1,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 2,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 3,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 4,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 5,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 6,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 7,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 8,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 9,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 10,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 11,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 12,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 13,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 14,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 15,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 16,
+        "verdict": "supported",
+        "note": ""
+      },
+      {
+        "index": 17,
+        "verdict": "supported",
+        "note": ""
+      }
+    ]
+  }
+]

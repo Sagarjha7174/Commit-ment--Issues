@@ -1,0 +1,8 @@
+{
+ "kind": "change_measures",
+ "add": [
+  "heat_pump"
+ ],
+ "remove": [],
+ "unsupported": []
+}
