@@ -1,0 +1,25 @@
+{
+ "version": "score-params-v1",
+ "intensity": {
+  "definition": "(baseline_gas_kwh + baseline_elec_kwh) / floor_area_m2",
+  "units": "kWh per m2 per year (population benchmark energy, not metered)",
+  "p10": 75.749,
+  "p90": 186.022,
+  "median": 137.732,
+  "n": 43032,
+  "n_train_total": 46151,
+  "n_excluded": 3119,
+  "excluded_by_reason": {
+   "baseline_gas_unavailable": 2918,
+   "energy_zero_or_negative_A_rated": 105,
+   "floor_area_implausible": 17,
+   "gas_boiler_but_no_mains_gas": 42,
+   "no_heating_description": 37
+  },
+  "percentile_method": "numpy.percentile, linear interpolation"
+ },
+ "split": "train",
+ "source_file": "data/processed/region=york/homes.parquet",
+ "date": "2026-10-10",
+ "note": "Baselines are NEED population benchmarks, so intensity reflects home type/rating/size cells, not individual metering."
+}

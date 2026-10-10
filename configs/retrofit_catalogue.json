@@ -1,0 +1,1489 @@
+{
+ "version": "cat-v3",
+ "generated_by": "pipelines/build_catalogue.py",
+ "global": {
+  "boiler_efficiency": {
+   "value": 0.85,
+   "status": "assumption",
+   "note": "seasonal efficiency of an existing gas boiler; used to convert gas kWh to delivered heat"
+  },
+  "other_gas_share": {
+   "value": 0.0305,
+   "status": "published_national_average",
+   "configurable": true,
+   "definition": "share of total household gas NOT used for space or water heating (cooking etc.)",
+   "source": "DESNZ Energy Consumption in the UK (ECUK) 2026, End uses data tables, Table U3 (domestic natural gas by end use), https://www.gov.uk/government/statistics/energy-consumption-in-the-uk-2026 ; local copy configs/reference_docs/ECUK_2026_End_Use_tables.xlsx",
+   "evidence": {
+    "years": [
+     2021,
+     2022,
+     2023,
+     2024,
+     2025
+    ],
+    "space": 0.7495,
+    "water": 0.2201,
+    "cooking": 0.0305,
+    "space_of_heat_water": 0.773
+   },
+   "note": "UK-wide domestic average, not York-specific; mean of 2021-2025"
+  },
+  "space_share_of_heat_water_gas": {
+   "value": 0.77,
+   "status": "assumption",
+   "configurable": true,
+   "definition": "share of (space + water heating) gas used for space heating",
+   "evidence": {
+    "ecuk_2021_2025_mean": 0.773,
+    "source": "DESNZ Energy Consumption in the UK (ECUK) 2026, End uses data tables, Table U3 (domestic natural gas by end use), https://www.gov.uk/government/statistics/energy-consumption-in-the-uk-2026 ; local copy configs/reference_docs/ECUK_2026_End_Use_tables.xlsx"
+   },
+   "note": "0.77 = ECUK 2021-2025 mean 77.3% rounded to 2 dp (decision D11; cat-v2 used 0.75)"
+  },
+  "water_share_of_heat_water_gas": {
+   "value": 0.23,
+   "status": "assumption",
+   "configurable": true,
+   "definition": "share of (space + water heating) gas used for water heating; = 1 - space_share_of_heat_water_gas"
+  },
+  "heat_pump_scop": {
+   "low": 2.5,
+   "mid": 3.0,
+   "high": 3.5,
+   "status": "assumption",
+   "definition": "seasonal coefficient of performance of an air source heat pump (useful heat / electricity)",
+   "note": "same values as the heat_pump measure impact block; read from here by the engine"
+  },
+  "derived": {
+   "space_share_of_total_gas": 0.746515,
+   "formula": "space_share_of_heat_water_gas x (1 - other_gas_share)",
+   "ecuk_space_share_of_total_gas": 0.7495
+  },
+  "impact_sign_convention": "saving = baseline - after; positive = reduction"
+ },
+ "measures": [
+  {
+   "id": "loft_insulation",
+   "label": "Loft / roof insulation",
+   "applicability_rules": {
+    "text": "Not a flat/maisonette without its own roof (EPC roof N/A = another dwelling above); roof rating not Good/Very Good",
+    "requires": {
+     "roof_rating_status": "observed",
+     "roof_rating_not_in": [
+      "Good",
+      "Very Good"
+     ]
+    },
+    "unknown_if_missing": [
+     "roof_rating"
+    ]
+   },
+   "impact": {
+    "low": 0.028923,
+    "mid": 0.032117,
+    "high": 0.032117
+   },
+   "impact_units": "fraction of impact_basis (0.12 = 12%)",
+   "impact_method": "mid = NEED headline median % saving; low/high = lower/higher of NEED headline median and mean",
+   "impact_basis": "total_gas",
+   "target_end_use": "space_heating",
+   "conversion_method": "none: NEED reports the % of the whole-home annual metered fuel, applied directly to that basis",
+   "household_dispersion": {
+    "q1": -0.159099,
+    "q3": 0.219969,
+    "p5": -0.497196,
+    "p95": 0.547336,
+    "note": "spread of individual-home outcomes, not uncertainty in the mean"
+   },
+   "kwh_reference": {
+    "median_kwh": 323.6,
+    "mean_kwh": 390.9,
+    "n": 1486
+   },
+   "source": "DESNZ, NEED: Impact of measures, installation year 2023 (England and Wales)",
+   "source_table": "Impact_of_measures_headline_EW_2023.xlsx, Table 1, row 'Loft Insulation' (Gas savings); distribution: Table 3 'Savings estimate'",
+   "impact_by_segment": {
+    "epc_rating": {
+     "table": "loft Table 1: Table 1: Estimated gas savings resulting from Loft insulation, by EPC rating",
+     "segments": {
+      "All domestic properties": {
+       "n": 1486.0,
+       "median_pct": 0.032117,
+       "mean_pct": 0.028923,
+       "q1": -0.159099,
+       "q3": 0.219969,
+       "status": "observed"
+      },
+      "A-C": {
+       "n": 446.0,
+       "median_pct": 0.027227,
+       "mean_pct": 0.029453,
+       "q1": -0.165403,
+       "q3": 0.227091,
+       "status": "observed"
+      },
+      "D": {
+       "n": 699.0,
+       "median_pct": 0.036567,
+       "mean_pct": 0.03204,
+       "q1": -0.156456,
+       "q3": 0.223407,
+       "status": "observed"
+      },
+      "E-G": {
+       "n": 189.0,
+       "median_pct": 0.024591,
+       "mean_pct": 0.02226,
+       "q1": -0.180128,
+       "q3": 0.223049,
+       "status": "observed"
+      },
+      "No EPC Rating": {
+       "n": 152.0,
+       "median_pct": 0.030152,
+       "mean_pct": 0.022458,
+       "q1": -0.137213,
+       "q3": 0.18274,
+       "status": "observed"
+      }
+     }
+    },
+    "property_age": {
+     "table": "loft Table 2: Table 2: Estimated gas savings resulting from Loft Insulation, by property age",
+     "segments": {
+      "All domestic properties": {
+       "n": 1486.0,
+       "median_pct": 0.032117,
+       "mean_pct": 0.028923,
+       "q1": -0.159099,
+       "q3": 0.219969,
+       "status": "observed"
+      },
+      "Pre 1919": {
+       "n": 381.0,
+       "median_pct": 0.020576,
+       "mean_pct": 0.017192,
+       "q1": -0.207088,
+       "q3": 0.240906,
+       "status": "observed"
+      },
+      "1919-44": {
+       "n": 370.0,
+       "median_pct": 0.029982,
+       "mean_pct": 0.026061,
+       "q1": -0.164712,
+       "q3": 0.225124,
+       "status": "observed"
+      },
+      "1945-64": {
+       "n": 298.0,
+       "median_pct": 0.026235,
+       "mean_pct": 0.018436,
+       "q1": -0.170601,
+       "q3": 0.207256,
+       "status": "observed"
+      },
+      "1965-82": {
+       "n": 280.0,
+       "median_pct": 0.060354,
+       "mean_pct": 0.063021,
+       "q1": -0.111611,
+       "q3": 0.239842,
+       "status": "observed"
+      },
+      "1983-99": {
+       "n": 156.0,
+       "median_pct": 0.018099,
+       "mean_pct": 0.019986,
+       "q1": -0.133914,
+       "q3": 0.175553,
+       "status": "observed"
+      },
+      "2000 onwards": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    },
+    "property_type": {
+     "table": "loft Table 3: Table 3: Estimated gas savings resulting from Loft Insulation, by property type",
+     "segments": {
+      "All domestic properties": {
+       "n": 1486.0,
+       "median_pct": 0.032117,
+       "mean_pct": 0.028923,
+       "q1": -0.159099,
+       "q3": 0.219969,
+       "status": "observed"
+      },
+      "Detached": {
+       "n": 108.0,
+       "median_pct": 0.05745,
+       "mean_pct": 0.062663,
+       "q1": -0.089642,
+       "q3": 0.212076,
+       "status": "observed"
+      },
+      "Semi detached": {
+       "n": 470.0,
+       "median_pct": 0.00918,
+       "mean_pct": 0.009455,
+       "q1": -0.182199,
+       "q3": 0.200837,
+       "status": "observed"
+      },
+      "End terrace": {
+       "n": 210.0,
+       "median_pct": 0.007792,
+       "mean_pct": -0.001563,
+       "q1": -0.212791,
+       "q3": 0.218408,
+       "status": "observed"
+      },
+      "Mid terrace": {
+       "n": 491.0,
+       "median_pct": 0.021812,
+       "mean_pct": 0.021661,
+       "q1": -0.199111,
+       "q3": 0.243608,
+       "status": "observed"
+      },
+      "Bungalow": {
+       "n": 207.0,
+       "median_pct": 0.077605,
+       "mean_pct": 0.072763,
+       "q1": -0.110045,
+       "q3": 0.255705,
+       "status": "observed"
+      }
+     }
+    },
+    "region": {
+     "table": "loft Table 8: Table 8: Estimated gas savings resulting from Loft Insulation, by region",
+     "segments": {
+      "All domestic properties": {
+       "n": 1486.0,
+       "median_pct": 0.032117,
+       "mean_pct": 0.028923,
+       "q1": -0.159099,
+       "q3": 0.219969,
+       "status": "observed"
+      },
+      "North East": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "North West": {
+       "n": 130.0,
+       "median_pct": -0.023271,
+       "mean_pct": -0.005719,
+       "q1": -0.210551,
+       "q3": 0.192856,
+       "status": "observed"
+      },
+      "Yorkshire and the Humber": {
+       "n": 230.0,
+       "median_pct": 0.021242,
+       "mean_pct": 0.016723,
+       "q1": -0.175778,
+       "q3": 0.214587,
+       "status": "observed"
+      },
+      "East Midlands": {
+       "n": 165.0,
+       "median_pct": 0.052238,
+       "mean_pct": 0.05285,
+       "q1": -0.113578,
+       "q3": 0.221544,
+       "status": "observed"
+      },
+      "West Midlands": {
+       "n": 250.0,
+       "median_pct": 0.015817,
+       "mean_pct": 0.007204,
+       "q1": -0.169186,
+       "q3": 0.186002,
+       "status": "observed"
+      },
+      "East of England": {
+       "n": 163.0,
+       "median_pct": 0.031267,
+       "mean_pct": 0.018007,
+       "q1": -0.180186,
+       "q3": 0.211807,
+       "status": "observed"
+      },
+      "London": {
+       "n": 154.0,
+       "median_pct": 0.008546,
+       "mean_pct": 0.002553,
+       "q1": -0.195591,
+       "q3": 0.213907,
+       "status": "observed"
+      },
+      "South East": {
+       "n": 204.0,
+       "median_pct": 0.081632,
+       "mean_pct": 0.084467,
+       "q1": -0.110296,
+       "q3": 0.284739,
+       "status": "observed"
+      },
+      "South West": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "Wales": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    }
+   },
+   "validated": true,
+   "cost": {
+    "low": 225.0,
+    "mid": 1050.0,
+    "high": 2100.0,
+    "currency": "GBP",
+    "n": 3658,
+    "n_range_strings": 3658,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 4,
+    "assessor_range_low": 850.0,
+    "assessor_range_high": 1200.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  },
+  {
+   "id": "cavity_wall",
+   "label": "Cavity wall insulation",
+   "applicability_rules": {
+    "text": "Built before 2000; cavity walls; walls rating not Good/Very Good",
+    "requires": {
+     "age_end_lt": 2000,
+     "walls_description_regex": "^cavity wall",
+     "walls_rating_not_in": [
+      "Good",
+      "Very Good"
+     ]
+    },
+    "unknown_if_missing": [
+     "age_end",
+     "raw_walls_description",
+     "walls_rating"
+    ]
+   },
+   "impact": {
+    "low": 0.111382,
+    "mid": 0.11982,
+    "high": 0.11982
+   },
+   "impact_units": "fraction of impact_basis (0.12 = 12%)",
+   "impact_method": "mid = NEED headline median % saving; low/high = lower/higher of NEED headline median and mean",
+   "impact_basis": "total_gas",
+   "target_end_use": "space_heating",
+   "conversion_method": "none: NEED reports the % of the whole-home annual metered fuel, applied directly to that basis",
+   "household_dispersion": {
+    "q1": -0.061,
+    "q3": 0.290136,
+    "p5": -0.364973,
+    "p95": 0.560266,
+    "note": "spread of individual-home outcomes, not uncertainty in the mean"
+   },
+   "kwh_reference": {
+    "median_kwh": 1207.5,
+    "mean_kwh": 1428.4,
+    "n": 2191
+   },
+   "source": "DESNZ, NEED: Impact of measures, installation year 2023 (England and Wales)",
+   "source_table": "Impact_of_measures_headline_EW_2023.xlsx, Table 1, row 'Cavity Wall Insulation' (Gas savings); distribution: Table 3 'Savings estimate'",
+   "impact_by_segment": {
+    "epc_rating": {
+     "table": "cavity_wall Table 1: Table 1: Estimated gas savings resulting from Cavity wall insulation, by EPC rating",
+     "segments": {
+      "All domestic properties": {
+       "n": 2191.0,
+       "median_pct": 0.11982,
+       "mean_pct": 0.111382,
+       "q1": -0.061,
+       "q3": 0.290136,
+       "status": "observed"
+      },
+      "A-C": {
+       "n": 541.0,
+       "median_pct": 0.090228,
+       "mean_pct": 0.087568,
+       "q1": -0.088189,
+       "q3": 0.267584,
+       "status": "observed"
+      },
+      "D": {
+       "n": 882.0,
+       "median_pct": 0.133328,
+       "mean_pct": 0.120189,
+       "q1": -0.055898,
+       "q3": 0.308534,
+       "status": "observed"
+      },
+      "E-G": {
+       "n": 294.0,
+       "median_pct": 0.160081,
+       "mean_pct": 0.142717,
+       "q1": -0.040569,
+       "q3": 0.329345,
+       "status": "observed"
+      },
+      "No EPC Rating": {
+       "n": 474.0,
+       "median_pct": 0.106196,
+       "mean_pct": 0.09885,
+       "q1": -0.053102,
+       "q3": 0.251007,
+       "status": "observed"
+      }
+     }
+    },
+    "property_age": {
+     "table": "cavity_wall Table 2: Table 2: Estimated gas savings resulting from Cavity wall insulation, by property age",
+     "segments": {
+      "All domestic properties": {
+       "n": 2191.0,
+       "median_pct": 0.11982,
+       "mean_pct": 0.111382,
+       "q1": -0.061,
+       "q3": 0.290136,
+       "status": "observed"
+      },
+      "Pre 1919": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "1919-44": {
+       "n": 357.0,
+       "median_pct": 0.112419,
+       "mean_pct": 0.101804,
+       "q1": -0.078831,
+       "q3": 0.286441,
+       "status": "observed"
+      },
+      "1945-64": {
+       "n": 629.0,
+       "median_pct": 0.128449,
+       "mean_pct": 0.12126,
+       "q1": -0.055632,
+       "q3": 0.30945,
+       "status": "observed"
+      },
+      "1965-82": {
+       "n": 569.0,
+       "median_pct": 0.122211,
+       "mean_pct": 0.108246,
+       "q1": -0.057383,
+       "q3": 0.282226,
+       "status": "observed"
+      },
+      "1983-99": {
+       "n": 561.0,
+       "median_pct": 0.10591,
+       "mean_pct": 0.104008,
+       "q1": -0.055229,
+       "q3": 0.263007,
+       "status": "observed"
+      },
+      "2000 onwards": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    },
+    "property_type": {
+     "table": "cavity_wall Table 3: Table 3: Estimated gas savings resulting from Cavity wall insulation, by property type",
+     "segments": {
+      "All domestic properties": {
+       "n": 2191.0,
+       "median_pct": 0.11982,
+       "mean_pct": 0.111382,
+       "q1": -0.061,
+       "q3": 0.290136,
+       "status": "observed"
+      },
+      "Detached": {
+       "n": 285.0,
+       "median_pct": 0.165794,
+       "mean_pct": 0.15694,
+       "q1": 0.001126,
+       "q3": 0.322474,
+       "status": "observed"
+      },
+      "Semi detached": {
+       "n": 905.0,
+       "median_pct": 0.104106,
+       "mean_pct": 0.099013,
+       "q1": -0.078749,
+       "q3": 0.282847,
+       "status": "observed"
+      },
+      "End terrace": {
+       "n": 244.0,
+       "median_pct": 0.149415,
+       "mean_pct": 0.1362,
+       "q1": -0.042004,
+       "q3": 0.318687,
+       "status": "observed"
+      },
+      "Mid terrace": {
+       "n": 351.0,
+       "median_pct": 0.086153,
+       "mean_pct": 0.077853,
+       "q1": -0.10092,
+       "q3": 0.256848,
+       "status": "observed"
+      },
+      "Bungalow": {
+       "n": 406.0,
+       "median_pct": 0.10719,
+       "mean_pct": 0.104288,
+       "q1": -0.065205,
+       "q3": 0.278933,
+       "status": "observed"
+      }
+     }
+    },
+    "region": {
+     "table": "cavity_wall Table 8: Table 8: Estimated gas savings resulting from Cavity wall insulation, by region",
+     "segments": {
+      "All domestic properties": {
+       "n": 2191.0,
+       "median_pct": 0.11982,
+       "mean_pct": 0.111382,
+       "q1": -0.061,
+       "q3": 0.290136,
+       "status": "observed"
+      },
+      "North East": {
+       "n": 178.0,
+       "median_pct": 0.09505,
+       "mean_pct": 0.087045,
+       "q1": -0.082161,
+       "q3": 0.257181,
+       "status": "observed"
+      },
+      "North West": {
+       "n": 246.0,
+       "median_pct": 0.109228,
+       "mean_pct": 0.102797,
+       "q1": -0.083787,
+       "q3": 0.295278,
+       "status": "observed"
+      },
+      "Yorkshire and the Humber": {
+       "n": 391.0,
+       "median_pct": 0.096715,
+       "mean_pct": 0.09067,
+       "q1": -0.086764,
+       "q3": 0.268263,
+       "status": "observed"
+      },
+      "East Midlands": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "West Midlands": {
+       "n": 141.0,
+       "median_pct": 0.079373,
+       "mean_pct": 0.0763,
+       "q1": -0.108926,
+       "q3": 0.267831,
+       "status": "observed"
+      },
+      "East of England": {
+       "n": 169.0,
+       "median_pct": 0.163785,
+       "mean_pct": 0.148141,
+       "q1": -0.02078,
+       "q3": 0.324816,
+       "status": "observed"
+      },
+      "London": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "South East": {
+       "n": 547.0,
+       "median_pct": 0.12726,
+       "mean_pct": 0.119199,
+       "q1": -0.048399,
+       "q3": 0.297576,
+       "status": "observed"
+      },
+      "South West": {
+       "n": 262.0,
+       "median_pct": 0.153163,
+       "mean_pct": 0.14663,
+       "q1": -0.004802,
+       "q3": 0.309757,
+       "status": "observed"
+      },
+      "Wales": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    }
+   },
+   "validated": true,
+   "cost": {
+    "low": 1000.0,
+    "mid": 1000.0,
+    "high": 1200.0,
+    "currency": "GBP",
+    "n": 2674,
+    "n_range_strings": 2674,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 2,
+    "assessor_range_low": 500.0,
+    "assessor_range_high": 1500.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  },
+  {
+   "id": "solid_wall",
+   "label": "Solid wall insulation (internal or external)",
+   "applicability_rules": {
+    "text": "Solid masonry walls; walls rating not Good/Very Good",
+    "requires": {
+     "walls_description_regex": "^(solid brick|sandstone|limestone|granite|whinstone|cob)",
+     "walls_rating_not_in": [
+      "Good",
+      "Very Good"
+     ]
+    },
+    "unknown_if_missing": [
+     "raw_walls_description",
+     "walls_rating"
+    ]
+   },
+   "impact": {
+    "low": 0.168508,
+    "mid": 0.172759,
+    "high": 0.172759
+   },
+   "impact_units": "fraction of impact_basis (0.12 = 12%)",
+   "impact_method": "mid = NEED headline median % saving; low/high = lower/higher of NEED headline median and mean",
+   "impact_basis": "total_gas",
+   "target_end_use": "space_heating",
+   "conversion_method": "none: NEED reports the % of the whole-home annual metered fuel, applied directly to that basis",
+   "household_dispersion": {
+    "q1": -0.023013,
+    "q3": 0.365008,
+    "p5": -0.343617,
+    "p95": 0.666074,
+    "note": "spread of individual-home outcomes, not uncertainty in the mean"
+   },
+   "kwh_reference": {
+    "median_kwh": 1857.0,
+    "mean_kwh": 2009.1,
+    "n": 2411
+   },
+   "source": "DESNZ, NEED: Impact of measures, installation year 2023 (England and Wales)",
+   "source_table": "Impact_of_measures_headline_EW_2023.xlsx, Table 1, row 'Solid Wall Insulation' (Gas savings); distribution: Table 3 'Savings estimate'",
+   "impact_by_segment": {
+    "epc_rating": {
+     "table": "solid_wall Table 1: Table 1: Estimated gas savings resulting from Solid wall insulation, by EPC rating",
+     "segments": {
+      "All domestic properties": {
+       "n": 2411.0,
+       "median_pct": 0.172759,
+       "mean_pct": 0.168508,
+       "q1": -0.023013,
+       "q3": 0.365008,
+       "status": "observed"
+      },
+      "A-C": {
+       "n": 1416.0,
+       "median_pct": 0.20821,
+       "mean_pct": 0.201341,
+       "q1": 0.013413,
+       "q3": 0.392266,
+       "status": "observed"
+      },
+      "D": {
+       "n": 525.0,
+       "median_pct": 0.156046,
+       "mean_pct": 0.158904,
+       "q1": -0.02899,
+       "q3": 0.361141,
+       "status": "observed"
+      },
+      "E-G": {
+       "n": 268.0,
+       "median_pct": 0.108474,
+       "mean_pct": 0.097015,
+       "q1": -0.094632,
+       "q3": 0.264844,
+       "status": "observed"
+      },
+      "No EPC Rating": {
+       "n": 202.0,
+       "median_pct": 0.048288,
+       "mean_pct": 0.031247,
+       "q1": -0.235468,
+       "q3": 0.214273,
+       "status": "observed"
+      }
+     }
+    },
+    "property_age": {
+     "table": "solid_wall Table 2: Table 2: Estimated gas savings resulting from Solid wall insulation, by property age",
+     "segments": {
+      "All domestic properties": {
+       "n": 2411.0,
+       "median_pct": 0.172759,
+       "mean_pct": 0.168508,
+       "q1": -0.023013,
+       "q3": 0.365008,
+       "status": "observed"
+      },
+      "Pre 1919": {
+       "n": 521.0,
+       "median_pct": 0.110888,
+       "mean_pct": 0.109219,
+       "q1": -0.094037,
+       "q3": 0.308586,
+       "status": "observed"
+      },
+      "1919-44": {
+       "n": 1072.0,
+       "median_pct": 0.167385,
+       "mean_pct": 0.166418,
+       "q1": -0.020918,
+       "q3": 0.362116,
+       "status": "observed"
+      },
+      "1945-64": {
+       "n": 602.0,
+       "median_pct": 0.219368,
+       "mean_pct": 0.210804,
+       "q1": 0.022405,
+       "q3": 0.408746,
+       "status": "observed"
+      },
+      "1965-82": {
+       "n": 216.0,
+       "median_pct": 0.174725,
+       "mean_pct": 0.168041,
+       "q1": -0.011263,
+       "q3": 0.347976,
+       "status": "observed"
+      },
+      "1983-99": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "2000 onwards": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    },
+    "property_type": {
+     "table": "solid_wall Table 3: Table 3: Estimated gas savings resulting from Solid wall insulation, by property type",
+     "segments": {
+      "All domestic properties": {
+       "n": 2411.0,
+       "median_pct": 0.172759,
+       "mean_pct": 0.168508,
+       "q1": -0.023013,
+       "q3": 0.365008,
+       "status": "observed"
+      },
+      "Detached": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "Semi detached": {
+       "n": 921.0,
+       "median_pct": 0.207934,
+       "mean_pct": 0.200964,
+       "q1": 0.011167,
+       "q3": 0.395004,
+       "status": "observed"
+      },
+      "End terrace": {
+       "n": 407.0,
+       "median_pct": 0.194855,
+       "mean_pct": 0.187318,
+       "q1": -0.006674,
+       "q3": 0.389467,
+       "status": "observed"
+      },
+      "Mid terrace": {
+       "n": 915.0,
+       "median_pct": 0.117811,
+       "mean_pct": 0.120616,
+       "q1": -0.086446,
+       "q3": 0.320935,
+       "status": "observed"
+      },
+      "Bungalow": {
+       "n": 152.0,
+       "median_pct": 0.151384,
+       "mean_pct": 0.150952,
+       "q1": -0.027852,
+       "q3": 0.321846,
+       "status": "observed"
+      }
+     }
+    },
+    "region": {
+     "table": "solid_wall Table 8: Table 8: Estimated gas savings resulting from Solid wall insulation, by region",
+     "segments": {
+      "All domestic properties": {
+       "n": 2411.0,
+       "median_pct": 0.172759,
+       "mean_pct": 0.168508,
+       "q1": -0.023013,
+       "q3": 0.365008,
+       "status": "observed"
+      },
+      "North East": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "North West": {
+       "n": 171.0,
+       "median_pct": 0.1228,
+       "mean_pct": 0.147819,
+       "q1": -0.020819,
+       "q3": 0.331061,
+       "status": "observed"
+      },
+      "Yorkshire and the Humber": {
+       "n": 340.0,
+       "median_pct": 0.192497,
+       "mean_pct": 0.186843,
+       "q1": -0.0078,
+       "q3": 0.388884,
+       "status": "observed"
+      },
+      "East Midlands": {
+       "n": 588.0,
+       "median_pct": 0.246981,
+       "mean_pct": 0.235923,
+       "q1": 0.053138,
+       "q3": 0.422614,
+       "status": "observed"
+      },
+      "West Midlands": {
+       "n": 514.0,
+       "median_pct": 0.126428,
+       "mean_pct": 0.125255,
+       "q1": -0.054626,
+       "q3": 0.299449,
+       "status": "observed"
+      },
+      "East of England": {
+       "n": 440.0,
+       "median_pct": 0.153783,
+       "mean_pct": 0.141367,
+       "q1": -0.076159,
+       "q3": 0.360097,
+       "status": "observed"
+      },
+      "London": {
+       "n": 169.0,
+       "median_pct": 0.093235,
+       "mean_pct": 0.097635,
+       "q1": -0.095783,
+       "q3": 0.282475,
+       "status": "observed"
+      },
+      "South East": {
+       "n": 106.0,
+       "median_pct": 0.12787,
+       "mean_pct": 0.143871,
+       "q1": -0.014669,
+       "q3": 0.290968,
+       "status": "observed"
+      },
+      "South West": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      },
+      "Wales": {
+       "n": null,
+       "median_pct": null,
+       "mean_pct": null,
+       "q1": null,
+       "q3": null,
+       "status": "unavailable"
+      }
+     }
+    }
+   },
+   "validated": true,
+   "cost": {
+    "low": 9000.0,
+    "mid": 9000.0,
+    "high": 9250.0,
+    "currency": "GBP",
+    "n": 5401,
+    "n_range_strings": 5401,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 3,
+    "assessor_range_low": 4000.0,
+    "assessor_range_high": 14000.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  },
+  {
+   "id": "double_glazing",
+   "label": "Double glazing",
+   "applicability_rules": {
+    "text": "Glazing not already double or triple",
+    "requires": {
+     "glazing_not_in": [
+      "double",
+      "triple"
+     ]
+    },
+    "unknown_if_missing": [
+     "glazing"
+    ]
+   },
+   "impact": {
+    "low": 0.08,
+    "mid": 0.1,
+    "high": 0.12
+   },
+   "impact_units": "fraction of impact_basis",
+   "impact_basis": "space_heat_demand",
+   "target_end_use": "space_heating",
+   "conversion_method": "gas saving = impact x space_share_of_heat_water_gas x (1 - other_gas_share) x baseline gas (gas-heated homes); partial glazing scaled by unglazed share",
+   "source": "assignment brief illustrative range (Lloyds PS2, section 4)",
+   "source_table": null,
+   "validated": false,
+   "cost": {
+    "low": 4900.0,
+    "mid": 4900.0,
+    "high": 4900.0,
+    "currency": "GBP",
+    "n": 1227,
+    "n_range_strings": 1227,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 4,
+    "assessor_range_low": 3300.0,
+    "assessor_range_high": 6500.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  },
+  {
+   "id": "smart_thermostat",
+   "label": "Smart thermostat / zoned heating controls",
+   "applicability_rules": {
+    "text": "Controls not already 'smart' (EPC proxy: time and temperature zone control)",
+    "requires": {
+     "controls_not_in": [
+      "smart"
+     ]
+    },
+    "unknown_if_missing": [
+     "controls"
+    ]
+   },
+   "impact": {
+    "low": 0.05,
+    "mid": 0.075,
+    "high": 0.1
+   },
+   "impact_units": "fraction of impact_basis",
+   "impact_basis": "space_heat_demand",
+   "target_end_use": "space_heating",
+   "conversion_method": "gas saving = impact x space_share_of_heat_water_gas x (1 - other_gas_share) x baseline gas; applied after fabric measures",
+   "source": "assignment brief illustrative range (Lloyds PS2, section 4)",
+   "source_table": null,
+   "validated": false,
+   "cost": {
+    "low": 400.0,
+    "mid": 400.0,
+    "high": 400.0,
+    "currency": "GBP",
+    "n": 1541,
+    "n_range_strings": 1541,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 2,
+    "assessor_range_low": 350.0,
+    "assessor_range_high": 450.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  },
+  {
+   "id": "heat_pump",
+   "label": "Air source heat pump",
+   "applicability_rules": {
+    "text": "Not already a heat pump; flats (no confirmed outdoor space) get Low suitability",
+    "requires": {
+     "heating_type_not_in": [
+      "heat_pump"
+     ]
+    },
+    "suitability_low_if": {
+     "property_type_in": [
+      "Flat",
+      "Maisonette"
+     ]
+    },
+    "unknown_if_missing": [
+     "heating_type"
+    ]
+   },
+   "impact": {
+    "scop_low": 2.5,
+    "scop_mid": 3.0,
+    "scop_high": 3.5
+   },
+   "impact_units": "seasonal coefficient of performance",
+   "impact_basis": "total_gas",
+   "target_end_use": "space_heating_and_hot_water",
+   "conversion_method": "heat = (1 - other_gas_share) x gas x boiler_efficiency (space + water); added electricity = heat / SCOP; that gas removed, cooking gas stays. Gas goes down and electricity goes up (negative electricity saving).",
+   "source": "assumption: SCOP 3.0 (2.5-3.5)",
+   "source_table": null,
+   "validated": false,
+   "cost": {
+    "low": 17500.0,
+    "mid": 17500.0,
+    "high": 17500.0,
+    "currency": "GBP",
+    "n": 31,
+    "n_range_strings": 31,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 1,
+    "assessor_range_low": 5000.0,
+    "assessor_range_high": 30000.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data_low_confidence",
+    "note": "only 31 values / 1 distinct cost text(s); the range reflects one software default text, not observed installation prices"
+   },
+   "dependencies": [
+    "loft_insulation",
+    "cavity_wall",
+    "solid_wall",
+    "double_glazing"
+   ],
+   "dependency_note": "apply after fabric measures: heat pump sizing and savings use the post-fabric heat demand",
+   "version": "cat-v3"
+  },
+  {
+   "id": "solar_pv",
+   "label": "Solar PV panels",
+   "applicability_rules": {
+    "text": "Not a flat/maisonette; no existing PV",
+    "requires": {
+     "property_type_not_in": [
+      "Flat",
+      "Maisonette"
+     ],
+     "solar_pv_not": true
+    },
+    "unknown_if_missing": [
+     "property_type",
+     "solar_pv"
+    ]
+   },
+   "impact": {
+    "low": 0.093464,
+    "mid": 0.12228,
+    "high": 0.12228
+   },
+   "impact_units": "fraction of impact_basis (0.12 = 12%)",
+   "impact_method": "mid = NEED headline median % saving; low/high = lower/higher of NEED headline median and mean",
+   "impact_basis": "total_grid_electricity",
+   "target_end_use": "grid_import",
+   "conversion_method": "none: NEED reports the % of the whole-home annual metered fuel, applied directly to that basis",
+   "household_dispersion": {
+    "q1": -0.159432,
+    "q3": 0.379284,
+    "p5": -0.6798,
+    "p95": 0.757519,
+    "note": "spread of individual-home outcomes, not uncertainty in the mean"
+   },
+   "kwh_reference": {
+    "median_kwh": 303.7,
+    "mean_kwh": 314.8,
+    "n": 25199
+   },
+   "source": "DESNZ, NEED: Impact of measures, installation year 2023 (England and Wales)",
+   "source_table": "Impact_of_measures_headline_EW_2023.xlsx, Table 1, row 'Solar PV' (Electricity savings); distribution: Table 3 'Savings estimate'",
+   "impact_by_segment": {
+    "epc_rating": {
+     "table": "solar Table 1: Table 1: Estimated electricity savings resulting from Solar PV, by EPC rating",
+     "segments": {
+      "All domestic properties": {
+       "n": 25199.0,
+       "median_pct": 0.12228,
+       "mean_pct": 0.093464,
+       "q1": -0.159432,
+       "q3": 0.379284,
+       "status": "observed"
+      },
+      "A-C": {
+       "n": 8457.0,
+       "median_pct": 0.120558,
+       "mean_pct": 0.093001,
+       "q1": -0.16104,
+       "q3": 0.378095,
+       "status": "observed"
+      },
+      "D": {
+       "n": 6087.0,
+       "median_pct": 0.106769,
+       "mean_pct": 0.075652,
+       "q1": -0.180215,
+       "q3": 0.367139,
+       "status": "observed"
+      },
+      "E-G": {
+       "n": 2945.0,
+       "median_pct": 0.083704,
+       "mean_pct": 0.05486,
+       "q1": -0.209286,
+       "q3": 0.34827,
+       "status": "observed"
+      },
+      "No EPC Rating": {
+       "n": 7710.0,
+       "median_pct": 0.150333,
+       "mean_pct": 0.122377,
+       "q1": -0.12251,
+       "q3": 0.400484,
+       "status": "observed"
+      }
+     }
+    },
+    "property_age": {
+     "table": "solar Table 2: Table 2: Estimated electricity savings resulting from Solar PV, by property age",
+     "segments": {
+      "All domestic properties": {
+       "n": 25199.0,
+       "median_pct": 0.12228,
+       "mean_pct": 0.093464,
+       "q1": -0.159432,
+       "q3": 0.379284,
+       "status": "observed"
+      },
+      "Pre 1919": {
+       "n": 3684.0,
+       "median_pct": 0.107319,
+       "mean_pct": 0.085353,
+       "q1": -0.177307,
+       "q3": 0.373816,
+       "status": "observed"
+      },
+      "1919-44": {
+       "n": 3664.0,
+       "median_pct": 0.104947,
+       "mean_pct": 0.080301,
+       "q1": -0.167802,
+       "q3": 0.359229,
+       "status": "observed"
+      },
+      "1945-64": {
+       "n": 4623.0,
+       "median_pct": 0.13081,
+       "mean_pct": 0.102013,
+       "q1": -0.141889,
+       "q3": 0.380641,
+       "status": "observed"
+      },
+      "1965-82": {
+       "n": 5662.0,
+       "median_pct": 0.12968,
+       "mean_pct": 0.097645,
+       "q1": -0.146819,
+       "q3": 0.378324,
+       "status": "observed"
+      },
+      "1983-99": {
+       "n": 3963.0,
+       "median_pct": 0.139653,
+       "mean_pct": 0.108327,
+       "q1": -0.145689,
+       "q3": 0.396419,
+       "status": "observed"
+      },
+      "2000 onwards": {
+       "n": 3603.0,
+       "median_pct": 0.127561,
+       "mean_pct": 0.089873,
+       "q1": -0.182383,
+       "q3": 0.399149,
+       "status": "observed"
+      }
+     }
+    },
+    "property_type": {
+     "table": "solar Table 3: Table 3: Estimated electricity savings resulting from Solar PV, by property type",
+     "segments": {
+      "All domestic properties": {
+       "n": 25199.0,
+       "median_pct": 0.12228,
+       "mean_pct": 0.093464,
+       "q1": -0.159432,
+       "q3": 0.379284,
+       "status": "observed"
+      },
+      "Detached": {
+       "n": 11026.0,
+       "median_pct": 0.138987,
+       "mean_pct": 0.101654,
+       "q1": -0.153902,
+       "q3": 0.398319,
+       "status": "observed"
+      },
+      "Semi detached": {
+       "n": 5889.0,
+       "median_pct": 0.11856,
+       "mean_pct": 0.089415,
+       "q1": -0.160382,
+       "q3": 0.374006,
+       "status": "observed"
+      },
+      "End terrace": {
+       "n": 1680.0,
+       "median_pct": 0.109725,
+       "mean_pct": 0.08984,
+       "q1": -0.170586,
+       "q3": 0.37151,
+       "status": "observed"
+      },
+      "Mid terrace": {
+       "n": 2413.0,
+       "median_pct": 0.111141,
+       "mean_pct": 0.088925,
+       "q1": -0.167161,
+       "q3": 0.372648,
+       "status": "observed"
+      },
+      "Bungalow": {
+       "n": 4192.0,
+       "median_pct": 0.136089,
+       "mean_pct": 0.102646,
+       "q1": -0.138301,
+       "q3": 0.378714,
+       "status": "observed"
+      }
+     }
+    },
+    "region": {
+     "table": "solar Table 8: Table 8: Estimated electricity savings resulting from Solar PV, by region",
+     "segments": {
+      "All domestic properties": {
+       "n": 25199.0,
+       "median_pct": 0.12228,
+       "mean_pct": 0.093464,
+       "q1": -0.159432,
+       "q3": 0.379284,
+       "status": "observed"
+      },
+      "North East": {
+       "n": 861.0,
+       "median_pct": 0.160538,
+       "mean_pct": 0.133652,
+       "q1": -0.101742,
+       "q3": 0.405784,
+       "status": "observed"
+      },
+      "North West": {
+       "n": 2431.0,
+       "median_pct": 0.115453,
+       "mean_pct": 0.09246,
+       "q1": -0.156555,
+       "q3": 0.368219,
+       "status": "observed"
+      },
+      "Yorkshire and the Humber": {
+       "n": 2086.0,
+       "median_pct": 0.125948,
+       "mean_pct": 0.093499,
+       "q1": -0.162176,
+       "q3": 0.380768,
+       "status": "observed"
+      },
+      "East Midlands": {
+       "n": 2448.0,
+       "median_pct": 0.123523,
+       "mean_pct": 0.097475,
+       "q1": -0.146128,
+       "q3": 0.373419,
+       "status": "observed"
+      },
+      "West Midlands": {
+       "n": 2200.0,
+       "median_pct": 0.126172,
+       "mean_pct": 0.092728,
+       "q1": -0.158741,
+       "q3": 0.382365,
+       "status": "observed"
+      },
+      "East of England": {
+       "n": 3696.0,
+       "median_pct": 0.124953,
+       "mean_pct": 0.091085,
+       "q1": -0.158015,
+       "q3": 0.377466,
+       "status": "observed"
+      },
+      "London": {
+       "n": 1000.0,
+       "median_pct": 0.07636,
+       "mean_pct": 0.052857,
+       "q1": -0.204442,
+       "q3": 0.34088,
+       "status": "observed"
+      },
+      "South East": {
+       "n": 5058.0,
+       "median_pct": 0.12064,
+       "mean_pct": 0.090062,
+       "q1": -0.166104,
+       "q3": 0.379208,
+       "status": "observed"
+      },
+      "South West": {
+       "n": 3537.0,
+       "median_pct": 0.135594,
+       "mean_pct": 0.106686,
+       "q1": -0.151672,
+       "q3": 0.40098,
+       "status": "observed"
+      },
+      "Wales": {
+       "n": 1882.0,
+       "median_pct": 0.114771,
+       "mean_pct": 0.091185,
+       "q1": -0.17102,
+       "q3": 0.378206,
+       "status": "observed"
+      }
+     }
+    }
+   },
+   "validated": true,
+   "cost": {
+    "low": 4500.0,
+    "mid": 4500.0,
+    "high": 6500.0,
+    "currency": "GBP",
+    "n": 16151,
+    "n_range_strings": 16151,
+    "n_missing_cost": 0,
+    "distinct_cost_strings": 4,
+    "assessor_range_low": 3500.0,
+    "assessor_range_high": 5500.0,
+    "assessor_range_note": "median lower/upper bound of the assessor's range text; use when p25 = p75 (identical software text)",
+    "method": "p25 / median / p75 of the midpoint of each assessor indicative_cost range (single values used as-is)",
+    "source": "EPC recommendations indicative_cost, City of York (E06000014), data/processed/region=york/recommendations_long.parquet",
+    "window": "certificates lodged >= 2022-01-01",
+    "year": "2022-2026",
+    "status": "derived_from_data"
+   },
+   "dependencies": [],
+   "version": "cat-v3"
+  }
+ ]
+}

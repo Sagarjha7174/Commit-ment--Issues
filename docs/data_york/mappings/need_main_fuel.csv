@@ -1,0 +1,7 @@
+heating_type,need_main_fuel
+gas_boiler,1
+oil,2
+electric,2
+heat_pump,2
+other,2
+<missing>,missing

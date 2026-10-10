@@ -1,0 +1,44 @@
+{
+ "thresholds": {
+  "precision_min": 0.9,
+  "matched_sales_min": 500
+ },
+ "matched_sales_count": 4000,
+ "n_rows": 50,
+ "value_model_enabled_pending_coverage": true,
+ "coverage_check": "pending (evaluated after value-model training)",
+ "rows_filled": 50,
+ "rows_blank": 0,
+ "status": "audited",
+ "precision": 1.0,
+ "correct": 50,
+ "n_audited": 50,
+ "wilson_95": [
+  0.9286523998213857,
+  0.9999999999999999
+ ],
+ "by_match_method": {
+  "exact": {
+   "n": 49,
+   "correct": 49,
+   "precision": 1.0,
+   "wilson_95": [
+    0.9273021797160157,
+    1.0
+   ]
+  },
+  "fuzzy": {
+   "n": 1,
+   "correct": 1,
+   "precision": 1.0,
+   "wilson_95": [
+    0.2065493117918027,
+    1.0
+   ]
+  }
+ },
+ "precision_ok": true,
+ "count_ok": true,
+ "uncertainty_note": "precision from only 50 audited matches: 95% Wilson interval 0.929-1.000",
+ "audit_file": "data/processed/region=york/match_audit_sample.csv"
+}

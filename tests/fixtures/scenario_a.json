@@ -1,0 +1,48 @@
+{
+ "home_id": "U100050529765",
+ "expect": {
+  "score_before": 44,
+  "score_before_raw": 44.23578129356569,
+  "class_before": "Poor",
+  "score_after_raw": 74.5,
+  "score_after": 75,
+  "end_uses_before": {
+   "gas_space": 16137.165916666665,
+   "gas_water": 4820.192416666666,
+   "gas_other": 659.3083333333333,
+   "elec_base": 3766.6666666666665
+  },
+  "standalone_gas_saving_kwh": {
+   "loft_insulation": 694.2624833333332,
+   "cavity_wall": 2590.1089999999995,
+   "double_glazing": 209.78315691666666,
+   "smart_thermostat": 1210.2874437499997,
+   "heat_pump": 20957.35833333333,
+   "solar_pv": 0.0
+  },
+  "standalone_elec_saving_kwh": {
+   "loft_insulation": 0.0,
+   "cavity_wall": 0.0,
+   "double_glazing": 0.0,
+   "smart_thermostat": 0.0,
+   "heat_pump": -5937.9181944444435,
+   "solar_pv": 460.58799999999997
+  },
+  "package_gas_saving_kwh": 20957.35833333333,
+  "package_elec_saving_kwh": -3675.186711827713,
+  "improvement_potential_pct": 68.08472076758615,
+  "carbon_saving_kg": 3291.6928705824002,
+  "feasible": [
+   "loft_insulation",
+   "cavity_wall",
+   "double_glazing",
+   "smart_thermostat",
+   "heat_pump",
+   "solar_pv"
+  ],
+  "infeasible": [
+   "solid_wall"
+  ]
+ },
+ "generated_by": "tests/fixtures/hand_calc_demo.py (hand arithmetic, no engine imports)"
+}
