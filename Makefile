@@ -84,3 +84,19 @@ api:          # FastAPI on :8000 (works without an LLM key: template explainer)
 
 llm-eval:     # held-out question set -> docs/validation/llm_eval.json + docs/LLM_EVALUATION.md (LLM if a key is set)
 	$(PY) pipelines/llm/evaluate_llm.py
+
+# ---- web app (frontend/, docs/FRONTEND_INTEGRATION.md) ----
+.PHONY: web-install web-dev web-test web-build web web-fixtures
+WEB = cd frontend &&
+web-install:  # node_modules from the lockfile
+	$(WEB) npm ci
+web-dev:      # Vite on :5173 in live mode, proxying /api and /llm to `make api` on :8000 (run both)
+	$(WEB) VITE_DATA_MODE=live npm run dev
+web-test:     # typecheck, lint and Vitest (contract, units, scenario state, transport, full app)
+	$(WEB) npm run typecheck && npm run lint && npm test
+web-build:    # production build in live mode -> frontend/dist
+	$(WEB) VITE_DATA_MODE=live npm run build
+web: web-build   # one process: FastAPI serves the API and the built web app on http://127.0.0.1:8000
+	$(PY) -m uvicorn backend.app.main:app --port 8000
+web-fixtures: # regenerate the offline snapshot (frontend/public/fixtures) from this engine; parity-checked
+	$(PY) frontend/scripts/generate_fixtures.py

@@ -56,3 +56,18 @@ curl -s localhost:8000/whatif -H 'content-type: application/json' \
 make llm-eval                   # held-out question set -> docs/LLM_EVALUATION.md (real LLM when a key is set)
 ```
 Answers return `{answer, cited_values, scenario_id, grounded}`; every number comes from the engine (`docs/DECISIONS.md` D39).
+
+## Web app (frontend/)
+React + TypeScript + Vite. Every number on screen comes from the engine through `/api/*` and `/llm/*`
+(`frontend/docs/API_CONTRACT.md`, `docs/FRONTEND_INTEGRATION.md`, decision D43).
+```bash
+make web-install                # npm ci in frontend/
+make web                        # build in live mode, then FastAPI serves app + API on http://127.0.0.1:8000
+# or, for development with hot reload (two terminals):
+make api                        # FastAPI on :8000
+make web-dev                    # Vite on :5173, proxying /api and /llm to :8000
+make web-test                   # typecheck, lint, 65 Vitest tests
+make web-fixtures               # regenerate the offline snapshot from this engine (parity-checked)
+```
+Without the York build (`data/` is not in git) the API serves the three public demo homes and says so; with no LLM key,
+explanations and what-ifs use the deterministic template and keyword parser.

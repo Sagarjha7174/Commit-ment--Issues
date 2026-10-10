@@ -11,17 +11,20 @@ npm install
 npm run dev            # http://localhost:5173, offline snapshot mode
 ```
 
-With no backend running, the app uses the **offline engine snapshot** in `public/fixtures/`. This is real output of `scenario_builder.build()` from `feature/engine-core` for the three public demo homes. A banner says so on every page.
+With no backend running, the app uses the **offline engine snapshot** in `public/fixtures/`. This is real output of `scenario_builder.build()` from this repository's engine for the three public demo homes. A banner says so on every page.
 
-### Live backend
+### Live backend (this repository)
+
+From the repository root:
 
 ```bash
-cp .env.example .env.local
-# set VITE_DATA_MODE=live, then start the FastAPI app on :8000
-npm run dev
+make web              # build in live mode; FastAPI serves the app and the API on http://127.0.0.1:8000
+# or, with hot reload, in two terminals:
+make api              # FastAPI on :8000 (backend/app/main.py)
+make web-dev          # Vite on :5173 with VITE_DATA_MODE=live, proxying /api and /llm to :8000
 ```
 
-The dev server proxies `/api` and `/llm` to `VITE_DEV_PROXY_TARGET`. The routes the frontend expects are specified in [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md). If the backend is unreachable, the banner offers a one-click switch back to the snapshot.
+The routes are implemented in `backend/app/web_api.py` (`/api/*`) and `backend/app/llm/api.py` (`/llm/*`), as specified in [`docs/API_CONTRACT.md`](docs/API_CONTRACT.md). Without the York build (`data/` is not in git) the server runs on the three public demo homes and the status card says so. Without an LLM key, explanations and what-ifs use the deterministic template and keyword parser. If the backend is unreachable, the banner offers a one-click switch back to the snapshot.
 
 | Variable | Default | Meaning |
 |---|---|---|
@@ -127,16 +130,11 @@ src/
 
 ## Offline engine snapshot
 
-`scripts/generate_fixtures.py` regenerates `public/fixtures/` from an engine checkout. It needs Python with `pydantic`, `pandas` and `pyarrow`.
+`scripts/generate_fixtures.py` regenerates `public/fixtures/` from this repository's engine (`make web-fixtures` from the root; the engine venv from `requirements.txt`).
 
-```bash
-git archive origin/feature/engine-core | tar -x -C ../engine-core
-python scripts/generate_fixtures.py --engine-dir ../engine-core --engine-commit <sha>
-```
+**How it builds the inputs.** The York parquet is not distributed. The three demo homes come from the engine's demo-home source (`backend/app/data/demo_homes.py`): `configs/demo_homes.json` plus a few certificate fields documented in the engine's own `tests/fixtures/hand_calc_demo.py`.
 
-**How it builds the inputs.** The York parquet is not distributed. The three demo homes are rebuilt from `configs/demo_homes.json` plus a few non-public EPC fields. Those fields are documented in the engine's own `tests/fixtures/hand_calc_demo.py`.
-
-**Parity check.** The script refuses to write unless the engine reproduces the hand-calculated acceptance values (A: 44 → 75 and 3,292 kg CO₂e; B: 61, Moderate; C: unavailable, 1/7).
+**Parity check.** The script refuses to write unless the engine reproduces the hand-calculated acceptance values in `tests/fixtures/scenario_{a,b,c}.json` (A: 44 → 70 and 3,120 kg CO₂e, loft infeasible on its flat roof; B: 61, Moderate; C: unavailable, 1/7). `src/tests/contract.test.ts` reads the same files.
 
 **What the snapshot contains:**
 
@@ -150,7 +148,7 @@ Anything else returns an explicit "needs the live engine" message.
 
 ## Testing
 
-`npm test` runs 62 tests:
+`npm test` runs 65 tests:
 
 - every snapshot file validated against the contract;
 - demo-home acceptance values;
@@ -161,10 +159,17 @@ Anything else returns an explicit "needs the live engine" message.
 
 Browser checks (system Chrome via `playwright-core`, not a project dependency) were run by hand: the what-if loop, keyboard operation of the blueprint, the evidence drawer, and no horizontal overflow at 1440 / 1024 / 768 / 375 px on every page.
 
+## Engine outputs shown since the integration
+
+- **Bills, grants and payback** (engine D26, D27): annual bill before → after at the Ofgem cap, per fuel; cost after Boiler Upgrade Scheme grants; simple payback; an illustrative loan labelled "not a Lloyds product, rate or offer". Your own tariff and a grants switch are in the Scenario Lab.
+- **Ranges** (D28): P10 / P50 / P90 from 300 seeded engine runs for gas, electricity, carbon and bills.
+- **Property value** (D10, D38): the gated value-change range with its caveats, and a modelled current value range.
+- **Indicative EPC after retrofit** (D34): band before → after from the SAP model, never shown as a new EPC.
+- **Gas and electricity after** totals, printed from the engine's computed fields.
+- **What-ifs** that change prices, grants or readings, not only measures; the validated request is applied through `/api/scenario`.
+
 ## Known limitations
 
-- **No backend routes yet.** The live transport is tested against mocked responses only; the engine owner implements `docs/API_CONTRACT.md`.
-- **The snapshot covers three demo homes.** Custom meter readings, and assumption changes on a custom selection, need the live engine.
-- **The portfolio covers three homes.** In snapshot mode it runs over the demo homes, not all 65,872 York homes. EPC-band and property-type filters wait for those fields.
-- **The LLM layer is not connected.** It exists on `feature/llm-layer` but runs on a fake engine (see API_CONTRACT "integration risks"). Until it is wired to the real engine, explanations use the deterministic template.
-- **"Gas after" and "electricity after" totals are not printed** until the backend serialises them (the frontend will not add end uses together itself).
+- **The snapshot covers three demo homes.** Custom meter readings, tariffs and assumption changes on a custom selection need the live engine.
+- **The portfolio covers three homes** in snapshot mode, or on a server without the York build. EPC-band and property-type filters wait for those fields in portfolio rows.
+- **No live-LLM evaluation yet:** with a provider key the explanations use the LLM; the reported evaluation runs are the template and a scripted mock (Method & Evidence → J).
