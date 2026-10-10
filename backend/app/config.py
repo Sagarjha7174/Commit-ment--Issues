@@ -55,6 +55,13 @@ def electric_heating_split() -> dict | None:
 
 
 @lru_cache(maxsize=None)
+def engine_calibration() -> dict | None:
+    """Data-derived calibration (pipelines/build_engine_calibration.py): area elasticity, missing-part priors,
+    backfitted segment effects, York reference floor area, baseline spread. Absent -> those refinements stay off."""
+    return _optional_json("engine_calibration.json")
+
+
+@lru_cache(maxsize=None)
 def combination_calibration() -> dict | None:
     """NEED-calibrated factors for multi-measure fabric/controls packages (pipelines/build_combination_calibration.py)."""
     return _optional_json("combination_calibration.json")
@@ -88,7 +95,8 @@ def catalogue_globals() -> dict:
         "other_gas_share": g["other_gas_share"]["value"],
         "space_share_of_heat_water_gas": g["space_share_of_heat_water_gas"]["value"],
         "water_share_of_heat_water_gas": g["water_share_of_heat_water_gas"]["value"],
-        "heat_pump_scop": dict(g["heat_pump_scop"]),
+        # field-evidence SCOP (engine_params, D24) overrides the catalogue assumption
+        "heat_pump_scop": {k: engine_params().get("heat_pump_scop", g["heat_pump_scop"])[k] for k in ("low", "mid", "high")},
     }
 
 
@@ -111,5 +119,6 @@ def versions() -> dict:
         "engine_params": engine_params()["version"],
         # data-derived refinements: present only once built, so the scenario_id changes when they change
         **{k: v["version"] for k, v in (("electric_heating_split", electric_heating_split()),
-                                        ("combination_calibration", combination_calibration())) if v},
+                                        ("combination_calibration", combination_calibration()),
+                                        ("engine_calibration", engine_calibration())) if v},
     }

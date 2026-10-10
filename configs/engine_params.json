@@ -1,8 +1,14 @@
 {
- "version": "engine-params-v1",
- "description": "Engine refinements on top of the catalogue (DECISIONS D15-D18). Kept out of retrofit_catalogue.json so pipelines/build_catalogue.py never overwrites them.",
+ "version": "engine-params-v2",
+ "description": "Engine refinements on top of the catalogue (DECISIONS D15-D29, docs/IMPROVEMENT_PLAN.md). Kept out of retrofit_catalogue.json so pipelines/build_catalogue.py never overwrites them.",
  "boiler_efficiency_by_heating_rating": {
-  "values": {"Very Good": 0.89, "Good": 0.85, "Average": 0.75, "Poor": 0.67, "Very Poor": 0.6},
+  "values": {
+   "Very Good": 0.89,
+   "Good": 0.85,
+   "Average": 0.75,
+   "Poor": 0.67,
+   "Very Poor": 0.6
+  },
   "default": 0.85,
   "applies_to": "gas_boiler",
   "status": "assumption",
@@ -12,7 +18,9 @@
   "decision": "D18"
  },
  "electric_heating": {
-  "heating_types": ["electric"],
+  "heating_types": [
+   "electric"
+  ],
   "efficiency": 1.0,
   "efficiency_basis": "direct-acting and storage electric heating deliver ~100% of the electricity as heat at the point of use (assumption)",
   "split_file": "configs/electric_heating_split.json",
@@ -24,16 +32,108 @@
   "region_label": "Yorkshire and the Humber",
   "method": "empirical Bayes: deviation of each segment median from the headline median, shrunk by w = tau^2 / (tau^2 + se^2); se of a median = 1.2533 x (IQR / 1.349) / sqrt(n); tau^2 = max(0, variance of segment deviations - mean se^2) per measure x dimension. Shrunken deviations of the home's segments (EPC band, age, type, region) are added to every impact level and the result is floored at 0.",
   "floor_at_zero": true,
-  "epc_rating_segment": {"A": "A-C", "B": "A-C", "C": "A-C", "D": "D", "E": "E-G", "F": "E-G", "G": "E-G"},
-  "type_segment": {"Bungalow": "Bungalow", "Detached": "Detached", "Semi-Detached": "Semi detached", "End-Terrace": "End terrace", "Enclosed End-Terrace": "End terrace", "Mid-Terrace": "Mid terrace", "Enclosed Mid-Terrace": "Mid terrace"},
-  "age_segments": [[1918, "Pre 1919"], [1944, "1919-44"], [1964, "1945-64"], [1982, "1965-82"], [1999, "1983-99"], [9999, "2000 onwards"]],
+  "epc_rating_segment": {
+   "A": "A-C",
+   "B": "A-C",
+   "C": "A-C",
+   "D": "D",
+   "E": "E-G",
+   "F": "E-G",
+   "G": "E-G"
+  },
+  "type_segment": {
+   "Bungalow": "Bungalow",
+   "Detached": "Detached",
+   "Semi-Detached": "Semi detached",
+   "End-Terrace": "End terrace",
+   "Enclosed End-Terrace": "End terrace",
+   "Mid-Terrace": "Mid terrace",
+   "Enclosed Mid-Terrace": "Mid terrace"
+  },
+  "age_segments": [
+   [
+    1918,
+    "Pre 1919"
+   ],
+   [
+    1944,
+    "1919-44"
+   ],
+   [
+    1964,
+    "1945-64"
+   ],
+   [
+    1982,
+    "1965-82"
+   ],
+   [
+    1999,
+    "1983-99"
+   ],
+   [
+    9999,
+    "2000 onwards"
+   ]
+  ],
   "age_rule": "midpoint of the EPC age band (single year for one-year bands; 'before 1900' = Pre 1919) placed in the first NEED band whose upper year it does not exceed",
-  "decision": "D15"
+  "decision": "D15",
+  "combine": "max",
+  "combine_note": "region adjustment + the single largest non-region adjustment (EPC band, age and type are correlated, so adding them double-counts, D15 rev.); replaced by backfitted additive effects when configs/engine_calibration.json provides them"
  },
  "combination_calibration": {
   "file": "configs/combination_calibration.json",
   "built_by": "pipelines/build_combination_calibration.py",
   "default_mode": "engineering",
   "decision": "D17"
+ },
+ "heat_pump_scop": {
+  "low": 2.44,
+  "mid": 2.8,
+  "high": 3.5,
+  "status": "published_field_evidence",
+  "source": "Energy Systems Catapult, Electrification of Heat demonstration, interim heat pump performance data analysis (2023): median SPF 2.80 for air-source heat pumps across home types; median COP 2.44 on cold days",
+  "url": "https://es.catapult.org.uk/wp-content/uploads/2023/03/EoH-Interim-Heat-Pump-Performance-Data-Analysis-Report-1.pdf",
+  "note": "low = cold-day median (conservative for an annual figure); high = catalogue assumption 3.5 (no field upper quantile found)",
+  "decision": "D24"
+ },
+ "smart_thermostat_by_controls": {
+  "levels": {
+   "none": "high",
+   "timer": "mid",
+   "full": "low"
+  },
+  "status": "assumption",
+  "basis": "brief range 5-10% of space-heat demand: homes with no controls gain most, homes with programmer + room thermostat + TRVs least",
+  "decision": "D25"
+ },
+ "loft": {
+  "already_sufficient_mm": 270,
+  "high_suitability_max_mm": 100,
+  "basis": "270 mm is the current recommended loft insulation depth (Building Regulations Approved Document L / Energy Saving Trust guidance); assumption",
+  "decision": "D20"
+ },
+ "planning": {
+  "pre_1919_note": "pre-1919 home: check conservation-area and listed-building status before external wall insulation or roof-mounted PV (York has many conservation areas)",
+  "decision": "D20"
+ },
+ "costs": {
+  "partial_glazing": "cost x single-glazed share (multi_glaze_pct missing -> 50%)",
+  "size_exponent": {
+   "loft_insulation": 1.0,
+   "cavity_wall": 0.75,
+   "solid_wall": 0.75,
+   "double_glazing": 1.0,
+   "smart_thermostat": 0.0,
+   "heat_pump": 0.3,
+   "solar_pv": 0.0
+  },
+  "size_factor_clamp": [
+   0.5,
+   2.0
+  ],
+  "reference_floor_area": "from configs/engine_calibration.json (York median floor area); no size scaling until built",
+  "status": "assumption",
+  "decision": "D23"
  }
 }

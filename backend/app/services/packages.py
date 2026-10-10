@@ -20,6 +20,7 @@ from ..schemas.retrofit import FeasibilityItem, FeaturedPick, PackageResult, Pac
 from ..schemas.scenario import Assumptions, Baseline
 from .carbon import carbon_change, emissions_kg
 from .combination import calibrated_view
+from .costs import package_cost
 from .simulator import simulate
 
 THRESHOLD_PCT = 10.0
@@ -142,17 +143,8 @@ def select_featured(cands: list[Cand], threshold_pct: float = THRESHOLD_PCT, bud
 
 # ---------------- search over a real home ----------------
 
-def _cost(measures: list[MeasureId]) -> tuple[Optional[float], str]:
-    total, notes = 0.0, []
-    for m in measures:
-        c = config.measure_spec(m.value)["cost"]
-        if c.get("mid") is None or c.get("status") == "unavailable":
-            return None, f"cost unavailable for {m.value}"
-        total += float(c["mid"])
-        if c.get("status") != "derived_from_data":
-            notes.append(f"{m.value}: {c.get('status')}")
-    prov = "assumption: catalogue mid (EPC indicative cost, York 2022-26)"
-    return total, prov + ("; " + "; ".join(notes) if notes else "")
+def _cost(measures: list[MeasureId], home: Optional[HomeRecord] = None) -> tuple[Optional[float], str]:
+    return package_cost(measures, home)
 
 
 def candidate_measures(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], a: Assumptions):
@@ -192,7 +184,7 @@ def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], as
             carb = carbon_change(sim)
             verify = [f"{m.value} ({', '.join(fmap[m].missing_inputs) or fmap[m].reason_code})"
                       for m in ms if fmap[m].state == FeasibilityState.needs_verification]
-            cost, cost_prov = _cost(ms)
+            cost, cost_prov = _cost(ms, home)
             warns = []
             if sum(1 for m in ms if m in FABRIC or m in (MeasureId.double_glazing, MeasureId.smart_thermostat)) >= 2:
                 warns.append(COMBO_WARNING)

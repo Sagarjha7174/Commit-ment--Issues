@@ -79,7 +79,8 @@ Each entry: decision, why, alternatives, consequences. Date 2026-10-10 unless no
 - **Decision:** loft, cavity wall, solid wall and solar PV use the NEED impact for the home's segments (EPC band, property age, property type, region) instead of the single national median. Each segment's deviation from the headline median is shrunk by w = τ² / (τ² + se²), where se is the sampling error of the segment median (1.2533 × (IQR/1.349)/√n) and τ² the between-segment variance left after removing sampling noise. The home's shrunk deviations are added together, then the result is floored at 0. Code: `backend/app/services/impacts.py`. Settings: `configs/engine_params.json` (`segment_impacts`).
 - **Why:** the catalogue already held the NEED segment tables but did not use them. Segments differ by more than noise for several measures: cavity wall in an E–G detached home is ~16% of gas versus 12% nationally, and solid wall in pre-1919 homes is ~11% versus 17%. Shrinkage stops noisy cells from driving the estimate: loft by EPC band and by age has no between-segment variance beyond noise, so it stays at the headline.
 - **Alternatives:** raw segment medians (noisy, can go negative), a single best segment (throws information away), a fitted regression (NEED publishes margins only, not joint cells).
-- **Consequences:** segments are combined additively, assuming independence (NEED does not publish joint cells). Flats get no property-type adjustment because NEED reports none. Every York home gets the Yorkshire and the Humber region adjustment. Each simulator step note shows the headline and the adjustment, and `Assumptions.segment_impacts = False` restores the headline. A sensitivity run (`headline_impacts`) checks whether the featured picks depend on it. The NEED combination validation (`pipelines/validate_simulator.py`) and the hand-calculated reference cases stay on headline impacts.
+- **Revision (engine-v3):** adding the segment adjustments double-counted, because EPC band, age and type are correlated. Example: solid wall in a pre-1919 mid-terrace EPC E home came out at 2.8% against a 17.3% headline. The default is now the **region adjustment plus the single largest non-region adjustment** ("max" rule). Once `make engine-cal` has run, the engine instead uses **backfitted additive effects**, fitted so that their York-weighted average in each segment reproduces the NEED segment median.
+- **Consequences (original):** segments are combined additively, assuming independence (NEED does not publish joint cells). Flats get no property-type adjustment because NEED reports none. Every York home gets the Yorkshire and the Humber region adjustment. Each simulator step note shows the headline and the adjustment, and `Assumptions.segment_impacts = False` restores the headline. A sensitivity run (`headline_impacts`) checks whether the featured picks depend on it. The NEED combination validation (`pipelines/validate_simulator.py`) and the hand-calculated reference cases stay on headline impacts.
 
 ## D16. Electrically heated homes: heating share of electricity from NEED benchmarks
 - **Decision:** for `heating_type = electric`, the heating share of baseline electricity is 1 − (median electricity of gas-heated homes) / (median electricity of non-gas-heated homes) in the same NEED property type × EPC band cell, falling back to the EPC band, then to all homes. Each side needs ≥ 30 homes, and the share is clipped to [0, 0.9]. The share is split 0.77/0.23 into space and water heating, as for gas. Fabric measures (converted from the NEED % of total gas with the same space share, 0.77 × (1 − 0.0305)), glazing and thermostat then cut electric space heat. A heat pump replaces the electric space + water heat (efficiency 1.0), so it saves heat × (1 − 1/SCOP) of electricity. Built by `pipelines/build_electric_heating_split.py` → `configs/electric_heating_split.json`.
@@ -97,3 +98,36 @@ Each entry: decision, why, alternatives, consequences. Date 2026-10-10 unless no
 - **Why:** a single 0.85 for every boiler overstates the useful heat an old non-condensing boiler delivers. That heat is what a heat pump must replace, so the single value overstates the heat pump's added electricity for those homes.
 - **Status:** **assumption.** The values approximate SAP Table 4b default seasonal efficiencies (condensing ~84–89%, non-condensing 1998+ ~73–74%, pre-1998 ~65%) and treat the EPC rating as a proxy for boiler type. They were **not checked against the table text** in this build because the BRE site was unreachable, so verify them against SAP 10.2 Table 4b. Good = 0.85 keeps the cat-v3 default, so demo A (boiler rated Good) is unchanged by this decision.
 - **Consequence:** only heat-pump results change, because fabric and controls gas savings do not depend on boiler efficiency (it cancels out). The value used and its source are echoed in `assumptions_used` and the decision audit.
+
+## D19. Solar PV saving on baseline electricity, not heat-pump electricity
+- **Finding:** the NEED PV impact (12.2% of grid electricity) was applied to grid electricity *including* heat-pump electricity. Demo A's PV saving went from 415 to 904 kWh/yr once a heat pump was added, with the same panels.
+- **Decision:** the PV % applies to the home's baseline electricity before any retrofit, and never offsets more than the current import. Exports are still not credited (conservative).
+
+## D20. Loft rule reads the roof type; planning note for pre-1919 homes
+- **Finding:** loft insulation was offered, with High suitability, for flat roofs, rooms in the roof, rafter-insulated roofs and thatch.
+- **Decision:** the roof type is parsed from the EPC description:
+  - flat → infeasible;
+  - room in roof, insulated at rafters, thatched, or type not stated (U-value or code only) → needs_verification;
+  - pitched → feasible. The recorded depth sets suitability (≤ 100 mm → High); ≥ 270 mm (`engine_params.loft`) → infeasible.
+- **Planning:** pre-1919 homes get a note to check conservation-area and listed-building status for solid wall insulation and PV. York has many conservation areas, but no planning layer is loaded, so this is a note, not a rule.
+
+## D21. Benchmark scaled within its floor-area band (needs `make engine-cal`)
+- **Finding:** every home in a NEED cell (type × EPC band × floor-area band × fuel) gets the same kWh, so kWh/m² falls as area rises *within* a band. With the same benchmark, a 151 m² home scored 3.3 intensity points and a 199 m² home 10.6.
+- **Decision:** `benchmark × (floor area / band reference area)^β`. β per fuel is fitted on NEED across floor-area bands within type × EPC band × fuel cells, and the reference area is NEED's representative area for the band. It applies only to L1 cells, which include the area band. Score params are refrozen as v2 on the scaled baselines. Until calibrated, there is no scaling.
+
+## D22. Missing score parts take the typical value, not 50 (needs `make engine-cal`)
+- **Finding:** a missing part was scored 50. With PV unrecorded, a home scored +5.0 points against the same home with PV recorded as none (5,735 train homes, mostly old EPCs that predate PV).
+- **Decision:** the headline uses the train mean of that part among homes where it is observed. Renewables is split by EPC age, because PV is rarer on old certificates. range_low/high stay 0/100, and the note says which prior was used. Until calibrated, the value stays 50.
+
+## D23. Home-specific costs
+- **Partial glazing:** cost × single-glazed share; 50% when the share is not recorded. Demo A paid £4,900 for 13% of its windows before.
+- **Size:** cost × (floor area / York median floor area)^γ, with γ = loft 1.0, glazing 1.0, walls 0.75, heat pump 0.3, PV and thermostat 0, clamped to 0.5–2.0. γ values are assumptions. Size scaling needs `make engine-cal` for the York reference area.
+
+## D24. Heat-pump SCOP from UK field evidence
+- **Decision:** SCOP low/mid/high = 2.44 / 2.80 / 3.5, replacing 2.5 / 3.0 / 3.5. 2.80 is the median SPF of air-source heat pumps in the Electrification of Heat demonstration, across home types; 2.44 is its cold-day median, used as a conservative low; 3.5 remains an assumption. Source: Energy Systems Catapult, EoH interim heat pump performance data analysis (2023). Set in `engine_params.heat_pump_scop`, which overrides the catalogue.
+- **Effect:** heat-pump electricity +7%; demo A carbon saving falls accordingly.
+
+## D25. Thermostat saving placed by the controls already installed
+- **Finding:** the same 7.5% saving was applied whether a home had no controls or full controls.
+- **Decision:** the brief range is placed by current controls: none → 10% (high), timer → 7.5% (mid), full → 5% (low). The scenario impact level still shifts one step. This is an assumption.
+- **Validation homes:** the NEED "heat controls" validation homes use timer controls (an upgrade from basic controls), which keeps them at the mid value.

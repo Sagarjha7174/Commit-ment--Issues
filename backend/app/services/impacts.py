@@ -8,8 +8,10 @@ segment's deviation from the headline is shrunk toward zero by empirical Bayes:
     tau^2 (per measure x dimension) = max(0, var(segment deviations) - mean(se^2))
     w = tau^2 / (tau^2 + se^2);  shrunk deviation = w * (segment median - headline median)
 
-The home's shrunk deviations (one per dimension it belongs to) are added to every impact level, assuming the
-dimensions act independently, and the result is floored at 0 (an expected saving is never an increase).
+The region adjustment is always added. EPC band, age and type overlap (old homes are mostly terraced and poorly
+rated), so adding their deviations double-counts: by default only the largest one is used ("max" rule); once
+pipelines/build_engine_calibration.py has backfitted additive effects on York's joint mix of homes, their sum is used.
+The result is added to every impact level and floored at 0 (an expected saving is never an increase).
 Dimensions the home cannot be placed in (e.g. flats for property type, missing EPC band) contribute nothing.
 """
 from __future__ import annotations
@@ -105,23 +107,68 @@ def shrinkage(measure_id: str) -> dict[str, dict[str, dict]]:
     return out
 
 
+def _backfit(measure_id: str) -> Optional[dict]:
+    cal = config.engine_calibration()
+    return ((cal or {}).get("segment_effects") or {}).get(measure_id)
+
+
 def adjustment(measure_id: str, home: HomeRecord) -> tuple[float, dict]:
-    """Total shrunk deviation for this home and the per-dimension detail (segment, deviation, weight, shrunk)."""
+    """Total adjustment for this home and the per-dimension detail.
+
+    Region is always added. EPC band, age and type are correlated (old homes are mostly terraced and poorly rated), so
+    their marginal deviations overlap: with backfitted effects (configs/engine_calibration.json) their sum is used,
+    otherwise only the largest single non-region adjustment ("max" rule, D15 rev.)."""
     table = shrinkage(measure_id)
-    total, detail = 0.0, {}
+    backfit = _backfit(measure_id)
+    detail, region, others = {}, 0.0, []
     for dim, seg in segments_for(home).items():
         row = table.get(dim, {}).get(seg) if seg else None
         if row is None:
             detail[dim] = {"segment": seg, "used": False}
             continue
-        total += row["shrunk"]
-        detail[dim] = {"segment": seg, "used": True, "deviation": round(row["deviation"], 6),
-                       "weight": round(row["weight"], 4), "shrunk": round(row["shrunk"], 6)}
-    return total, detail
+        d = {"segment": seg, "deviation": round(row["deviation"], 6), "weight": round(row["weight"], 4),
+             "shrunk": round(row["shrunk"], 6)}
+        if dim == "region":
+            region = row["shrunk"]
+            d["used"] = True
+        elif backfit is not None:
+            eff = backfit.get(dim, {}).get(seg)
+            d["backfit_effect"] = None if eff is None else round(eff, 6)
+            d["used"] = eff is not None
+            if eff is not None:
+                others.append(eff)
+        else:
+            others.append(row["shrunk"])
+            d["used"] = False   # marked below for the largest one
+        detail[dim] = d
+    if backfit is not None:
+        rule, extra = "backfit", sum(others)
+    else:
+        rule, extra = "max", max(others, key=abs) if others else 0.0
+        for dim, d in detail.items():
+            if dim != "region" and "shrunk" in d and others and d["shrunk"] == round(extra, 6):
+                d["used"] = True
+                break
+    return region + extra, {"rule": rule, **detail}
+
+
+LEVELS = ("low", "mid", "high")
+
+
+def thermostat_level(home: Optional[HomeRecord], level: str) -> str:
+    """D25: the brief's 5-10% range is placed by the controls already installed; the scenario level shifts it by one."""
+    by = config.engine_params().get("smart_thermostat_by_controls", {}).get("levels", {})
+    base = by.get(home.controls) if home is not None else None
+    if base is None:
+        return level
+    shift = LEVELS.index(level) - 1
+    return LEVELS[min(max(LEVELS.index(base) + shift, 0), 2)]
 
 
 def impact(measure_id: str, level: str, home: Optional[HomeRecord], enabled: bool = True) -> tuple[float, Optional[dict]]:
     """Impact fraction for this home at the given level, plus the segment detail (None when not adjusted)."""
+    if measure_id == "smart_thermostat":
+        level = thermostat_level(home, level)
     base = float(config.measure_spec(measure_id)["impact"][level])
     if not enabled or home is None or not shrinkage(measure_id):
         return base, None

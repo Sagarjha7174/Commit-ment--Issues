@@ -6,8 +6,10 @@
   "class_before": "Poor",
   "impacts_used": {
    "loft_insulation": 0.03732615840026591,
-   "cavity_wall": 0.16402660913772532,
-   "solar_pv": 0.11008753346709257
+   "cavity_wall": 0.13818319176199176,
+   "solar_pv": 0.090620874385297,
+   "smart_thermostat": 0.05,
+   "scop": 2.8
   },
   "score_after_raw": 74.5,
   "score_after": 75,
@@ -19,9 +21,9 @@
   },
   "standalone_gas_saving_kwh": {
    "loft_insulation": 806.867124085748,
-   "cavity_wall": 3545.7085341938287,
+   "cavity_wall": 2987.0599952550547,
    "double_glazing": 209.78315691666666,
-   "smart_thermostat": 1210.2874437499997,
+   "smart_thermostat": 806.8582958333333,
    "heat_pump": 20957.35833333333,
    "solar_pv": 0.0
   },
@@ -30,13 +32,13 @@
    "cavity_wall": 0.0,
    "double_glazing": 0.0,
    "smart_thermostat": 0.0,
-   "heat_pump": -5937.9181944444435,
-   "solar_pv": 414.6630427260487
+   "heat_pump": -6362.055208333333,
+   "solar_pv": 341.33862685128537
   },
   "package_gas_saving_kwh": 20957.35833333333,
-  "package_elec_saving_kwh": -3543.979079279622,
-  "improvement_potential_pct": 68.60162542634423,
-  "carbon_saving_kg": 3310.580209287698,
+  "package_elec_saving_kwh": -4667.096339461089,
+  "improvement_potential_pct": 64.17700063245796,
+  "carbon_saving_kg": 3148.9074796845757,
   "feasible": [
    "loft_insulation",
    "cavity_wall",

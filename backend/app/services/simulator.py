@@ -66,7 +66,7 @@ def combination_factor(measures: list[MeasureId], c: units.Constants) -> tuple[f
 
 
 def _apply(m: MeasureId, eu: EndUses, home: HomeRecord, baseline: Baseline, c: units.Constants, a: Assumptions,
-           combo_factor: float = 1.0):
+           combo_factor: float = 1.0, pv_basis: Optional[float] = None, impact_override: Optional[float] = None):
     """Return (after, status, reason_code, impact_used, basis, note). Never mutates eu."""
     spec = config.measure_spec(m.value)
     basis = spec["impact_basis"]
@@ -106,13 +106,19 @@ def _apply(m: MeasureId, eu: EndUses, home: HomeRecord, baseline: Baseline, c: u
     if basis not in SUPPORTED_BASES:
         return eu, ValueStatus.not_estimated, "impact_basis_unsupported", None, basis, f"basis {basis!r} not supported"
     impact, seg = impacts.impact(m.value, c.impact_level.value, home, c.segment_impacts)
-    seg_note = (f" [segment-adjusted from headline {seg['headline']:.2%} by {seg['adjustment']:+.2%} (D15)]"
-                if seg is not None else "")
+    seg_note = (f" [segment-adjusted from headline {seg['headline']:.2%} by {seg['adjustment']:+.2%}, "
+                f"{seg['segments']['rule']} rule (D15)]" if seg is not None else "")
+    if impact_override is not None:
+        impact, seg_note = impact_override, " [uncertainty draw]"
 
     if basis == "total_grid_electricity":
-        grid = eu.elec_gross
-        new.pv_offset = eu.pv_offset + impact * grid
-        return new, ValueStatus.ok, None, impact, basis, f"{impact:.2%} of grid electricity ({grid:,.0f} kWh incl. any heat pump){seg_note}"
+        # D19: panels generate the same whatever else changes, so the NEED % applies to the home's baseline
+        # electricity, not to electricity added by a heat pump; never more than the current import
+        basis_kwh = eu.elec_gross if pv_basis is None else pv_basis
+        offset = min(impact * basis_kwh, eu.elec_import)
+        new.pv_offset = eu.pv_offset + offset
+        return new, ValueStatus.ok, None, impact, basis, (f"{impact:.2%} of baseline grid electricity ({basis_kwh:,.0f} kWh; "
+                                                          f"heat-pump electricity not included, D19){seg_note}")
 
     # space-heating measures (fabric, glazing, controls)
     if m in FABRIC_CONTROLS and combo_factor != 1.0:
@@ -153,7 +159,9 @@ def _space_demand_fraction(m: MeasureId, impact: float, home: HomeRecord) -> tup
 
 
 def simulate(baseline: Baseline, home: HomeRecord, measures, assumptions: Optional[Assumptions] = None,
-             feasibility: Optional[list[FeasibilityItem]] = None) -> SimResult:
+             feasibility: Optional[list[FeasibilityItem]] = None,
+             impact_overrides: Optional[dict[MeasureId, float]] = None) -> SimResult:
+    """impact_overrides: per-measure impact fractions replacing the catalogue value (used by uncertainty draws)."""
     a = assumptions or Assumptions()
     c = units.resolve(a, home)
     ordered = order_measures(measures)
@@ -182,7 +190,8 @@ def simulate(baseline: Baseline, home: HomeRecord, measures, assumptions: Option
                                  gas_saving_kwh=0.0, elec_saving_kwh=0.0, note="infeasible: not applied"))
             rows.append(MeasureRow(measure=m, status=ValueStatus.blocked, reason_code=f.reason_code))
             continue
-        after, status, reason, impact, basis, note = _apply(m, eu, home, baseline, c, a, factor)
+        after, status, reason, impact, basis, note = _apply(m, eu, home, baseline, c, a, factor, start.elec_gross,
+                                                            (impact_overrides or {}).get(m))
         if f.state == FeasibilityState.needs_verification and status == ValueStatus.ok:
             note += "; conditional: needs verification (" + ", ".join(f.missing_inputs) + ")"
         ds_gas = eu.gas_total - after.gas_total

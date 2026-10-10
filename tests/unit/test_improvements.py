@@ -54,7 +54,7 @@ def test_segment_impact_hand_calc_cavity():
     spec = config.measure_spec("cavity_wall")
     home = make_home(rating="E", age_band="1967-1975", built_form="Detached")
     wanted = {"epc_rating": "E-G", "property_age": "1965-82", "property_type": "Detached", "region": "Yorkshire and the Humber"}
-    total = 0.0
+    shrunk = {}
     for dim, seg_name in wanted.items():
         segs = spec["impact_by_segment"][dim]["segments"]
         head = segs["All domestic properties"]["median_pct"]
@@ -64,8 +64,12 @@ def test_segment_impact_hand_calc_cavity():
         mean = sum(dev.values()) / len(dev)
         tau2 = max(0.0, sum((d - mean) ** 2 for d in dev.values()) / (len(dev) - 1) - sum(s ** 2 for s in se.values()) / len(se))
         w = tau2 / (tau2 + se[seg_name] ** 2) if tau2 > 0 else 0.0
-        total += w * dev[seg_name]
+        shrunk[dim] = w * dev[seg_name]
+    # D15 rev. "max" rule: region + the single largest non-region adjustment (no backfit calibration in the repo)
+    others = [v for k, v in shrunk.items() if k != "region"]
+    total = shrunk["region"] + max(others, key=abs)
     value, detail = impacts.impact("cavity_wall", "mid", home)
+    assert detail["segments"]["rule"] == "max" and detail["segments"]["property_type"]["used"]
     assert value == pytest.approx(spec["impact"]["mid"] + total, abs=1e-12)
     assert detail["headline"] == spec["impact"]["mid"]
     s = simulate(get_baseline(home), home, [M.cavity_wall])
@@ -138,7 +142,7 @@ def test_electric_home_thermostat_and_heat_pump(monkeypatch):
     # heat pump replaces the remaining electric space + water heat: saving = heat x (1 - 1/SCOP)
     s2 = simulate(b, h, [M.smart_thermostat, M.heat_pump], HEADLINE)
     remaining = space * (1 - 0.075) + water
-    assert s2.elec_saving_kwh == pytest.approx(0.075 * space + remaining * (1 - 1 / 3.0), abs=ABS)
+    assert s2.elec_saving_kwh == pytest.approx(0.075 * space + remaining * (1 - 1 / 2.8), abs=ABS)   # SCOP 2.80 (D24)
     assert s2.improvement_potential_status == ValueStatus.ok and s2.improvement_potential_pct > 0
     c = carbon_change(s2)
     assert c.gas_kg == pytest.approx(0.0, abs=ABS) and c.elec_kg > 0
@@ -230,8 +234,8 @@ def test_heat_pump_electricity_scales_with_boiler_efficiency_fabric_does_not():
     hp_good = simulate(get_baseline(good), good, [M.heat_pump], HEADLINE)
     hp_poor = simulate(get_baseline(poor), poor, [M.heat_pump], HEADLINE)
     heat_water = 12000 * (1 - 0.0305)
-    assert hp_good.elec_saving_kwh == pytest.approx(-heat_water * 0.85 / 3.0, abs=ABS)
-    assert hp_poor.elec_saving_kwh == pytest.approx(-heat_water * 0.67 / 3.0, abs=ABS)
+    assert hp_good.elec_saving_kwh == pytest.approx(-heat_water * 0.85 / 2.8, abs=ABS)
+    assert hp_poor.elec_saving_kwh == pytest.approx(-heat_water * 0.67 / 2.8, abs=ABS)
     cav = [simulate(get_baseline(h), h, [M.cavity_wall], HEADLINE).gas_saving_kwh for h in (good, poor)]
     assert cav[0] == pytest.approx(cav[1], abs=ABS)
 

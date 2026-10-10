@@ -34,8 +34,43 @@ def _dwelling_above(home: HomeRecord) -> bool:
     return any(k in d for k in DWELLING_ABOVE)
 
 
+def roof_type(home: HomeRecord) -> Optional[str]:
+    """Roof type from the EPC roof description (D20): pitched | rafters | flat | roof_room | thatched | dwelling_above |
+    unknown (U-value-only or software codes) | None (no description)."""
+    d = (home.roof_description or "").strip().lower()
+    if not d:
+        return None
+    if _dwelling_above(home):
+        return "dwelling_above"
+    if d.startswith("pitched"):
+        return "rafters" if "rafter" in d else "pitched"
+    if d.startswith("flat"):
+        return "flat"
+    if d.startswith("roof room"):
+        return "roof_room"
+    if d.startswith("thatched"):
+        return "thatched"
+    return "unknown"
+
+
+def loft_depth_mm(home: HomeRecord) -> Optional[int]:
+    """Recorded loft insulation depth for pitched roofs ("Pitched, 100 mm loft insulation"; "no insulation" = 0)."""
+    d = (home.roof_description or "").lower()
+    m = re.search(r"(\d+)\+?\s*mm", d)
+    if m:
+        return int(m.group(1))
+    if "no insulation" in d:
+        return 0
+    return None
+
+
+def _params(key: str) -> dict:
+    return config.engine_params().get(key, {})
+
+
 def loft(home: HomeRecord) -> FeasibilityItem:
     m = MeasureId.loft_insulation
+    rt = roof_type(home)
     if home.roof_rating_status == "not_applicable" or home.roof_rating is None:
         if _dwelling_above(home):
             code = "flat_not_top_floor" if home.property_type in FLATS else "dwelling_above"
@@ -44,8 +79,27 @@ def loft(home: HomeRecord) -> FeasibilityItem:
                      Su.medium, ["roof_rating"])
     if home.roof_rating in _rules(m)["roof_rating_not_in"]:
         return _item(m, F.infeasible, "already_insulated", f"Roof is already rated {home.roof_rating}.")
-    suit = Su.high if home.roof_rating in POOR else Su.medium
-    return _item(m, F.feasible, "roof_below_good", f"Roof rated {home.roof_rating}; loft insulation is low cost.", suit)
+    if rt == "flat":
+        return _item(m, F.infeasible, "flat_roof", "Flat roof: there is no loft. Flat-roof insulation is a different measure, not in the catalogue.")
+    if rt == "roof_room":
+        return _item(m, F.needs_verification, "room_in_roof", "Rooms in the roof: at most a small loft void; room-in-roof insulation is a different, costlier measure.",
+                     Su.low, ["loft_void"])
+    if rt == "rafters":
+        return _item(m, F.needs_verification, "insulated_at_rafters", "Roof is insulated at the rafters, so there may be no cold loft floor to insulate.",
+                     Su.low, ["loft_floor"])
+    if rt == "thatched":
+        return _item(m, F.needs_verification, "thatched_roof", "Thatched roof: loft access and fire-safety limits must be checked.", Su.low, ["loft_void"])
+    if rt != "pitched":
+        return _item(m, F.needs_verification, "roof_type_unknown", "Roof type is not recorded in words (U-value or code only); a survey must confirm a loft.",
+                     Su.medium, ["roof_type"])
+    p = _params("loft")
+    mm = loft_depth_mm(home)
+    if mm is not None and mm >= p.get("already_sufficient_mm", 270):
+        return _item(m, F.infeasible, "loft_already_deep", f"Loft already has {mm} mm of insulation.")
+    high = home.roof_rating in POOR or (mm is not None and mm <= p.get("high_suitability_max_mm", 100))
+    depth = f"{mm} mm recorded" if mm is not None else "depth not recorded"
+    return _item(m, F.feasible, "roof_below_good", f"Pitched roof rated {home.roof_rating} ({depth}); loft insulation is low cost.",
+                 Su.high if high else Su.medium)
 
 
 def _wall_type(home: HomeRecord) -> Optional[str]:
@@ -90,7 +144,8 @@ def solid(home: HomeRecord) -> FeasibilityItem:
         return _item(m, F.needs_verification, "wall_inputs_missing", "Wall type or rating is not recorded; a survey must confirm solid masonry walls.",
                      Su.low, missing)
     suit = Su.medium if home.walls_rating in POOR else Su.low
-    return _item(m, F.feasible, "uninsulated_solid_wall", f"Solid walls rated {home.walls_rating}; effective but costly and disruptive.", suit)
+    return _item(m, F.feasible, "uninsulated_solid_wall",
+                 f"Solid walls rated {home.walls_rating}; effective but costly and disruptive." + _planning_note(home), suit)
 
 
 def glazing(home: HomeRecord) -> FeasibilityItem:
@@ -143,7 +198,15 @@ def solar(home: HomeRecord) -> FeasibilityItem:
         return _item(m, F.needs_verification, "solar_unknown", "Existing solar PV is not recorded.", Su.medium, ["solar_pv"])
     if home.solar_pv:
         return _item(m, F.infeasible, "already_has_pv", "Already has solar PV.")
-    return _item(m, F.feasible, "no_pv", "No PV recorded; roof orientation and shading are not known.", Su.medium)
+    return _item(m, F.feasible, "no_pv", "No PV recorded; roof orientation and shading are not known." + _planning_note(home), Su.medium)
+
+
+def _planning_note(home: HomeRecord) -> str:
+    """D20: York has many conservation areas; pre-1919 homes need a planning check (a note, not a rule: no planning data)."""
+    from .impacts import age_segment
+    if age_segment(home.age_band) == "Pre 1919":
+        return " Note: " + _params("planning").get("pre_1919_note", "check planning constraints") + "."
+    return ""
 
 
 RULES = {

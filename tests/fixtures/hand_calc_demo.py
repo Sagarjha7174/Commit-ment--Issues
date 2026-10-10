@@ -11,9 +11,11 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
 demo = {h["case"][0]: h for h in json.loads((ROOT / "configs/demo_homes.json").read_text())["homes"]}
 
-# documented constants (cat-v3, engine-params-v1, score-params-v1, DESNZ 2026)
-EFF, OTHER, SPACE, WATER, SCOP = 0.85, 0.0305, 0.77, 0.23, 3.0   # EFF: gas boiler rated Good (D18)
-GLZ, THERM = 0.10, 0.075
+# documented constants (cat-v3, engine-params-v2, score-params-v1, DESNZ 2026)
+EFF, OTHER, SPACE, WATER = 0.85, 0.0305, 0.77, 0.23   # EFF: gas boiler rated Good (D18)
+SCOP = 2.80                                           # Electrification of Heat median SPF (D24)
+GLZ = 0.10
+THERM_BY_CONTROLS = {"none": 0.10, "timer": 0.075, "full": 0.05}   # brief 5-10% placed by existing controls (D25)
 CAT = {m["id"]: m for m in json.loads((ROOT / "configs/retrofit_catalogue.json").read_text())["measures"]}
 
 
@@ -21,7 +23,7 @@ def segment_impact(measure, segments):
     """Empirical-Bayes segment adjustment (D15), recomputed by hand from the published NEED segment tables."""
     import math
     spec = CAT[measure]
-    total = 0.0
+    shrunk = {}
     for dim, name in segments.items():
         segs = spec["impact_by_segment"][dim]["segments"]
         head = segs["All domestic properties"]["median_pct"]
@@ -31,7 +33,10 @@ def segment_impact(measure, segments):
         mean = sum(dev.values()) / len(dev)
         tau2 = max(0.0, sum((d - mean) ** 2 for d in dev.values()) / (len(dev) - 1) - sum(x ** 2 for x in se.values()) / len(se))
         w = tau2 / (tau2 + se[name] ** 2) if tau2 > 0 else 0.0
-        total += w * dev[name]
+        shrunk[dim] = w * dev[name]
+    # "max" rule (D15 rev.): region + the single largest non-region adjustment
+    others = [v for k, v in shrunk.items() if k != "region"]
+    total = shrunk.get("region", 0.0) + (max(others, key=abs) if others else 0.0)
     return max(spec["impact"]["mid"] + total, 0.0)
 
 
@@ -44,6 +49,7 @@ P10, P90 = 75.749, 186.022
 # ---------- demo A: 1967-75 detached house, gas boiler, cavity walls Poor, roof Very Poor, partial 87% ----------
 pa = demo["a"]["public_fields"]
 G, E, AREA = pa["baseline_gas_kwh"], pa["baseline_elec_kwh"], pa["floor_area_m2"]
+THERM = THERM_BY_CONTROLS[pa["controls"]]   # demo A has 'full' controls -> 5%
 other = OTHER * G
 hw = G - other
 space, water = SPACE * hw, WATER * hw
@@ -62,7 +68,7 @@ s2 = s1 - CAV * g1
 s3 = s2 * (1 - GLZ * (1 - 0.87))
 s4 = s3 * (1 - THERM)
 hp_elec = (s4 + water) * EFF / SCOP
-pv = PV * (E + hp_elec)
+pv = PV * E   # PV on baseline electricity, not on heat-pump electricity (D19)
 gas_saving = G - other
 elec_saving = -hp_elec + pv
 purchased_before = G + E
@@ -83,7 +89,7 @@ A = {
     "home_id": demo["a"]["home_id"],
     "expect": {
         "score_before": 44, "score_before_raw": score_raw, "class_before": "Poor",
-        "impacts_used": {"loft_insulation": LOFT, "cavity_wall": CAV, "solar_pv": PV},
+        "impacts_used": {"loft_insulation": LOFT, "cavity_wall": CAV, "solar_pv": PV, "smart_thermostat": THERM, "scop": SCOP},
         "score_after_raw": after_raw, "score_after": int(after_raw + 0.5),
         "end_uses_before": {"gas_space": space, "gas_water": water, "gas_other": other, "elec_base": E},
         "standalone_gas_saving_kwh": {"loft_insulation": loft_alone, "cavity_wall": cav_alone, "double_glazing": glz_alone,

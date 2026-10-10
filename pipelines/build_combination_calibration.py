@@ -39,7 +39,10 @@ def ref_home(walls: str) -> HomeRecord:
     """Same reference home as pipelines/validate_simulator.py (kept here so this script needs no xlsx reader)."""
     return HomeRecord(home_id="validation", property_type="House", walls_rating="Poor", walls_rating_status="observed",
                       walls_description=walls, roof_rating="Poor", roof_rating_status="observed", age_end=1960.0,
-                      glazing="double", heating_type="gas_boiler", heating_rating="Good", controls="full", solar_pv=False,
+                      roof_description="Pitched, 50 mm loft insulation",   # a loft exists (D20)
+                      glazing="double", heating_type="gas_boiler", heating_rating="Good",
+                      controls="timer",   # NEED "heat controls" upgrades homes with basic controls -> brief mid 7.5% (D25)
+                      solar_pv=False,
                       mains_gas=True, baseline_gas_kwh=GAS, gas_status="population_benchmark",
                       prov_baseline_gas_kwh="population_benchmark", baseline_elec_kwh=3000.0,
                       elec_status="population_benchmark", prov_baseline_elec_kwh="population_benchmark")
