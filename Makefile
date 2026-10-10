@@ -41,3 +41,8 @@ elec-split:   # needs data/processed/region=york/benchmarks.parquet
 
 combo-cal:    # needs only docs/validation/simulator_vs_need.json
 	$(PY) pipelines/build_combination_calibration.py
+
+# ---- engine-v3 calibration (D15 rev., D21, D22, D23, D28): needs data/processed/ and the York build ----
+.PHONY: engine-cal
+engine-cal:
+	$(PY) pipelines/build_engine_calibration.py

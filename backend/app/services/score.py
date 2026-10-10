@@ -158,7 +158,8 @@ def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[flo
     mp = config.score_mappings()
     weights = mp["weights"]
     if use_home_baseline and gas is None and elec is None:
-        gas, elec = home.baseline_gas_kwh, home.baseline_elec_kwh
+        from .baseline import benchmark_energy   # same within-band area scaling as the simulator baseline (D21)
+        gas, elec, _ = benchmark_energy(home)
         energy_provenance = Provenance.population_benchmark  # elec is always a benchmark; gas is a benchmark or an observed 0
     raw = {
         "energy_efficiency": sub_energy_efficiency(home),
@@ -171,6 +172,8 @@ def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[flo
     }
     head = mp["missing"]["headline_sub"]
     lo_sub, hi_sub = mp["missing"]["range_subs"]
+    priors = ((config.engine_calibration() or {}).get("missing_part_priors") or {})
+    prior_notes = []
     parts, missing = [], []
     lo = hi = 0.0
     for k in PARTS:
@@ -181,6 +184,12 @@ def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[flo
         if sub is None:
             missing.append(k)
             used = float(head)
+            pr = priors.get(k)
+            if isinstance(pr, dict):   # renewables: PV is rarer on old certificates
+                pr = pr.get("stale_epc" if home.flag_stale_epc else "recent_epc")
+            if pr is not None:
+                used = float(pr)
+                prior_notes.append(f"{k} missing: scored at the train mean {used:.1f} of similar homes (D22)")
             lo += w * lo_sub
             hi += w * hi_sub
         else:
@@ -201,7 +210,12 @@ def score_home(home: HomeRecord, gas: Optional[float] = None, elec: Optional[flo
     total = round_half_up(raw_total)
     notes = []
     if missing:
-        notes.append(f"missing parts scored {head} for the headline; range uses {lo_sub}/{hi_sub}")
+        defaulted = len(missing) - len(prior_notes)
+        if defaulted:
+            notes.append(f"missing parts without a calibrated prior scored {head} for the headline; range uses {lo_sub}/{hi_sub}")
+        else:
+            notes.append(f"range uses {lo_sub}/{hi_sub} for missing parts")
+        notes += prior_notes
     return ScoreResult(status=ValueStatus.ok, total=total, raw_total=raw_total, classification=classify(total),
                        range_low=round_half_up(lo), range_high=round_half_up(hi), completeness=complete,
                        missing_parts=missing, parts=parts, key_issues=key_issues, notes=notes)

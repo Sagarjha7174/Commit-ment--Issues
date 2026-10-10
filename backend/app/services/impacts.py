@@ -132,7 +132,7 @@ def adjustment(measure_id: str, home: HomeRecord) -> tuple[float, dict]:
             region = row["shrunk"]
             d["used"] = True
         elif backfit is not None:
-            eff = backfit.get(dim, {}).get(seg)
+            eff = (backfit.get(dim) or {}).get(seg) if isinstance(backfit.get(dim), dict) else None
             d["backfit_effect"] = None if eff is None else round(eff, 6)
             d["used"] = eff is not None
             if eff is not None:

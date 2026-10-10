@@ -20,15 +20,60 @@ BLOCKING_FLAGS = {
 }
 
 
+AREA_BAND_UPPER = (50.0, 100.0, 150.0, 200.0)   # NEED floor-area bands 1-5 (docs/data_york/mappings/need_floor_area_band.csv)
+
+
+def area_band(area: Optional[float]) -> Optional[int]:
+    if area is None or area <= 0:
+        return None
+    for i, upper in enumerate(AREA_BAND_UPPER, start=1):
+        if area <= upper:
+            return i
+    return 5
+
+
+def area_factor(fuel: str, area: Optional[float], cell_level: Optional[str], cal: Optional[dict] = None) -> tuple[float, Optional[str]]:
+    """D21: scale a NEED benchmark within its floor-area band by (area / band reference area)^beta.
+    Only for L1 cells (which include the area band); 1.0 when not calibrated or not applicable."""
+    cal = cal if cal is not None else config.engine_calibration()
+    ae = (cal or {}).get("area_elasticity")
+    band = area_band(area)
+    if not ae or band is None or not (cell_level or "").startswith("L1"):
+        return 1.0, None
+    ref = ae["band_reference_area_m2"].get(str(band))
+    beta = ae.get(fuel)
+    if not ref or beta is None:
+        return 1.0, None
+    f = (area / ref) ** beta
+    return f, f"{fuel} benchmark x{f:.3f} for {area:g} m² vs band reference {ref:g} m² (beta {beta:.3f}, D21)"
+
+
+def benchmark_energy(home: HomeRecord) -> tuple[Optional[float], Optional[float], list[str]]:
+    """The home's tagged NEED benchmark (gas, elec) with the within-band floor-area scaling applied."""
+    notes = []
+    gas, elec = home.baseline_gas_kwh, home.baseline_elec_kwh
+    if area_band(home.floor_area_m2) is None or home.flag_floor_area_implausible:
+        return gas, elec, notes
+    if gas is not None and gas > 0 and home.prov_baseline_gas_kwh == "population_benchmark":
+        f, n = area_factor("gas", home.floor_area_m2, home.benchmark_cell_level)
+        gas *= f
+        notes += [n] if n else []
+    if elec is not None and home.prov_baseline_elec_kwh == "population_benchmark":
+        f, n = area_factor("elec", home.floor_area_m2, home.benchmark_cell_level)
+        elec *= f
+        notes += [n] if n else []
+    return gas, elec, notes
+
+
 def model_enabled() -> bool:
     sw = config.model_switch()
     return bool(sw and sw.get("use_model_baseline") and sw.get("beat_benchmark"))
 
 
 def get_baseline(home: HomeRecord, user_reading: Optional[UserReading] = None, use_model: bool = False) -> Baseline:
-    notes = []
-    gas, gas_prov, gas_status = home.baseline_gas_kwh, home.provenance.get("baseline_gas_kwh", Provenance.unavailable), home.gas_status or "unknown"
-    elec, elec_prov, elec_status = home.baseline_elec_kwh, home.provenance.get("baseline_elec_kwh", Provenance.unavailable), home.elec_status or "unknown"
+    gas, elec, notes = benchmark_energy(home)
+    gas_prov, gas_status = home.provenance.get("baseline_gas_kwh", Provenance.unavailable), home.gas_status or "unknown"
+    elec_prov, elec_status = home.provenance.get("baseline_elec_kwh", Provenance.unavailable), home.elec_status or "unknown"
     if gas is None:
         gas_prov = Provenance.unavailable
     if elec is None:
