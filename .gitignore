@@ -61,3 +61,5 @@ dataset/
 data/
 # engine source package that happens to be named data/ (built data stays ignored above)
 !/backend/app/data/
+# data-integrity tests (code, not data)
+!/tests/data/
