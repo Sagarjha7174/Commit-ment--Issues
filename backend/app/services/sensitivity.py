@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Optional
 
 from .. import config
-from ..schemas.enums import ImpactLevel
+from ..schemas.enums import CombinationMode, ImpactLevel
 from ..schemas.property import HomeRecord
 from ..schemas.retrofit import FeasibilityItem, PackageSearch
 from ..schemas.scenario import Assumptions, Baseline
@@ -30,6 +30,9 @@ def variants(base: Assumptions) -> list[tuple[str, str, Assumptions]]:
         ("other_gas_high", f"cooking gas share {other * 2:.4f} (double ECUK)", {"other_gas_share": other * 2}),
         ("impacts_low", "measure impacts at catalogue low", {"impact_level": ImpactLevel.low}),
         ("impacts_high", "measure impacts at catalogue high", {"impact_level": ImpactLevel.high}),
+        ("headline_impacts", "national headline impacts instead of segment-adjusted (D15)", {"segment_impacts": False}),
+        ("need_calibrated_combinations", "fabric/controls combinations scaled to NEED medians (D17)",
+         {"combination_mode": CombinationMode.need_calibrated}),
     ]
     return [(n, d, base.model_copy(update=u)) for n, d, u in v]
 
@@ -42,7 +45,7 @@ def run(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], base_
     base = {f.objective: f.package_id for f in base_search.featured}
     runs = []
     for name, desc, va in variants(a):
-        ps = search(home, baseline, feas, va, t, budget)
+        ps = search(home, baseline, feas, va, t, budget, include_calibrated=False)  # only the picks matter here
         picks = {f.objective: f.package_id for f in ps.featured}
         runs.append({"name": name, "change": desc, "featured": picks,
                      "changed_objectives": sorted(o for o in base if picks.get(o) != base[o])})

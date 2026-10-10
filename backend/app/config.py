@@ -38,6 +38,28 @@ def value_gate() -> dict:
     return _json("value_gate.json")
 
 
+def engine_params() -> dict:
+    return _json("engine_params.json")
+
+
+def _optional_json(name: str) -> dict | None:
+    p = CONFIGS / name
+    return json.loads(p.read_text()) if p.exists() else None
+
+
+@lru_cache(maxsize=None)
+def electric_heating_split() -> dict | None:
+    """Heating share of electricity for electrically heated homes (pipelines/build_electric_heating_split.py).
+    Absent -> None: the engine abstains for electric-heated homes (D13 behaviour)."""
+    return _optional_json("electric_heating_split.json")
+
+
+@lru_cache(maxsize=None)
+def combination_calibration() -> dict | None:
+    """NEED-calibrated factors for multi-measure fabric/controls packages (pipelines/build_combination_calibration.py)."""
+    return _optional_json("combination_calibration.json")
+
+
 def model_switch() -> dict | None:
     """Switch file written by the ML owner when a modelled baseline beats the benchmark. Absent -> None."""
     p = CONFIGS / "model_switch.json"
@@ -85,5 +107,9 @@ def versions() -> dict:
         "score_mappings": score_mappings()["version"],
         "state_effects": state_effects()["version"],
         "emission_factors": f"DESNZ {ef['elec']['year']}",
-        "engine": "engine-v1",
+        "engine": "engine-v2",
+        "engine_params": engine_params()["version"],
+        # data-derived refinements: present only once built, so the scenario_id changes when they change
+        **{k: v["version"] for k, v in (("electric_heating_split", electric_heating_split()),
+                                        ("combination_calibration", combination_calibration())) if v},
     }

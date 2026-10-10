@@ -23,7 +23,8 @@ def run(case):
     b = get_baseline(home)
     if "baseline" in case:
         b = b.model_copy(update={"gas_kwh": case["baseline"]["gas"], "elec_kwh": case["baseline"]["elec"]})
-    a = Assumptions(**case.get("assumptions", {}))
+    # reference cases are hand-calculated on the catalogue headline impacts; segment adjustment has its own tests
+    a = Assumptions(**{"segment_impacts": False, **case.get("assumptions", {})})
     return home, simulate(b, home, case["measures"], a)
 
 
@@ -150,11 +151,11 @@ def test_blocking_flag_makes_improvement_unavailable():
 def test_impact_level_low_high():
     h = make_home()
     b = get_baseline(h)
-    lo, mid, hi = (simulate(b, h, [M.cavity_wall], Assumptions(impact_level=lvl)).gas_saving_kwh for lvl in ("low", "mid", "high"))
+    lo, mid, hi = (simulate(b, h, [M.cavity_wall], Assumptions(impact_level=lvl, segment_impacts=False)).gas_saving_kwh for lvl in ("low", "mid", "high"))
     assert lo <= mid <= hi and lo == pytest.approx(0.111382 * 12000, abs=ABS)
 
 
 def test_improvement_potential_formula():
     h = make_home()
-    s = simulate(get_baseline(h), h, [M.loft_insulation])
+    s = simulate(get_baseline(h), h, [M.loft_insulation], Assumptions(segment_impacts=False))
     assert s.improvement_potential_pct == pytest.approx(100 * 385.404 / 15000, abs=ABS)

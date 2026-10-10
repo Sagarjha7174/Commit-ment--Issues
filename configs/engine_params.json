@@ -1,0 +1,39 @@
+{
+ "version": "engine-params-v1",
+ "description": "Engine refinements on top of the catalogue (DECISIONS D15-D18). Kept out of retrofit_catalogue.json so pipelines/build_catalogue.py never overwrites them.",
+ "boiler_efficiency_by_heating_rating": {
+  "values": {"Very Good": 0.89, "Good": 0.85, "Average": 0.75, "Poor": 0.67, "Very Poor": 0.6},
+  "default": 0.85,
+  "applies_to": "gas_boiler",
+  "status": "assumption",
+  "basis": "EPC main-heating rating used as a proxy for boiler type: Very Good/Good ~ condensing, Average ~ non-condensing 1998+, Poor/Very Poor ~ older non-condensing or back boiler. Values approximate the SAP Table 4b default seasonal efficiencies (condensing ~84-89%, non-condensing 1998+ ~73-74%, pre-1998 ~65%); Good = 0.85 keeps the cat-v3 default.",
+  "verify_against": "SAP 10.2 Table 4b (BRE); values not checked against the table text in this build",
+  "used_for": "useful heat delivered by the existing boiler (heat-pump replacement electricity). Fabric and controls gas savings do not depend on it (the efficiency cancels).",
+  "decision": "D18"
+ },
+ "electric_heating": {
+  "heating_types": ["electric"],
+  "efficiency": 1.0,
+  "efficiency_basis": "direct-acting and storage electric heating deliver ~100% of the electricity as heat at the point of use (assumption)",
+  "split_file": "configs/electric_heating_split.json",
+  "split_built_by": "pipelines/build_electric_heating_split.py",
+  "decision": "D16"
+ },
+ "segment_impacts": {
+  "enabled_default": true,
+  "region_label": "Yorkshire and the Humber",
+  "method": "empirical Bayes: deviation of each segment median from the headline median, shrunk by w = tau^2 / (tau^2 + se^2); se of a median = 1.2533 x (IQR / 1.349) / sqrt(n); tau^2 = max(0, variance of segment deviations - mean se^2) per measure x dimension. Shrunken deviations of the home's segments (EPC band, age, type, region) are added to every impact level and the result is floored at 0.",
+  "floor_at_zero": true,
+  "epc_rating_segment": {"A": "A-C", "B": "A-C", "C": "A-C", "D": "D", "E": "E-G", "F": "E-G", "G": "E-G"},
+  "type_segment": {"Bungalow": "Bungalow", "Detached": "Detached", "Semi-Detached": "Semi detached", "End-Terrace": "End terrace", "Enclosed End-Terrace": "End terrace", "Mid-Terrace": "Mid terrace", "Enclosed Mid-Terrace": "Mid terrace"},
+  "age_segments": [[1918, "Pre 1919"], [1944, "1919-44"], [1964, "1945-64"], [1982, "1965-82"], [1999, "1983-99"], [9999, "2000 onwards"]],
+  "age_rule": "midpoint of the EPC age band (single year for one-year bands; 'before 1900' = Pre 1919) placed in the first NEED band whose upper year it does not exceed",
+  "decision": "D15"
+ },
+ "combination_calibration": {
+  "file": "configs/combination_calibration.json",
+  "built_by": "pipelines/build_combination_calibration.py",
+  "default_mode": "engineering",
+  "decision": "D17"
+ }
+}

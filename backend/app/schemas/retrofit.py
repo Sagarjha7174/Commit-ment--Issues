@@ -30,7 +30,9 @@ class EndUses(BaseModel):
     gas_space: float = 0.0
     gas_water: float = 0.0
     gas_other: float = 0.0          # cooking etc.; never touched by any measure
-    elec_base: float = 0.0          # all electricity in the baseline (appliances, lighting, any electric heating)
+    elec_base: float = 0.0          # baseline electricity not split out as heating (appliances, lighting, ...)
+    elec_space: float = 0.0         # electric space heating (electrically heated homes with a known split, D16)
+    elec_water: float = 0.0         # electric water heating
     hp_elec: float = 0.0            # electricity added by a heat pump
     pv_offset: float = 0.0          # grid import avoided by solar PV
 
@@ -40,7 +42,12 @@ class EndUses(BaseModel):
 
     @property
     def elec_import(self) -> float:
-        return self.elec_base + self.hp_elec - self.pv_offset
+        return self.elec_base + self.elec_space + self.elec_water + self.hp_elec - self.pv_offset
+
+    @property
+    def elec_gross(self) -> float:
+        """Electricity used before any PV offset (what PV % of grid electricity applies to)."""
+        return self.elec_base + self.elec_space + self.elec_water + self.hp_elec
 
     @property
     def purchased(self) -> float:
@@ -153,6 +160,7 @@ class PackageResult(BaseModel):
     unvalidated_impacts: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     sensitivity: Optional[dict] = None    # for featured packages: does the pick survive each sensitivity run
+    calibrated: Optional[dict] = None     # NEED-calibrated reference for 2+ fabric/controls measures (D17)
     status: ValueStatus = ValueStatus.ok
     reason_code: Optional[str] = None
 

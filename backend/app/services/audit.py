@@ -43,7 +43,10 @@ def build_audit(scenario_id: str, versions: dict, baseline: Baseline, feas: list
         "versions": versions,
         "baseline": {"gas_kwh": baseline.gas_kwh, "elec_kwh": baseline.elec_kwh, "gas_provenance": baseline.gas_provenance.value,
                      "elec_provenance": baseline.elec_provenance.value, "source": baseline.source, "note": baseline.note,
-                     "blocking_flags": baseline.blocking_flags},
+                     "blocking_flags": baseline.blocking_flags, "gas_heated": baseline.gas_heated,
+                     "elec_heated": baseline.elec_heated, "elec_heat_share": baseline.elec_heat_share,
+                     "elec_heat_share_source": baseline.elec_heat_share_source},
+        "assumptions_used": sim.assumptions,
         "feasibility": [{"measure": f.measure.value, "state": f.state.value, "reason": f.reason_code,
                          "missing_inputs": f.missing_inputs} for f in feas],
         "requested_package": {"status": sim.status.value,
@@ -54,6 +57,10 @@ def build_audit(scenario_id: str, versions: dict, baseline: Baseline, feas: list
                 for f in feas if f.state == FeasibilityState.needs_verification]
     if baseline.source == "population_benchmark":
         unknowns.append("baseline is a NEED population benchmark, not this home's meter readings")
+    if baseline.elec_heated:
+        unknowns.append("electric heating share of electricity is a NEED benchmark difference, not metered (D16)")
+    if any(r.measure.value == "heat_pump" and r.status == ValueStatus.ok for r in sim.measures):
+        unknowns.append(f"existing boiler efficiency: {sim.assumptions.get('boiler_efficiency_source', 'assumption')}")
     if packages is not None:
         pk = packages.packages
         by_id = {p.package_id: p for p in pk}

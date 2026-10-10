@@ -19,11 +19,13 @@ from ..schemas.property import HomeRecord
 from ..schemas.retrofit import FeasibilityItem, FeaturedPick, PackageResult, PackageSearch
 from ..schemas.scenario import Assumptions, Baseline
 from .carbon import carbon_change, emissions_kg
+from .combination import calibrated_view
 from .simulator import simulate
 
 THRESHOLD_PCT = 10.0
 COMBO_WARNING = ("combined fabric/controls savings may be overestimated: the simulator exceeds NEED combination "
-                 "medians by 5.6-13.8 percentage points (docs/validation/simulator_vs_need.json, D14)")
+                 "medians by 5.6-13.8 percentage points (docs/validation/simulator_vs_need.json, D14); "
+                 "see the NEED-calibrated reference figures (D17)")
 LABELS = {
     "lowest_cost_meeting_threshold": "Lowest-cost package cutting emissions by at least {t:g}%",
     "largest_carbon_saving": "Largest carbon saving",
@@ -170,7 +172,8 @@ def candidate_measures(home: HomeRecord, baseline: Baseline, feas: list[Feasibil
 
 
 def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], assumptions: Optional[Assumptions] = None,
-           threshold_pct: float = THRESHOLD_PCT, budget: Optional[float] = None) -> PackageSearch:
+           threshold_pct: float = THRESHOLD_PCT, budget: Optional[float] = None,
+           include_calibrated: bool = True) -> PackageSearch:
     a = assumptions or Assumptions()
     fmap = {f.measure: f for f in feas}
     keep, excluded = candidate_measures(home, baseline, feas, a)
@@ -206,7 +209,8 @@ def search(home: HomeRecord, baseline: Baseline, feas: list[FeasibilityItem], as
                 purchased_saving_kwh=sim.purchased_saving_kwh, improvement_potential_pct=sim.improvement_potential_pct,
                 carbon_saving_kg=carb.total_kg, carbon_saving_pct=carb.saving_pct_of_baseline,
                 carbon_per_pound_kg=(carb.total_kg / cost) if cost else None,
-                unvalidated_impacts=[m.value for m in ms if not validated[m.value]], warnings=warns)
+                unvalidated_impacts=[m.value for m in ms if not validated[m.value]], warnings=warns,
+                calibrated=calibrated_view(baseline, home, ms, a, feas) if (warns and include_calibrated) else None)
             results.append(pr)
             cands.append(Cand(pid, cost, carb.total_kg, sim.purchased_saving_kwh, len(ms), not verify,
                               carb.saving_pct_of_baseline or 0.0, verify))

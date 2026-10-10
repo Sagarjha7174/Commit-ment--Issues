@@ -7,7 +7,7 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from .enums import HeatPumpMode, ImpactLevel, MeasureId, Provenance, ValueStatus
+from .enums import CombinationMode, HeatPumpMode, ImpactLevel, MeasureId, Provenance, ValueStatus
 from .retrofit import CarbonResult, FeasibilityItem, PackageSearch, SimResult
 
 
@@ -22,6 +22,8 @@ class Assumptions(BaseModel):
     heat_pump_mode: HeatPumpMode = HeatPumpMode.full
     heat_pump_partial_share: Optional[float] = None   # required when mode = partial
     baseline_scale: float = 1.0                       # sensitivity only
+    segment_impacts: bool = True                      # NEED impacts adjusted to the home's segments (D15)
+    combination_mode: CombinationMode = CombinationMode.engineering   # D17
 
 
 class UserReading(BaseModel):
@@ -51,6 +53,9 @@ class Baseline(BaseModel):
     source: str                       # user_provided | modelled | population_benchmark | mixed
     blocking_flags: list[str] = Field(default_factory=list)
     gas_heated: bool = False
+    elec_heated: bool = False                 # electric heating with a known heating share of electricity (D16)
+    elec_heat_share: Optional[float] = None   # share of baseline electricity used for space + water heating
+    elec_heat_share_source: str = ""
     note: str = ""
 
 
@@ -116,6 +121,7 @@ class ScenarioResult(BaseModel):
     packages: Optional[PackageSearch] = None
     sensitivity: Optional[dict] = None
     valuation: Valuation
+    combination_check: Optional[dict] = None   # NEED-calibrated reference next to the engineering estimate (D17)
     audit: dict
     assumptions: dict
     warnings: list[str]

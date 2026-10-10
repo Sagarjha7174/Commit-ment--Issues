@@ -11,6 +11,7 @@ from .. import config
 from ..schemas.enums import Provenance
 from ..schemas.property import HomeRecord
 from ..schemas.scenario import Baseline, UserReading
+from .units import electric_heating_share
 
 BLOCKING_FLAGS = {
     "flag_conflict_gas_heating_no_mains_gas": "gas boiler recorded but no mains gas",
@@ -54,13 +55,20 @@ def get_baseline(home: HomeRecord, user_reading: Optional[UserReading] = None, u
 
     blocking = [k for k in BLOCKING_FLAGS if getattr(home, k)]
     gas_heated = home.heating_type == "gas_boiler" and gas is not None and gas > 0 and not home.flag_conflict_gas_heating_no_mains_gas
+    share, share_src = electric_heating_share(home)
+    elec_heated = share is not None and not gas_heated and elec is not None and elec > 0 and not blocking
+    if elec_heated:
+        notes.append(f"electric heating: {share:.0%} of electricity treated as space + water heating ({share_src}, D16)")
+    elif home.heating_type in ("electric",):
+        notes.append(f"electric heating savings not estimated: {share_src}")
     if Provenance.population_benchmark in provs:
         notes.append("NEED benchmark: median of similar homes in the region, not this home's meter (D6)")
     if gas is None or elec is None:
         notes.append("baseline " + " and ".join(f for f, v in (("gas", gas), ("electricity", elec)) if v is None) + " unavailable")
     return Baseline(gas_kwh=gas, elec_kwh=elec, gas_provenance=gas_prov, elec_provenance=elec_prov,
                     gas_status=gas_status, elec_status=elec_status, source=source, blocking_flags=blocking,
-                    gas_heated=gas_heated, note="; ".join(notes))
+                    gas_heated=gas_heated, elec_heated=elec_heated, elec_heat_share=share if elec_heated else None,
+                    elec_heat_share_source=share_src if elec_heated else "", note="; ".join(notes))
 
 
 def blocking_reasons(b: Baseline) -> list[str]:

@@ -11,9 +11,33 @@ ROOT = Path(__file__).resolve().parents[2]
 OUT = Path(__file__).resolve().parent
 demo = {h["case"][0]: h for h in json.loads((ROOT / "configs/demo_homes.json").read_text())["homes"]}
 
-# documented constants (cat-v3, score-params-v1, DESNZ 2026)
-EFF, OTHER, SPACE, WATER, SCOP = 0.85, 0.0305, 0.77, 0.23, 3.0
-LOFT, CAV, GLZ, THERM, PV = 0.032117, 0.11982, 0.10, 0.075, 0.12228
+# documented constants (cat-v3, engine-params-v1, score-params-v1, DESNZ 2026)
+EFF, OTHER, SPACE, WATER, SCOP = 0.85, 0.0305, 0.77, 0.23, 3.0   # EFF: gas boiler rated Good (D18)
+GLZ, THERM = 0.10, 0.075
+CAT = {m["id"]: m for m in json.loads((ROOT / "configs/retrofit_catalogue.json").read_text())["measures"]}
+
+
+def segment_impact(measure, segments):
+    """Empirical-Bayes segment adjustment (D15), recomputed by hand from the published NEED segment tables."""
+    import math
+    spec = CAT[measure]
+    total = 0.0
+    for dim, name in segments.items():
+        segs = spec["impact_by_segment"][dim]["segments"]
+        head = segs["All domestic properties"]["median_pct"]
+        rows = {k: v for k, v in segs.items() if k != "All domestic properties" and v["status"] == "observed"}
+        se = {k: 1.2533 * ((v["q3"] - v["q1"]) / 1.349) / math.sqrt(v["n"]) for k, v in rows.items()}
+        dev = {k: v["median_pct"] - head for k, v in rows.items()}
+        mean = sum(dev.values()) / len(dev)
+        tau2 = max(0.0, sum((d - mean) ** 2 for d in dev.values()) / (len(dev) - 1) - sum(x ** 2 for x in se.values()) / len(se))
+        w = tau2 / (tau2 + se[name] ** 2) if tau2 > 0 else 0.0
+        total += w * dev[name]
+    return max(spec["impact"]["mid"] + total, 0.0)
+
+
+# demo A segments: EPC E -> "E-G", 1967-1975 (midpoint 1971) -> "1965-82", detached house, York
+SEG_A = {"epc_rating": "E-G", "property_age": "1965-82", "property_type": "Detached", "region": "Yorkshire and the Humber"}
+LOFT, CAV, PV = (segment_impact(m, SEG_A) for m in ("loft_insulation", "cavity_wall", "solar_pv"))
 EF_GAS, EF_ELEC = 0.18231, 0.14395
 P10, P90 = 75.749, 186.022
 
@@ -59,6 +83,7 @@ A = {
     "home_id": demo["a"]["home_id"],
     "expect": {
         "score_before": 44, "score_before_raw": score_raw, "class_before": "Poor",
+        "impacts_used": {"loft_insulation": LOFT, "cavity_wall": CAV, "solar_pv": PV},
         "score_after_raw": after_raw, "score_after": int(after_raw + 0.5),
         "end_uses_before": {"gas_space": space, "gas_water": water, "gas_other": other, "elec_base": E},
         "standalone_gas_saving_kwh": {"loft_insulation": loft_alone, "cavity_wall": cav_alone, "double_glazing": glz_alone,

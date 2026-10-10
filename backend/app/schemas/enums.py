@@ -62,6 +62,11 @@ class HeatPumpMode(str, Enum):
     unknown = "unknown"
 
 
+class CombinationMode(str, Enum):
+    engineering = "engineering"            # sequential multiplicative model (default)
+    need_calibrated = "need_calibrated"    # multi-measure fabric/controls impacts scaled to NEED combination medians (D17)
+
+
 class ImpactLevel(str, Enum):
     low = "low"
     mid = "mid"

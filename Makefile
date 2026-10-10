@@ -33,3 +33,11 @@ test:
 .PHONY: validate-sim
 validate-sim:
 	$(PY) pipelines/validate_simulator.py
+
+# ---- engine refinements (D16, D17) ----
+.PHONY: elec-split combo-cal
+elec-split:   # needs data/processed/region=york/benchmarks.parquet
+	$(PY) pipelines/build_electric_heating_split.py
+
+combo-cal:    # needs only docs/validation/simulator_vs_need.json
+	$(PY) pipelines/build_combination_calibration.py

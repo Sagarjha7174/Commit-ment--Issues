@@ -18,6 +18,7 @@ sys.path.insert(0, str(ROOT))
 from backend.app import config  # noqa: E402
 from backend.app.schemas.enums import MeasureId as M  # noqa: E402
 from backend.app.schemas.property import HomeRecord  # noqa: E402
+from backend.app.schemas.scenario import Assumptions  # noqa: E402
 from backend.app.services.baseline import get_baseline  # noqa: E402
 from backend.app.services.simulator import simulate  # noqa: E402
 
@@ -63,7 +64,7 @@ def main():
         n = need[name]
         walls = "Solid brick, as built, no insulation (assumed)" if M.solid_wall in measures else "Cavity wall, as built, no insulation (assumed)"
         h = ref_home(walls)
-        sim = simulate(get_baseline(h), h, measures)
+        sim = simulate(get_baseline(h), h, measures, Assumptions(segment_impacts=False))  # NEED Table 2 is headline E&W
         assert all(r.status.value == "ok" for r in sim.measures), name
         pct = 100 * sim.gas_saving_kwh / GAS
         gap = pct - n["median_pct"]

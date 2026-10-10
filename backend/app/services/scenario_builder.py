@@ -14,6 +14,7 @@ from ..schemas.enums import FABRIC, FeasibilityState, MeasureId, Provenance, Val
 from ..schemas.property import HomeRecord
 from ..schemas.scenario import ScenarioRequest, ScenarioResult, Valuation, scenario_id
 from . import audit as audit_mod
+from .combination import calibrated_view
 from . import packages as packages_mod
 from . import sensitivity as sens_mod
 from .baseline import get_baseline
@@ -112,7 +113,7 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
 
     versions = config.versions()
     sid = scenario_id(home.state_dict(), request, versions)
-    assumptions = {**resolve(a).as_dict(), "heat_pump_mode": a.heat_pump_mode.value,
+    assumptions = {**resolve(a, home).as_dict(), "heat_pump_mode": a.heat_pump_mode.value,
                    "heat_pump_partial_share": a.heat_pump_partial_share, "baseline_scale": a.baseline_scale,
                    "emission_factors": {f: v["kg_co2e_per_kwh"] for f, v in config.emission_factors().items()},
                    "package_threshold_pct": packages_mod.THRESHOLD_PCT}
@@ -121,6 +122,7 @@ def build(request: ScenarioRequest, home: Optional[HomeRecord] = None) -> Scenar
         scenario_id=sid, home=public_home(home), request=request, baseline=baseline, feasibility=feas,
         measures_applied=applied, measures_blocked=blocked, simulation=sim, standalone=standalone, carbon=carbon,
         score_before=s_before, score_after=s_after, packages=pkg, sensitivity=sens, valuation=valuation(),
+        combination_check=calibrated_view(baseline, home, applied, a, feas),
         audit=aud, assumptions=assumptions, warnings=warnings, versions=versions,
         data_timestamp=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )
