@@ -63,3 +63,7 @@ data/
 !/backend/app/data/
 # data-integrity tests (code, not data)
 !/tests/data/
+
+# address-free ML export for review (shared manually, never committed)
+ml_data_export.zip
+tmp_ml_export/
