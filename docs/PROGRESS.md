@@ -490,9 +490,9 @@ portfolio(top_n: int = 50, split: str | None = None) -> dict
 3. **LLM with a number-grounding checker** and a held-out evaluation set.
 
 ### Accuracy
-4. Use the catalogue's **impacts by segment** (EPC band, age, type, Yorkshire region).
-5. Add a **NEED-calibrated combination factor**, shown alongside the multiplicative model.
-6. Add an **electric-heating end-use split**, so electric homes get fabric savings.
+4. ~~Use the catalogue's **impacts by segment**~~: done in engine-v2 (D15).
+5. ~~Add a **NEED-calibrated combination factor**, shown alongside the multiplicative model~~: done in engine-v2 (D17).
+6. ~~Add an **electric-heating end-use split**~~: done in engine-v2 (D16); run `make elec-split` to build the split file.
 7. Use **PVGIS** for solar yield by orientation instead of a flat 12.2%.
 8. Collect **user meter readings** in the UI (already supported by the engine).
 
@@ -509,3 +509,22 @@ portfolio(top_n: int = 50, split: str | None = None) -> dict
 
 ## 15. Never committed
 `.env` (API key), `dataset/`, `data/` (built parquet files, audit sample with addresses, `demo_homes_internal.json`), real addresses and full postcodes.
+
+---
+
+## 16. engine-v2 refinements (branch `feature/engine-improvements`)
+| ID | Refinement | Status |
+|---|---|---|
+| D15 | Segment-aware NEED impacts (EPC band, age, type, region; empirical-Bayes shrinkage) | on by default |
+| D16 | Electrically heated homes: heating share of electricity from NEED benchmarks; fabric, glazing, thermostat and heat pump estimated on electricity | code done; **run `make elec-split`** (needs `benchmarks.parquet`) and commit `configs/electric_heating_split.json` |
+| D17 | NEED-calibrated reference next to the engineering estimate for 2+ fabric/controls measures | `configs/combination_calibration.json` built and committed |
+| D18 | Boiler efficiency from the EPC heating rating (heat-pump electricity) | on; values are an assumption to verify against SAP 10.2 Table 4b |
+
+- **Sensitivity:** 12 runs (adds headline impacts and NEED-calibrated combinations).
+- **Tests:** 185 unit tests pass, 10 are skipped without data, and there are 9 data checks. New tests are in `tests/unit/test_improvements.py`.
+- **Demo A** (hand-checked): improvement potential 68.60%, carbon 3,310.6 kg/yr (engineering); NEED-calibrated reference 3,216.8 kg/yr.
+
+**To do on the data machine:**
+- `make elec-split`, then commit `configs/electric_heating_split.json`.
+- `make test`: the demo tests need data. Demo B's fixture expects "not estimated" until the split file exists; regenerate it with `tests/fixtures/hand_calc_demo.py` after building the split, and extend demo B's expectations to the estimated values.
+- `make score` and `make validate-sim`.

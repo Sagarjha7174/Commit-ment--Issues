@@ -1,4 +1,4 @@
-# Engine: baseline, feasibility, simulator, carbon, packages
+# Engine: baseline, feasibility, simulator, carbon, packages (engine-v2)
 
 Code: `backend/app/services/`. Plain deterministic Python, with Pydantic v2 schemas in `backend/app/schemas/`. Every number is produced here; the LLM layer only explains these outputs.
 
@@ -44,7 +44,8 @@ A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Ele
 - `gas_other = other_gas_share × gas` (0.0305; cooking, never touched)
 - `gas_heat_water = gas − gas_other`
 - `gas_space = space_share × gas_heat_water` (0.77); `gas_water = water_share × gas_heat_water` (0.23)
-- `useful = gas × boiler_efficiency` (0.85)
+- `useful = gas × boiler_efficiency`: by EPC heating rating (Very Good 0.89, Good 0.85, Average 0.75, Poor 0.67, Very Poor 0.60; default 0.85), D18
+- **Electrically heated homes** (D16): `elec_heat = share × elec`, where `share` comes from `configs/electric_heating_split.json`. `elec_space = 0.77 × elec_heat` and `elec_water = 0.23 × elec_heat`; the rest stays `elec_base`. Without the split file the engine abstains, as before (D13).
 - All constants come from `configs/retrofit_catalogue.json` (cat-v3) and can be overridden per scenario through `Assumptions`.
 
 ## 5. Impact basis conversion (critical)
@@ -56,7 +57,9 @@ A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Ele
 | anything else | n/a | `not_estimated`, `impact_basis_unsupported` |
 
 - **Impact level:** the catalogue mid by default; low or high can be selected for sensitivity.
-- **Non-gas-heated homes:** fabric, glazing and thermostat measures are `not_estimated` with reason `heating_not_on_gas`, because no electric-heating end-use split exists (D13).
+- **Segment-aware impacts** (D15): for loft, cavity, solid wall and PV, the impact is headline + Σ shrunk segment deviations (EPC band, age, type, region; empirical Bayes), floored at 0. `Assumptions.segment_impacts = False` gives the headline. Each step note shows both figures.
+- **Electrically heated homes** (D16): `total_gas` impacts become `frac = min(impact / (0.77 × (1 − 0.0305)), 1)` of electric space heat. `space_heat_demand` impacts apply directly to electric space heat.
+- **Other non-gas-heated homes** (oil, other), or electric homes without the split: `not_estimated` with reason `heating_not_on_gas` (D13).
 
 ## 6. Order semantics
 - **Fixed order:** loft → cavity → solid wall → double glazing → smart thermostat → heat pump → solar PV. The order in the request is ignored.
@@ -69,7 +72,7 @@ A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Ele
 - **partial:** replaces a declared share; the rest stays on gas.
 - **unknown:** the engine abstains (`not_estimated`, `heat_pump_mode_unknown`).
 - Electricity rises, which shows as a negative electricity saving.
-- Electric to heat pump is `not_estimated` (`no_gas_to_displace`).
+- **Electric to heat pump** (D16): replaces electric space + water heat (efficiency 1.0) with `heat / SCOP`, an electricity saving of `heat × (1 − 1/SCOP)`. Without the split file it is `not_estimated` (`no_gas_to_displace`).
 
 ## 8. Solar PV
 - Applied last, on grid electricity including any heat-pump electricity.
@@ -98,7 +101,7 @@ A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Ele
 - **Result:** the simulator **overestimates combined packages**.
 - **Why it can't match:** NEED's cavity+loft median (8.4%) is lower than its cavity-alone median (12.0%). That points to different installation samples and in-use effects, which a multiplicative engineering model cannot reproduce.
 - **Heat controls:** these map approximately to the smart thermostat, whose impact is the brief's range and is not validated.
-- **Our response:** combined savings are not tuned to fit. Every multi-measure fabric/controls package carries a warning citing this gap (D14).
+- **Our response:** the engineering estimate is not tuned. Every multi-measure fabric/controls package carries a warning citing this gap (D14) **and** a NEED-calibrated reference figure (D17). The factors are solved so the reference home reproduces each NEED median exactly: 0.559, 0.712, 0.409 and 0.407, with a pooled 0.484 (`configs/combination_calibration.json`).
 
 ## 12. What the simulator does NOT model
 - ventilation and infiltration
@@ -138,14 +141,16 @@ It is a transparent accounting model, **not a digital twin**. Savings are estima
 - **Each package records:** cost provenance, unvalidated impacts (glazing, thermostat, heat pump), the D14 combination warning, and its survival under sensitivity.
 
 ## 14. Sensitivity (`sensitivity.py`)
-A *limited one-at-a-time analysis, not a confidence interval*. The package search is rerun under:
+A *limited one-at-a-time analysis, not a confidence interval*. The package search is rerun under 12 variants:
 - baseline ±15%
 - SCOP 2.5 and 3.5
 - space/water gas split 65/35 and 85/15
 - cooking-gas share ×½ and ×2
 - impacts at the catalogue low and high ends
+- headline impacts instead of segment-adjusted (D15)
+- NEED-calibrated combinations (D17)
 
-For each featured pick it reports `survives k/10` and the runs under which it changed.
+For each featured pick it reports `survives k/12` and the runs under which it changed.
 
 **Not tested:** roof orientation and shading, occupancy, weather, ventilation, installation quality, prices, heat-pump sizing.
 
@@ -192,7 +197,7 @@ portfolio(top_n: int = 50, split: str | None = None) -> dict
 
 **What-if requests:** change `ScenarioRequest.measures`, `assumptions` or `user_reading`, call `build()` again, and pass the new `ScenarioResult` to the LLM. The LLM never computes numbers.
 
-## 18. Performance
+## 18. Performance (engine-v1; see §19 for v2)
 Measured on 300 random test homes:
 
 | Call | p50 | p95 | max |
@@ -200,3 +205,18 @@ Measured on 300 random test homes:
 | `build()` with package search | 1.2 ms | 2.9 ms | 5.6 ms |
 | `build()` with sensitivity | 5.7 ms | 22.9 ms | 52 ms |
 | `portfolio()` over all 65,872 homes (cached afterwards) | | | about 5 s |
+
+## 19. engine-v2 refinements (D15–D18)
+| Refinement | Where | Default | Switch | Changes |
+|---|---|---|---|---|
+| Segment-aware NEED impacts | `services/impacts.py` | on | `Assumptions.segment_impacts` | loft, cavity, solid wall, PV savings per home |
+| Electrically heated homes | `units.decompose`, `simulator._apply` | on once `configs/electric_heating_split.json` exists | (file present) | fabric, glazing, thermostat, heat pump for `heating_type = electric` |
+| NEED-calibrated combinations | `services/combination.py` | engineering headline + calibrated reference | `Assumptions.combination_mode` | `combination_check`, `PackageResult.calibrated` |
+| Boiler efficiency by heating rating | `units.boiler_efficiency` | on | `Assumptions.boiler_efficiency` override | heat-pump electricity only |
+
+- **Reconciliation:** unchanged and still asserted. Electric end uses (`elec_space`, `elec_water`) are part of `elec_import`, and PV applies to gross electricity (`elec_gross`).
+- **Demo A** (hand-checked, `tests/fixtures/hand_calc_demo.py`):
+  - segment-adjusted impacts: loft 3.73%, cavity 16.40%, PV 11.01%;
+  - package: gas 20,957.4, electricity −3,544.0 kWh, improvement potential 68.60%, carbon 3,310.6 kg/yr;
+  - NEED-calibrated reference: carbon 3,216.8 kg/yr (pooled factor 0.484).
+- **Timing:** for a test home with 6 candidate measures (64 packages), `build()` with packages takes ~23 ms and with sensitivity ~181 ms (engine-v1 on the same home: 11 ms and 105 ms). Not yet re-measured on the 300 random York test homes.
