@@ -6,7 +6,7 @@ import { fmtKg, fmtKwh, missingText } from '../../utils/format';
 import { prettyText } from '../../utils/labels';
 import { limitations } from '../../utils/limitations';
 import { measureEvidence, scoreEvidence } from '../../utils/evidence';
-import { Blueprint } from '../../components/home/Blueprint';
+import { Axonometric } from '../../components/home/Axonometric';
 import { ProvenanceChip } from '../../components/common/Knowledge';
 import { WhyButton } from '../../components/common/EvidenceDrawer';
 import { useOpenEvidence } from '../../components/common/evidenceContext';
@@ -96,16 +96,7 @@ export function YourHomeTab({ r, lab, classes, onTab, situation }: {
       </div>
 
       <aside className="tab-side">
-        <Blueprint
-          isFlat={isFlat(r.home)}
-          feasibility={r.feasibility}
-          selected={new Set(lab.selectedMeasures)}
-          applied={new Set(r.measures_applied)}
-          onToggle={lab.toggleMeasure}
-          onExplain={(m) => openEvidence(measureEvidence(r, m))}
-        />
-        <p className="xsmall muted">Tap a number to add or remove that improvement. Green = in the current plan.</p>
-        <details className="location">
+        <details className="location" open>
           <summary className="kicker"><MapPin size={12} aria-hidden="true" /> Location & climate</summary>
           <dl>
             <div><dt>Area</dt><dd>{r.home.postcode_outward ?? 'York'}, City of York, UK</dd></div>
@@ -115,6 +106,21 @@ export function YourHomeTab({ r, lab, classes, onTab, situation }: {
           </dl>
         </details>
       </aside>
+
+      <section className="tab-wide" aria-label="Retrofit sheet">
+          <Axonometric
+            home={r.home}
+            scenarioId={r.scenario_id}
+            buildOrder={r.simulation.measures.map((m) => m.measure)}
+            isFlat={isFlat(r.home)}
+            feasibility={r.feasibility}
+            selected={new Set(lab.selectedMeasures)}
+            applied={new Set(r.measures_applied)}
+            onToggle={lab.toggleMeasure}
+            onExplain={(m) => openEvidence(measureEvidence(r, m))}
+          />
+          <p className="xsmall muted">Tap a numbered tag or a line in the orange index to add or remove that improvement. Orange = in the current plan. A schematic drawn from the EPC record, not a survey.</p>
+      </section>
 
       <div className="tab-foot">
         {situation}

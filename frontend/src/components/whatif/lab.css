@@ -17,8 +17,8 @@
 .lab-card-muted { background: var(--surface-sunk); border-style: dashed; }
 .lab-fields { display: grid; gap: var(--s-2); grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 .lab-toggles { display: flex; flex-wrap: wrap; gap: 6px; }
-.ltoggle { padding: 6px 12px; border-radius: 99px; border: 1.5px solid var(--ink); font-weight: 700; font-size: var(--fs-sm); background: var(--surface); min-height: 36px; }
-.ltoggle.on { background: var(--saving); border-color: var(--saving); color: #fff; }
+.ltoggle { padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid var(--ink); font-weight: 700; font-size: var(--fs-sm); background: var(--surface); min-height: 36px; }
+.ltoggle.on { background: var(--habi-orange); border-color: var(--habi-orange); color: var(--habi-dark); }
 .ltoggle[disabled] { border-color: var(--line); color: var(--ink-muted); text-decoration: line-through; cursor: not-allowed; }
 .whatif-out { display: grid; gap: 4px; }
 

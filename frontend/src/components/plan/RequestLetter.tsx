@@ -34,7 +34,7 @@ function letterText(r: ScenarioResult, s: Situation): string {
       ? 'Could we discuss whether you would be willing to carry out, or allow, this work?'
       : 'Could this be discussed at the next meeting, including approval and how costs would be shared?',
     '',
-    `These figures are estimates from Green Home Score (scenario ${shortId(r.scenario_id)}), not quotes or guarantees.`,
+    `These figures are estimates from HABI (scenario ${shortId(r.scenario_id)}), not quotes or guarantees.`,
     '',
     'Kind regards,',
   ].filter((l, i, a) => !(l === '' && a[i - 1] === '')).join('\n');

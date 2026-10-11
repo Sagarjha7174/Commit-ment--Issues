@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useState, useEffect, type FormEvent, type ReactNode } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { BookOpen, Building2, Home, Menu, X } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
@@ -6,6 +6,7 @@ import { envDataMode, setDataMode, useDataMode } from '../../api/config';
 import { useDemoHomes, useEvidence, useHealth, useSnapshotManifest } from '../../api/queries';
 import { toApiError } from '../../api/errors';
 import { fmtDate } from '../../utils/format';
+import { HabiLogo } from '../brand/Habi';
 import './shell.css';
 
 const LINKS = [
@@ -19,16 +20,6 @@ const CASE_SHORT: Record<string, string> = {
   b_flat_loft_solar_infeasible: 'Electric flat',
   c_missing_data: 'Missing data',
 };
-
-function Logo() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true" className="logo-mark">
-      <rect width="28" height="28" rx="7" fill="var(--brand)" />
-      <path d="M7 13.5 14 8l7 5.5V20a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1z" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinejoin="round" />
-      <path d="M11.5 21v-3.5a2.5 2.5 0 0 1 5 0V21" fill="#fff" />
-    </svg>
-  );
-}
 
 function DataStatus() {
   const mode = useDataMode();
@@ -78,10 +69,15 @@ function Sidebar({ onNavigate }: { onNavigate(): void }) {
   };
   return (
     <div className="sidebar-inner">
-      <NavLink to="/home" className="brand" aria-label="Green Home Score, home" onClick={onNavigate}>
-        <Logo />
-        <span className="brand-text"><b>Green Home Score</b><span>Retrofit planning</span></span>
-      </NavLink>
+      <div className="sidebar-top">
+        <NavLink to="/home" className="brand" aria-label="HABI, home" onClick={onNavigate}>
+          <HabiLogo size={30} tone="light" />
+        </NavLink>
+        <button className="sidebar-close-btn" onClick={onNavigate} aria-label="Close navigation menu">
+          <X size={18} aria-hidden="true" />
+        </button>
+      </div>
+      <p className="brand-tagline">Property intelligence for better homes.</p>
 
       <nav className="side-nav" aria-label="Primary">
         {LINKS.map(({ to, label, Icon }) => (
@@ -128,7 +124,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <p className="xsmall muted">
-        Every number comes from the engine; the language model only explains. Not a lending, eligibility or credit decision.
+        <b>HABI</b> · Property intelligence for better homes. Every number comes from the engine; the language model only explains. Not a lending, eligibility or credit decision.
       </p>
       <details className="footer-versions">
         <summary className="xsmall muted">Model and data versions</summary>
@@ -143,20 +139,59 @@ export function Footer() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const loc = useLocation();
+  const demos = useDemoHomes();
   const [openOn, setOpenOn] = useState<string | null>(null);
   const open = openOn === loc.pathname; // navigating closes the drawer
   const close = () => setOpenOn(null);
+
+  // Lock background scroll when drawer is open and handle Escape key
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') setOpenOn(null);
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [open]);
+
+  // Current active home in mobile header if on /home/:id
+  const currentHomeId = loc.pathname.startsWith('/home/') ? loc.pathname.replace('/home/', '') : null;
+  const currentDemo = (demos.data ?? []).find((d) => d.home_id === currentHomeId);
+
   return (
     <div className="app">
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="mobilebar">
-        <NavLink to="/home" className="brand" aria-label="Green Home Score, home"><Logo /><span className="brand-text"><b>Green Home Score</b></span></NavLink>
-        <button className="nav-toggle" aria-expanded={open} aria-controls="sidebar" onClick={() => setOpenOn(open ? null : loc.pathname)}>
+        <NavLink to="/home" className="brand mobile-brand" aria-label="HABI, home">
+          <HabiLogo size={24} tone="light" />
+        </NavLink>
+
+        {currentDemo && (
+          <div className="mobilebar-home-pill">
+            <span className={`epc-chip epc-xs epc-${(currentDemo.rating ?? 'x').toLowerCase()}`}>{currentDemo.rating ?? '?'}</span>
+            <span className="mobilebar-home-name">{currentDemo.display_label.replace(/^Demo home (\w),.*$/, 'Home $1')}</span>
+          </div>
+        )}
+
+        <button
+          className="nav-toggle"
+          aria-expanded={open}
+          aria-controls="sidebar"
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpenOn(open ? null : loc.pathname)}
+        >
           {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
           <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
         </button>
       </header>
-      <aside id="sidebar" className={`sidebar ${open ? 'is-open' : ''}`}>
+      <aside id="sidebar" className={`sidebar ${open ? 'is-open' : ''}`} aria-label="Sidebar navigation">
         <Sidebar onNavigate={close} />
       </aside>
       {open && <div className="scrim" onClick={close} aria-hidden="true" />}

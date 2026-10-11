@@ -181,3 +181,47 @@ describe('permissions and the decision record', () => {
     expect(rec.feasibility.find((x) => x.measure === 'cavity_wall')?.permission_guidance).toBe('Needs landlord permission');
   });
 });
+
+describe('retrofit sheet (architectural axonometric)', () => {
+  it('the orange index toggles a measure and the engine recalculates (home A)', async () => {
+    setSituation({ ...DEFAULT_SITUATION, done: true });
+    await open(HOME_A, 'home');
+    const sheet = screen.getByRole('figure', { name: /Retrofit sheet/ });
+    expect(within(sheet).getByText('171 m²')).toBeInTheDocument();
+    expect(within(sheet).getByText(snapshotResult(HOME_A).scenario_id.slice(0, 8))).toBeInTheDocument();
+    await userEvent.click(within(sheet).getByRole('button', { name: /^E-7 Solar PV: In plan/ }));
+    const noSolar = snapshotResult(HOME_A, 'default', 'cavity_wall+double_glazing+heat_pump+smart_thermostat').scenario_id.slice(0, 8);
+    await waitFor(() => expect(within(sheet).getByText(noSolar)).toBeInTheDocument(), T);
+    expect(within(sheet).getByRole('button', { name: /^E-7 Solar PV: Possible/ })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('a flat draws the dwelling above; the loft is not possible and explains instead of toggling (home B)', async () => {
+    setSituation({ ...DEFAULT_SITUATION, done: true });
+    await open(HOME_B, 'home');
+    const sheet = screen.getByRole('figure', { name: /Retrofit sheet/ });
+    expect(within(sheet).getByText('DWELLING ABOVE')).toBeInTheDocument();
+    const loft = within(sheet).getByRole('button', { name: /^E-1 Loft insulation: Not possible/ });
+    expect(loft).not.toHaveAttribute('aria-pressed');
+    await userEvent.click(loft);
+    const dialog = await screen.findByRole('dialog', { hidden: true });
+    expect(within(dialog).getByText(/Another dwelling is above this home/)).toBeInTheDocument();
+  });
+
+  it('missing record fields are drawn as not recorded, never invented (home C)', async () => {
+    setSituation({ ...DEFAULT_SITUATION, done: true });
+    await open(HOME_C, 'home');
+    const sheet = screen.getByRole('figure', { name: /Retrofit sheet/ });
+    expect(within(sheet).getByText('WALL TYPE NOT RECORDED ?')).toBeInTheDocument();
+    expect(within(sheet).getAllByText('?').length).toBeGreaterThan(0); // windows: glazing not recorded
+    expect(within(sheet).getByText(/wall type not recorded \(survey needed\)/)).toBeInTheDocument();
+    // the engine applies every needs-verification measure by default, conditionally
+    expect(within(sheet).getAllByText('In plan').length).toBe(7);
+  });
+
+  it('build order lists the plan in the engine’s sequence', async () => {
+    setSituation({ ...DEFAULT_SITUATION, done: true });
+    await open(HOME_A, 'home');
+    await userEvent.click(screen.getByRole('button', { name: 'Build order' }));
+    expect(screen.getByText(/The engine applies the plan in this order/).textContent).toMatch(/Cavity wall → Glazing → Thermostat → Heat pump → Solar PV/);
+  });
+});

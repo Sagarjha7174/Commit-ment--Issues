@@ -6,7 +6,7 @@ import { measureEvidence, scoreEvidence } from '../../utils/evidence';
 import { KnowledgeLegend, ProvenanceChip, Val } from '../common/Knowledge';
 import { WhyButton } from '../common/EvidenceDrawer';
 import { useOpenEvidence } from '../common/evidenceContext';
-import { Blueprint } from './Blueprint';
+import { Axonometric } from './Axonometric';
 import { limitations } from '../../utils/limitations';
 import './home.css';
 
@@ -99,7 +99,10 @@ export function PropertyHero({ result: r, selected, onToggle }: Props) {
       </div>
 
       <div className="hero-side">
-        <Blueprint
+        <Axonometric
+          home={h}
+          scenarioId={r.scenario_id}
+          buildOrder={r.simulation.measures.map((m) => m.measure)}
           isFlat={h.property_type === 'Flat' || h.property_type === 'Maisonette'}
           feasibility={r.feasibility}
           selected={selected}

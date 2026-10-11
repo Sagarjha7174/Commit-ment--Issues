@@ -15,8 +15,8 @@
 .measure-nums dt { color: var(--ink-muted); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
 .measure-nums dd { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 .measure-foot { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
-.toggle { display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 12px; border-radius: 99px; border: 1.5px solid var(--ink); font-weight: 800; font-size: var(--fs-xs); background: var(--surface); transition: background var(--dur-fast), color var(--dur-fast); white-space: nowrap; }
+.toggle { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--ink); font-weight: 700; font-size: var(--fs-xs); background: var(--surface); transition: background var(--dur-fast), color var(--dur-fast); white-space: nowrap; }
 .toggle:hover:not([disabled]) { background: var(--surface-sunk); }
-.toggle.on { background: var(--saving); border-color: var(--saving); color: #fff; }
+.toggle.on { background: var(--habi-orange); border-color: var(--habi-orange); color: var(--habi-dark); }
 .toggle[disabled] { border-color: var(--line-strong); color: var(--ink-muted); cursor: not-allowed; }
 .toggle[aria-busy='true'] { border-style: dashed; }

@@ -66,7 +66,7 @@ function HomeView({ homeId }: { homeId: string }) {
   };
 
   useEffect(() => {
-    document.title = r ? `${r.home.display_label} · Green Home Score` : 'Green Home Score';
+    document.title = r ? `${r.home.display_label} · HABI` : 'HABI — Property intelligence for better homes';
   }, [r]);
 
   if (!r) {
