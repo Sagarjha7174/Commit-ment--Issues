@@ -1,0 +1,579 @@
+{
+ "kind": "offline_snapshot",
+ "engine_branch": "feature/engine-core",
+ "engine_commit": "54155e0",
+ "generated_at": "2026-10-10T21:37:01+00:00",
+ "generator": "scripts/generate_fixtures.py",
+ "home_inputs": "configs/demo_homes.json public fields + non-public fields documented in tests/fixtures/hand_calc_demo.py",
+ "parity": "reproduces tests/fixtures/scenario_{a,b,c}.json (engine hand-calculated acceptance fixtures)",
+ "assumption_presets": {
+  "default": {},
+  "impact-low": {
+   "impact_level": "low"
+  },
+  "impact-high": {
+   "impact_level": "high"
+  },
+  "scop-2.5": {
+   "heat_pump_scop": 2.5
+  },
+  "scop-3.5": {
+   "heat_pump_scop": 3.5
+  },
+  "occupancy-low": {
+   "baseline_scale": 0.85
+  },
+  "occupancy-high": {
+   "baseline_scale": 1.15
+  }
+ },
+ "homes": {
+  "U100050529765": {
+   "case": "a_poor_gas_house",
+   "selectable": [
+    "loft_insulation",
+    "cavity_wall",
+    "double_glazing",
+    "smart_thermostat",
+    "heat_pump",
+    "solar_pv"
+   ],
+   "variants": {
+    "default": {
+     "overrides": {},
+     "shared": "shared/U100050529765-default-9e36d5d5fa05.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/default__engine-default.json",
+      "none": "scenarios/U100050529765/default__none.json",
+      "loft_insulation": "scenarios/U100050529765/default__loft_insulation.json",
+      "cavity_wall": "scenarios/U100050529765/default__cavity_wall.json",
+      "double_glazing": "scenarios/U100050529765/default__double_glazing.json",
+      "smart_thermostat": "scenarios/U100050529765/default__smart_thermostat.json",
+      "heat_pump": "scenarios/U100050529765/default__heat_pump.json",
+      "solar_pv": "scenarios/U100050529765/default__solar_pv.json",
+      "cavity_wall+loft_insulation": "scenarios/U100050529765/default__cavity_wall+loft_insulation.json",
+      "double_glazing+loft_insulation": "scenarios/U100050529765/default__double_glazing+loft_insulation.json",
+      "loft_insulation+smart_thermostat": "scenarios/U100050529765/default__loft_insulation+smart_thermostat.json",
+      "heat_pump+loft_insulation": "scenarios/U100050529765/default__heat_pump+loft_insulation.json",
+      "loft_insulation+solar_pv": "scenarios/U100050529765/default__loft_insulation+solar_pv.json",
+      "cavity_wall+double_glazing": "scenarios/U100050529765/default__cavity_wall+double_glazing.json",
+      "cavity_wall+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+smart_thermostat.json",
+      "cavity_wall+heat_pump": "scenarios/U100050529765/default__cavity_wall+heat_pump.json",
+      "cavity_wall+solar_pv": "scenarios/U100050529765/default__cavity_wall+solar_pv.json",
+      "double_glazing+smart_thermostat": "scenarios/U100050529765/default__double_glazing+smart_thermostat.json",
+      "double_glazing+heat_pump": "scenarios/U100050529765/default__double_glazing+heat_pump.json",
+      "double_glazing+solar_pv": "scenarios/U100050529765/default__double_glazing+solar_pv.json",
+      "heat_pump+smart_thermostat": "scenarios/U100050529765/default__heat_pump+smart_thermostat.json",
+      "smart_thermostat+solar_pv": "scenarios/U100050529765/default__smart_thermostat+solar_pv.json",
+      "heat_pump+solar_pv": "scenarios/U100050529765/default__heat_pump+solar_pv.json",
+      "cavity_wall+double_glazing+loft_insulation": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation.json",
+      "cavity_wall+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+loft_insulation+smart_thermostat.json",
+      "cavity_wall+heat_pump+loft_insulation": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation.json",
+      "cavity_wall+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+loft_insulation+solar_pv.json",
+      "double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__double_glazing+loft_insulation+smart_thermostat.json",
+      "double_glazing+heat_pump+loft_insulation": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation.json",
+      "double_glazing+loft_insulation+solar_pv": "scenarios/U100050529765/default__double_glazing+loft_insulation+solar_pv.json",
+      "heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__heat_pump+loft_insulation+smart_thermostat.json",
+      "loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__loft_insulation+smart_thermostat+solar_pv.json",
+      "heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__heat_pump+loft_insulation+solar_pv.json",
+      "cavity_wall+double_glazing+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+smart_thermostat.json",
+      "cavity_wall+double_glazing+heat_pump": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump.json",
+      "cavity_wall+double_glazing+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+solar_pv.json",
+      "cavity_wall+heat_pump+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+heat_pump+smart_thermostat.json",
+      "cavity_wall+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+smart_thermostat+solar_pv.json",
+      "cavity_wall+heat_pump+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+solar_pv.json",
+      "double_glazing+heat_pump+smart_thermostat": "scenarios/U100050529765/default__double_glazing+heat_pump+smart_thermostat.json",
+      "double_glazing+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+solar_pv.json",
+      "heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__heat_pump+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation.json",
+      "cavity_wall+double_glazing+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat.json",
+      "cavity_wall+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
+      "double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+solar_pv.json",
+      "heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+smart_thermostat.json",
+      "cavity_wall+double_glazing+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+solar_pv.json",
+      "cavity_wall+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-default-1000.json",
+      "5000": "budgets/U100050529765-default-5000.json",
+      "15000": "budgets/U100050529765-default-15000.json"
+     }
+    },
+    "impact-low": {
+     "overrides": {
+      "impact_level": "low"
+     },
+     "shared": "shared/U100050529765-impact-low-31dffea33b3f.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/impact-low__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/impact-low__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-low__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-impact-low-1000.json",
+      "5000": "budgets/U100050529765-impact-low-5000.json",
+      "15000": "budgets/U100050529765-impact-low-15000.json"
+     }
+    },
+    "impact-high": {
+     "overrides": {
+      "impact_level": "high"
+     },
+     "shared": "shared/U100050529765-impact-high-3dca10dd12c1.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/impact-high__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/impact-high__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/impact-high__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-impact-high-1000.json",
+      "5000": "budgets/U100050529765-impact-high-5000.json",
+      "15000": "budgets/U100050529765-impact-high-15000.json"
+     }
+    },
+    "scop-2.5": {
+     "overrides": {
+      "heat_pump_scop": 2.5
+     },
+     "shared": "shared/U100050529765-scop-2.5-a425716d6f9c.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/scop-2.5__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/scop-2.5__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-2.5__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-scop-2.5-1000.json",
+      "5000": "budgets/U100050529765-scop-2.5-5000.json",
+      "15000": "budgets/U100050529765-scop-2.5-15000.json"
+     }
+    },
+    "scop-3.5": {
+     "overrides": {
+      "heat_pump_scop": 3.5
+     },
+     "shared": "shared/U100050529765-scop-3.5-6d14f809c6a3.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/scop-3.5__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/scop-3.5__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-3.5__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-scop-3.5-1000.json",
+      "5000": "budgets/U100050529765-scop-3.5-5000.json",
+      "15000": "budgets/U100050529765-scop-3.5-15000.json"
+     }
+    },
+    "occupancy-low": {
+     "overrides": {
+      "baseline_scale": 0.85
+     },
+     "shared": "shared/U100050529765-occupancy-low-7f41e04f3242.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/occupancy-low__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/occupancy-low__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-low__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-occupancy-low-1000.json",
+      "5000": "budgets/U100050529765-occupancy-low-5000.json",
+      "15000": "budgets/U100050529765-occupancy-low-15000.json"
+     }
+    },
+    "occupancy-high": {
+     "overrides": {
+      "baseline_scale": 1.15
+     },
+     "shared": "shared/U100050529765-occupancy-high-e3f1eac0ad32.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050529765/occupancy-high__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/occupancy-high__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050529765/occupancy-high__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050529765-occupancy-high-1000.json",
+      "5000": "budgets/U100050529765-occupancy-high-5000.json",
+      "15000": "budgets/U100050529765-occupancy-high-15000.json"
+     }
+    }
+   },
+   "user_reading": {
+    "reading": {
+     "gas_kwh": 18500.0,
+     "elec_kwh": 3400.0
+    },
+    "shared": "shared/U100050529765-reading-46b44672138e.json",
+    "scenarios": {
+     "engine-default": "scenarios/U100050529765/reading__engine-default.json"
+    },
+    "budgets": {
+     "1000": "budgets/U100050529765-reading-1000.json",
+     "5000": "budgets/U100050529765-reading-5000.json",
+     "15000": "budgets/U100050529765-reading-15000.json"
+    }
+   }
+  },
+  "A012dcfda4e502be0": {
+   "case": "b_flat_loft_solar_infeasible",
+   "selectable": [
+    "smart_thermostat",
+    "heat_pump"
+   ],
+   "variants": {
+    "default": {
+     "overrides": {},
+     "shared": "shared/A012dcfda4e502be0-default-f46f1709ac3a.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/default__engine-default.json",
+      "none": "scenarios/A012dcfda4e502be0/default__none.json",
+      "smart_thermostat": "scenarios/A012dcfda4e502be0/default__smart_thermostat.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/default__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/default__heat_pump+smart_thermostat.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-default-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-default-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-default-15000.json"
+     }
+    },
+    "impact-low": {
+     "overrides": {
+      "impact_level": "low"
+     },
+     "shared": "shared/A012dcfda4e502be0-impact-low-f46f1709ac3a.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/impact-low__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-impact-low-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-impact-low-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-impact-low-15000.json"
+     }
+    },
+    "impact-high": {
+     "overrides": {
+      "impact_level": "high"
+     },
+     "shared": "shared/A012dcfda4e502be0-impact-high-f46f1709ac3a.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/impact-high__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-impact-high-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-impact-high-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-impact-high-15000.json"
+     }
+    },
+    "scop-2.5": {
+     "overrides": {
+      "heat_pump_scop": 2.5
+     },
+     "shared": "shared/A012dcfda4e502be0-scop-2.5-f46f1709ac3a.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/scop-2.5__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-scop-2.5-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-scop-2.5-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-scop-2.5-15000.json"
+     }
+    },
+    "scop-3.5": {
+     "overrides": {
+      "heat_pump_scop": 3.5
+     },
+     "shared": "shared/A012dcfda4e502be0-scop-3.5-f46f1709ac3a.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/scop-3.5__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-scop-3.5-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-scop-3.5-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-scop-3.5-15000.json"
+     }
+    },
+    "occupancy-low": {
+     "overrides": {
+      "baseline_scale": 0.85
+     },
+     "shared": "shared/A012dcfda4e502be0-occupancy-low-19d7e062c776.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-low__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-occupancy-low-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-occupancy-low-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-occupancy-low-15000.json"
+     }
+    },
+    "occupancy-high": {
+     "overrides": {
+      "baseline_scale": 1.15
+     },
+     "shared": "shared/A012dcfda4e502be0-occupancy-high-b34b0c17e96f.json",
+     "scenarios": {
+      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-high__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/A012dcfda4e502be0-occupancy-high-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-occupancy-high-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-occupancy-high-15000.json"
+     }
+    }
+   }
+  },
+  "U100050565716": {
+   "case": "c_missing_data",
+   "selectable": [
+    "loft_insulation",
+    "cavity_wall",
+    "solid_wall",
+    "double_glazing",
+    "smart_thermostat",
+    "heat_pump",
+    "solar_pv"
+   ],
+   "variants": {
+    "default": {
+     "overrides": {},
+     "shared": "shared/U100050565716-default-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/default__engine-default.json",
+      "none": "scenarios/U100050565716/default__none.json",
+      "loft_insulation": "scenarios/U100050565716/default__loft_insulation.json",
+      "cavity_wall": "scenarios/U100050565716/default__cavity_wall.json",
+      "solid_wall": "scenarios/U100050565716/default__solid_wall.json",
+      "double_glazing": "scenarios/U100050565716/default__double_glazing.json",
+      "smart_thermostat": "scenarios/U100050565716/default__smart_thermostat.json",
+      "heat_pump": "scenarios/U100050565716/default__heat_pump.json",
+      "solar_pv": "scenarios/U100050565716/default__solar_pv.json",
+      "cavity_wall+loft_insulation": "scenarios/U100050565716/default__cavity_wall+loft_insulation.json",
+      "loft_insulation+solid_wall": "scenarios/U100050565716/default__loft_insulation+solid_wall.json",
+      "double_glazing+loft_insulation": "scenarios/U100050565716/default__double_glazing+loft_insulation.json",
+      "loft_insulation+smart_thermostat": "scenarios/U100050565716/default__loft_insulation+smart_thermostat.json",
+      "heat_pump+loft_insulation": "scenarios/U100050565716/default__heat_pump+loft_insulation.json",
+      "loft_insulation+solar_pv": "scenarios/U100050565716/default__loft_insulation+solar_pv.json",
+      "cavity_wall+solid_wall": "scenarios/U100050565716/default__cavity_wall+solid_wall.json",
+      "cavity_wall+double_glazing": "scenarios/U100050565716/default__cavity_wall+double_glazing.json",
+      "cavity_wall+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+smart_thermostat.json",
+      "cavity_wall+heat_pump": "scenarios/U100050565716/default__cavity_wall+heat_pump.json",
+      "cavity_wall+solar_pv": "scenarios/U100050565716/default__cavity_wall+solar_pv.json",
+      "double_glazing+solid_wall": "scenarios/U100050565716/default__double_glazing+solid_wall.json",
+      "smart_thermostat+solid_wall": "scenarios/U100050565716/default__smart_thermostat+solid_wall.json",
+      "heat_pump+solid_wall": "scenarios/U100050565716/default__heat_pump+solid_wall.json",
+      "solar_pv+solid_wall": "scenarios/U100050565716/default__solar_pv+solid_wall.json",
+      "double_glazing+smart_thermostat": "scenarios/U100050565716/default__double_glazing+smart_thermostat.json",
+      "double_glazing+heat_pump": "scenarios/U100050565716/default__double_glazing+heat_pump.json",
+      "double_glazing+solar_pv": "scenarios/U100050565716/default__double_glazing+solar_pv.json",
+      "heat_pump+smart_thermostat": "scenarios/U100050565716/default__heat_pump+smart_thermostat.json",
+      "smart_thermostat+solar_pv": "scenarios/U100050565716/default__smart_thermostat+solar_pv.json",
+      "heat_pump+solar_pv": "scenarios/U100050565716/default__heat_pump+solar_pv.json",
+      "cavity_wall+loft_insulation+solid_wall": "scenarios/U100050565716/default__cavity_wall+loft_insulation+solid_wall.json",
+      "cavity_wall+double_glazing+loft_insulation": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation.json",
+      "cavity_wall+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+loft_insulation+smart_thermostat.json",
+      "cavity_wall+heat_pump+loft_insulation": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation.json",
+      "cavity_wall+loft_insulation+solar_pv": "scenarios/U100050565716/default__cavity_wall+loft_insulation+solar_pv.json",
+      "double_glazing+loft_insulation+solid_wall": "scenarios/U100050565716/default__double_glazing+loft_insulation+solid_wall.json",
+      "loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__loft_insulation+smart_thermostat+solid_wall.json",
+      "heat_pump+loft_insulation+solid_wall": "scenarios/U100050565716/default__heat_pump+loft_insulation+solid_wall.json",
+      "loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__loft_insulation+solar_pv+solid_wall.json",
+      "double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__double_glazing+loft_insulation+smart_thermostat.json",
+      "double_glazing+heat_pump+loft_insulation": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation.json",
+      "double_glazing+loft_insulation+solar_pv": "scenarios/U100050565716/default__double_glazing+loft_insulation+solar_pv.json",
+      "heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__heat_pump+loft_insulation+smart_thermostat.json",
+      "loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__loft_insulation+smart_thermostat+solar_pv.json",
+      "heat_pump+loft_insulation+solar_pv": "scenarios/U100050565716/default__heat_pump+loft_insulation+solar_pv.json",
+      "cavity_wall+double_glazing+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+solid_wall.json",
+      "cavity_wall+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+smart_thermostat+solid_wall.json",
+      "cavity_wall+heat_pump+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+solid_wall.json",
+      "cavity_wall+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+double_glazing+smart_thermostat.json",
+      "cavity_wall+double_glazing+heat_pump": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump.json",
+      "cavity_wall+double_glazing+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+solar_pv.json",
+      "cavity_wall+heat_pump+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+heat_pump+smart_thermostat.json",
+      "cavity_wall+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+smart_thermostat+solar_pv.json",
+      "cavity_wall+heat_pump+solar_pv": "scenarios/U100050565716/default__cavity_wall+heat_pump+solar_pv.json",
+      "double_glazing+smart_thermostat+solid_wall": "scenarios/U100050565716/default__double_glazing+smart_thermostat+solid_wall.json",
+      "double_glazing+heat_pump+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+solid_wall.json",
+      "double_glazing+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+solar_pv+solid_wall.json",
+      "heat_pump+smart_thermostat+solid_wall": "scenarios/U100050565716/default__heat_pump+smart_thermostat+solid_wall.json",
+      "smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__smart_thermostat+solar_pv+solid_wall.json",
+      "heat_pump+solar_pv+solid_wall": "scenarios/U100050565716/default__heat_pump+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+smart_thermostat": "scenarios/U100050565716/default__double_glazing+heat_pump+smart_thermostat.json",
+      "double_glazing+smart_thermostat+solar_pv": "scenarios/U100050565716/default__double_glazing+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+solar_pv": "scenarios/U100050565716/default__double_glazing+heat_pump+solar_pv.json",
+      "heat_pump+smart_thermostat+solar_pv": "scenarios/U100050565716/default__heat_pump+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+loft_insulation+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+solid_wall.json",
+      "cavity_wall+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+loft_insulation+smart_thermostat+solid_wall.json",
+      "cavity_wall+heat_pump+loft_insulation+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+solid_wall.json",
+      "cavity_wall+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+loft_insulation+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation.json",
+      "cavity_wall+double_glazing+loft_insulation+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat.json",
+      "cavity_wall+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+solar_pv": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+solar_pv.json",
+      "double_glazing+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__double_glazing+loft_insulation+smart_thermostat+solid_wall.json",
+      "double_glazing+heat_pump+loft_insulation+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+solid_wall.json",
+      "double_glazing+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+loft_insulation+solar_pv+solid_wall.json",
+      "heat_pump+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__heat_pump+loft_insulation+smart_thermostat+solid_wall.json",
+      "loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "heat_pump+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__heat_pump+loft_insulation+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
+      "double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+solar_pv.json",
+      "heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+smart_thermostat+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+solid_wall.json",
+      "cavity_wall+double_glazing+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+smart_thermostat+solid_wall.json",
+      "cavity_wall+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+smart_thermostat.json",
+      "cavity_wall+double_glazing+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+solar_pv.json",
+      "cavity_wall+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+heat_pump+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+smart_thermostat+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+smart_thermostat+solid_wall.json",
+      "double_glazing+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+smart_thermostat+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+solar_pv+solid_wall.json",
+      "heat_pump+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__heat_pump+smart_thermostat+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050565716/default__double_glazing+heat_pump+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+solid_wall.json",
+      "cavity_wall+double_glazing+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat+solid_wall.json",
+      "cavity_wall+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+smart_thermostat+solid_wall.json",
+      "double_glazing+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+solar_pv+solid_wall.json",
+      "heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solid_wall.json",
+      "cavity_wall+double_glazing+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solid_wall.json",
+      "cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+solar_pv+solid_wall.json",
+      "cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv.json",
+      "double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv+solid_wall.json",
+      "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall": "scenarios/U100050565716/default__cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv+solid_wall.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-default-1000.json",
+      "5000": "budgets/U100050565716-default-5000.json",
+      "15000": "budgets/U100050565716-default-15000.json"
+     }
+    },
+    "impact-low": {
+     "overrides": {
+      "impact_level": "low"
+     },
+     "shared": "shared/U100050565716-impact-low-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/impact-low__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-impact-low-1000.json",
+      "5000": "budgets/U100050565716-impact-low-5000.json",
+      "15000": "budgets/U100050565716-impact-low-15000.json"
+     }
+    },
+    "impact-high": {
+     "overrides": {
+      "impact_level": "high"
+     },
+     "shared": "shared/U100050565716-impact-high-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/impact-high__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-impact-high-1000.json",
+      "5000": "budgets/U100050565716-impact-high-5000.json",
+      "15000": "budgets/U100050565716-impact-high-15000.json"
+     }
+    },
+    "scop-2.5": {
+     "overrides": {
+      "heat_pump_scop": 2.5
+     },
+     "shared": "shared/U100050565716-scop-2.5-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/scop-2.5__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-scop-2.5-1000.json",
+      "5000": "budgets/U100050565716-scop-2.5-5000.json",
+      "15000": "budgets/U100050565716-scop-2.5-15000.json"
+     }
+    },
+    "scop-3.5": {
+     "overrides": {
+      "heat_pump_scop": 3.5
+     },
+     "shared": "shared/U100050565716-scop-3.5-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/scop-3.5__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-scop-3.5-1000.json",
+      "5000": "budgets/U100050565716-scop-3.5-5000.json",
+      "15000": "budgets/U100050565716-scop-3.5-15000.json"
+     }
+    },
+    "occupancy-low": {
+     "overrides": {
+      "baseline_scale": 0.85
+     },
+     "shared": "shared/U100050565716-occupancy-low-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/occupancy-low__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-occupancy-low-1000.json",
+      "5000": "budgets/U100050565716-occupancy-low-5000.json",
+      "15000": "budgets/U100050565716-occupancy-low-15000.json"
+     }
+    },
+    "occupancy-high": {
+     "overrides": {
+      "baseline_scale": 1.15
+     },
+     "shared": "shared/U100050565716-occupancy-high-a45cd373491b.json",
+     "scenarios": {
+      "engine-default": "scenarios/U100050565716/occupancy-high__engine-default.json"
+     },
+     "budgets": {
+      "1000": "budgets/U100050565716-occupancy-high-1000.json",
+      "5000": "budgets/U100050565716-occupancy-high-5000.json",
+      "15000": "budgets/U100050565716-occupancy-high-15000.json"
+     }
+    }
+   }
+  }
+ }
+}

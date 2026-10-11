@@ -1,0 +1,22 @@
+.measures { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: var(--s-3); }
+.measure { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-md); padding: var(--s-4); display: grid; gap: var(--s-3); align-content: start; transition: border-color var(--dur-fast), box-shadow var(--dur-fast); }
+.measure.is-selected { border-color: var(--saving); box-shadow: inset 4px 0 0 var(--saving); }
+.measure-infeasible { background: var(--surface-sunk); }
+.measure-infeasible h3 { color: var(--ink-muted); }
+.measure-needs_verification { border-style: dashed; border-color: var(--verify); }
+.measure-top { display: grid; grid-template-columns: auto 1fr auto; gap: var(--s-3); align-items: start; }
+.measure-no { font-size: 2rem; line-height: 1; color: var(--accent); width: 1.2em; }
+.measure-title { display: grid; gap: 6px; }
+.measure-title h3 { font-family: var(--font-sans); font-weight: 800; font-size: 1.05rem; }
+.measure-reason { font-size: var(--fs-sm); color: var(--ink-2); }
+.measure-missing { color: var(--verify); font-weight: 700; }
+.measure-nums { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.measure-nums > div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-2); padding: 6px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); }
+.measure-nums dt { color: var(--ink-muted); font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 2px; }
+.measure-nums dd { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.measure-foot { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.toggle { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--ink); font-weight: 700; font-size: var(--fs-xs); background: var(--surface); transition: background var(--dur-fast), color var(--dur-fast); white-space: nowrap; }
+.toggle:hover:not([disabled]) { background: var(--surface-sunk); }
+.toggle.on { background: var(--habi-orange); border-color: var(--habi-orange); color: var(--habi-dark); }
+.toggle[disabled] { border-color: var(--line-strong); color: var(--ink-muted); cursor: not-allowed; }
+.toggle[aria-busy='true'] { border-style: dashed; }

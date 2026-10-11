@@ -1,0 +1,26 @@
+# Project TODOs
+
+- [x] Investigate git fetched changes and sync/improvise any relevant updates from origin
+  - [x] Compared origin/main (frontend/) and frntend branch
+  - [x] Add utils/scop.ts and utils/spanTone.ts for engine-informed SCOP and tone highlighting
+  - [x] Sync schema.ts extensions (Bills, Finance, EndUses computed fields, Monte Carlo Uncertainty, etc.)
+  - [x] Sync transport.ts, labels.ts, useScenarioLab.ts, PlanCheck.tsx, and ScenarioLab.tsx
+  - [x] Enhance explainTemplate.ts with real engine bills, grants, net costs, payback, and illustrative loans
+- [/] Make House Blueprint rotatable by mouse click & drag:
+  - [/] Add 3D rotation model (azimuth/yaw & elevation/pitch) to Axonometric.tsx
+  - [ ] Implement mouse/pointer drag interaction (pointerdown, pointermove, pointerup, pointercancel) with pointer capture
+  - [ ] Implement depth-sorting and backface culling for 3D boxes and facets so rotation looks clean from all 360° angles
+  - [ ] Add touch support for mobile & tablet orbit
+  - [ ] Add interactive rotation controls: Quick View presets (Isometric, Front, Side, Top, Reset), rotation angle readout, zoom in/out/fit
+  - [ ] Update cursor to grab/grabbing and visual feedback indicator
+- [ ] Remove all "explaining by AI slop" / generic AI filler copy across the UI:
+  - [ ] Replace robotic AI disclaimers and meta-explanations in ExplanationPanel.tsx ("Written by the LLM, every sentence checked", "LLM version on its way", etc.) with crisp, domain-grade architectural headers ("Comprehensive Scenario Analysis", "Verified Property Insights")
+  - [ ] Clean up MethodEvidence.tsx, HomesNeedingHelp.tsx, and MyHome.tsx to ensure all copy sounds professional, authentic, concise, and human-written
+  - [ ] Remove repetitive corporate/AI filler phrases across all components and replace with clear engineering & homeowner facts
+- [ ] Smart responsive UI implementation:
+  - [ ] Enhance mobile/tablet responsive navigation and smart collapsible drawer in AppShell.tsx
+  - [ ] Ensure navigation works seamlessly across mobile (<768px), tablet (768-1024px), and desktop (>1024px)
+  - [ ] Implement responsive styles in shell.css, myhome.css, axonometric.css, studio.css, and base.css
+  - [ ] Resize anything that is not in "fit to display" mode (fix table overflows, hero side-by-side collapses, SVG bounds, viewport clipping)
+- [ ] Run build and test suite to ensure zero regressions
+- [ ] Visual and interactive verification in the browser

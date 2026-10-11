@@ -1,0 +1,14 @@
+.explain { display: grid; gap: var(--s-3); }
+.explain-bar { gap: var(--s-2); padding-bottom: var(--s-2); border-bottom: 1px solid var(--line); }
+.explain-body { columns: 2 320px; column-gap: var(--s-6); transition: opacity var(--dur); }
+.explain-body.is-stale { opacity: 0.55; }
+.explain-section { break-inside: avoid; margin-bottom: var(--s-4); }
+.explain-section h3 { font-family: var(--font-sans); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 800; color: var(--ink-muted); margin-bottom: 4px; }
+.explain-section p { font-size: 1.02rem; line-height: 1.6; }
+.span { background: none; font-weight: 800; border-bottom: 2px solid var(--ink); padding: 0 1px; color: inherit; }
+.span-good, .span-reduction { border-color: var(--saving); color: var(--saving); }
+.span-bad, .span-increase { border-color: var(--increase); color: var(--increase); }
+.claim-caveat { color: var(--ink-2); }
+.claim-missing_data { font-style: italic; }
+.explain-pending { color: var(--gold-ink); font-weight: 700; }
+.switch input { width: 16px; height: 16px; accent-color: var(--ink); }

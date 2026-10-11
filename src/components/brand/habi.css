@@ -1,0 +1,14 @@
+.habi-mark { display: block; flex: none; }
+.habi-mark .hm-face { fill: var(--mark-face, #191E19); }
+.habi-mark .hm-side { fill: var(--mark-side, #2b312b); }
+.habi-mark .hm-bar { fill: #FF512F; }
+.habi-mark .hm-bar-top { fill: #ff8669; }
+.habi-mark-dark { --mark-face: #191E19; --mark-side: #2b312b; }
+.habi-mark-light { --mark-face: #F3F0E8; --mark-side: #D7D4CA; }
+
+.habi-logo { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
+.habi-logo-light { color: #F3F0E8; }
+.habi-logo-dark { color: #191E19; }
+.habi-logo-text { display: grid; line-height: 1; }
+.habi-wordmark { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; letter-spacing: -0.01em; line-height: 0.9; }
+.habi-tagline { font-size: var(--fs-xs); font-weight: 400; opacity: 0.75; margin-top: 4px; letter-spacing: 0; }

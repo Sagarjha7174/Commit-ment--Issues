@@ -1,0 +1,48 @@
+{
+ "summary": {
+  "homes": 3,
+  "count_by_class": {
+   "Poor": 1,
+   "Moderate": 1,
+   "unavailable": 1
+  },
+  "flagged_poor_or_very_poor": 1,
+  "flagged_with_potential_available": 1,
+  "flagged_potential_unavailable": 0,
+  "median_improvement_potential_pct": 68.08472076758615,
+  "total_carbon_saving_potential_t": 3.2916928705824002,
+  "share_incomplete_data_pct": 33.333333333333336,
+  "notes": [
+   "improvement potential = confirmed feasible package per home (estimates, benchmark baselines)",
+   "flags use the Green Home Score class (per-m2 intensity and ratings), not total consumption",
+   "carbon potential sums package savings; fabric combinations may be overestimated (D14)"
+  ]
+ },
+ "homes": [
+  {
+   "home_id": "U100050529765",
+   "display_label": "1967-1975 house, YO31",
+   "postcode_outward": "YO31",
+   "score": 44,
+   "classification": "Poor",
+   "completeness": "7/7",
+   "missing_parts": [],
+   "key_issues": [
+    "EPC energy efficiency (SAP 48 (EPC band E))",
+    "energy use per m2 (148.4 kWh/m2/yr)",
+    "insulation (walls Poor, roof Very Poor)",
+    "renewable energy (no renewables recorded)"
+   ],
+   "package_id": "cavity_wall+double_glazing+heat_pump+loft_insulation+smart_thermostat+solar_pv",
+   "improvement_potential_pct": 68.08472076758615,
+   "improvement_potential_status": "ok",
+   "improvement_potential_reason": null,
+   "gas_saving_kwh": 20957.35833333333,
+   "elec_saving_kwh": -3675.186711827714,
+   "carbon_saving_kg": 3291.6928705824002,
+   "floor_area_m2": 171.0
+  }
+ ],
+ "data_mode": "demo_subset",
+ "data_note": "Engine portfolio code run over the 3 public demo homes only, not the 65,872-home York dataset."
+}
