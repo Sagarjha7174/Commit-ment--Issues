@@ -60,6 +60,10 @@ class MockLLM:
         def has(k):
             return k in keys
 
+        def verb(k):   # the direction shown in the fact line, written in the model's own words
+            m = re.search(r"^" + re.escape(k) + r" \[[^\]]*\b(reduction|increase|no change)\b", user, re.M)
+            return {"reduction": "fall by", "increase": "rise by"}.get(m.group(1) if m else "", "change by")
+
         if schema is WhatIfParse:
             from backend.app.llm.advise import keyword_context
             q = user.split("<<<", 1)[-1].rsplit(">>>", 1)[0].strip()
@@ -71,16 +75,17 @@ class MockLLM:
                 parsed = keyword_parse(q, json.loads(re.search(r"CURRENT_SELECTED_MEASURES: (\[.*?\])", user)
                                                      .group(1).replace("'", '"')))
         elif schema is WhatIfText:
-            parts = ["Compared with the previous plan, gas use would {diff.gas_saving_kwh|change}."
-                     if has("diff.gas_saving_kwh") else ""]
+            parts = [f"Compared with the previous plan, gas use would {verb('diff.gas_saving_kwh')} "
+                     "{diff.gas_saving_kwh}." if has("diff.gas_saving_kwh") else ""]
             parsed = WhatIfText(whatif=" ".join(p for p in parts if p))
         else:
             parsed = ExplanationText(
                 score=("Your home's Green Home Score is {green_home_score.before.total}, classed as "
                        "{green_home_score.before.class}.") if has("green_home_score.before.total") else "",
                 issues="", plan="",
-                energy=("Gas use is estimated to {energy_results.change.gas_saving_kwh|change}. This saves about 12,345 "
-                        "kWh in total.") if has("energy_results.change.gas_saving_kwh") else "",
+                energy=(f"Gas use is estimated to {verb('energy_results.change.gas_saving_kwh')} "
+                        "{energy_results.change.gas_saving_kwh}. This saves about 12,345 kWh in total.")
+                if has("energy_results.change.gas_saving_kwh") else "",
                 carbon="", cost="", value="", not_suitable="",
                 caveats="All of these figures are estimates, not guarantees.")
         return client_mod.LLMResult(parsed, "mock-model", False, 1, {"input_tokens": 0, "output_tokens": 0},
@@ -168,7 +173,8 @@ def run_item(api, item: dict, use_llm: bool) -> dict[str, Any]:
     engine = _engine_numbers(item["home_id"], body.get("measures"), r.get("new_request")) if r.get("cited_values") else []
     f_ok, f_n, f_bad = _factual(r.get("cited_values") or [], engine)
     return {"id": item["id"], "category": item["category"], "home": item["home"], "question": q, "kind": kind,
-            "outcome": r.get("outcome"), "source": r.get("source"), "refused": refused,
+            "outcome": r.get("outcome"), "source": r.get("source"), "fallback_reason": r.get("fallback_reason"),
+            "provider": r.get("provider"), "model": r.get("model"), "refused": refused,
             "numbers_total": nums.get("total", 0), "numbers_matched": nums.get("matched", 0), "unmatched": unmatched,
             "sentences": len(sentences), "unsupported_sentences": unsupported_sents,
             "cited_total": f_n, "cited_correct": f_ok, "cited_wrong": f_bad,
@@ -238,13 +244,23 @@ def main(mode: str) -> dict:
         r = rows[-1]
         print(f"[{k}/{len(items)}] {it['id']} {it['category']}: {'ok' if r.get('passed') else 'FAIL'} "
               f"source={r.get('source')} {r.get('latency_ms')}ms [{time.time() - t0:.0f}s]", flush=True)
+        if mode == "llm" and r.get("kind") == "explain" and r.get("source") == "template" \
+                and "unavailable" in str(r.get("fallback_reason") or ""):
+            # every provider is out of quota: stop rather than report template answers as an LLM run. Successful
+            # LLM answers are cached, so a rerun after the quota frees resumes from here at no cost.
+            raise SystemExit(f"stopped at {it['id']}: LLM quota exhausted ({str(r.get('fallback_reason'))[:160]}). "
+                             "Rerun later; completed answers are cached.")
     summary = summarise(rows)
     out = {"mode": mode, "date": str(date.today()), "eval_set": str(EVAL_SET.relative_to(ROOT)),
            "providers": [{"provider": p["provider"], "models": p["models"]} for p in providers] if mode == "llm" else
            ([{"provider": "mock"}] if mock else []), "targets": TARGETS, "summary": summary,
            "runtime_s": round(time.time() - t0, 1), "rows": rows}
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    (OUT_DIR / f"llm_eval_{mode}.json").write_text(json.dumps(out, indent=1, default=str) + "\n")
+    name = f"llm_eval_{mode}.json"
+    if mode == "llm" and summary["sources"]["template"] > summary["n_items"] / 2:
+        name = "llm_eval_llm_partial.json"   # a mostly-template run is never reported as the LLM result
+        print(f"most answers came from the template ({summary['sources']}): written to {name}, not reported")
+    (OUT_DIR / name).write_text(json.dumps(out, indent=1, default=str) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k not in ("by_category",)}, indent=1))
     return out
 

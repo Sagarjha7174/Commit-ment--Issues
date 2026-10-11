@@ -687,6 +687,8 @@ export const Span = z.object({
   status: z.string(),
   provenance: nstr,
   direction: nstr.optional(),
+  /** good / bad / neutral for the homeowner: what the UI colours by (a rising score is good, rising energy use is bad). */
+  sentiment: nstr.optional(),
 });
 export const ExplanationClaim = z.object({
   type: z.string(),

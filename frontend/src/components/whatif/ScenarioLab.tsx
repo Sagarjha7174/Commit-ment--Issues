@@ -1,13 +1,14 @@
 import { useState, type FormEvent } from 'react';
 import { History, MessageSquareText, RotateCcw, Sparkles } from 'lucide-react';
 import { MEASURE_ORDER, type MeasureId, type ScenarioResult } from '../../api/schema';
-import { useLlmHealth, useSnapshotManifest, useTransport } from '../../api/queries';
+import { useEvidence, useLlmHealth, useSnapshotManifest, useTransport } from '../../api/queries';
 import { ERROR_TITLES, toApiError } from '../../api/errors';
 import type { WhatIfResponse } from '../../api/schema';
 import { draftOf, type ScenarioLab as Lab } from '../../hooks/useScenarioLab';
 import { fmtGbp, fmtKg, fmtKwh, fmtNumber, fmtPct, fmtSigned, isNum, savingDirection, shortId } from '../../utils/format';
 import { assumptionLabel, MEASURE_SHORT, measureLabel, packageName } from '../../utils/labels';
 import { diffScenarios, type DiffRow } from '../../utils/scenarioDiff';
+import { scopRange } from '../../utils/scop';
 import { DirectionTag } from '../common/Knowledge';
 import { ErrorState, SectionHeader } from '../common/States';
 import { ScenarioIdBadge } from '../common/ScenarioIdBadge';
@@ -230,6 +231,7 @@ export function ScenarioLabSection({ lab, result }: { lab: Lab; result: Scenario
   const llm = useLlmHealth();
   const t = useTransport();
   const a = state.draft.assumptions;
+  const scop = scopRange(useEvidence().data);
   const infeasible = new Set(result.feasibility.filter((f) => f.state === 'infeasible').map((f) => f.measure));
   const selected = new Set(lab.selectedMeasures);
   const llmUp = !!llm.data?.enabled && !!llm.data?.engine_configured;
@@ -284,8 +286,8 @@ export function ScenarioLabSection({ lab, result }: { lab: Lab; result: Scenario
             <div className="field">
               <span className="label" id="scop-l">Heat-pump efficiency (SCOP)</span>
               <div className="seg" role="group" aria-labelledby="scop-l">
-                {[2.5, null, 3.5].map((v) => (
-                  <button key={String(v)} aria-pressed={a.heat_pump_scop === v} onClick={() => lab.setAssumptions({ heat_pump_scop: v })}>{v === null ? `Catalogue (${result.assumptions.heat_pump_scop ?? '3.0'})` : v}</button>
+                {scop && [scop.low, null, scop.high].map((v) => (
+                  <button key={String(v)} aria-pressed={a.heat_pump_scop === v} onClick={() => lab.setAssumptions({ heat_pump_scop: v })}>{v === null ? `Typical (${result.assumptions.heat_pump_scop ?? scop.mid})` : v}</button>
                 ))}
               </div>
             </div>

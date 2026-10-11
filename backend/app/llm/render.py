@@ -117,7 +117,8 @@ class Span:
     display: str
     status: str
     provenance: str | None
-    direction: str | None = None  # "reduction" / "increase" / "up" / "down" / "no change" (for UI colouring)
+    direction: str | None = None  # "reduction" / "increase" / "up" / "down" / "no change" (arithmetic direction)
+    sentiment: str | None = None  # "good" / "bad" / "neutral" for the homeowner: what the UI colours by
 
 
 @dataclass
@@ -168,13 +169,16 @@ def render_claim(claim: Claim, sheet: FactSheet) -> RenderedClaim:
             raise KeyError(key)
         shown = (format_change(fact, filt == "changes") if filt in DIRECTION_FILTERS and fact.signed
                  else format_fact(fact, filt == "abs"))
-        spans.append(Span(key, shown, fact.status, fact.provenance, fact.direction))
+        spans.append(Span(key, shown, fact.status, fact.provenance, fact.direction, fact.sentiment))
         return shown
 
     text = PLACEHOLDER_RE.sub(fill, claim.text)
     text = re.sub(r"(?<!\.)\.\.(?!\.)", ".", text)  # a filled value ending in "." before the sentence's own "."
     if text[:1].islower():
         text = text[0].upper() + text[1:]
+    text = text.rstrip()
+    if text and text[-1] not in ".!?":   # every rendered sentence ends with a full stop (a cited warning may not)
+        text += "."
     return RenderedClaim(claim.section, claim.type, claim.text, text, list(claim.keys), list(claim.measures), spans)
 
 

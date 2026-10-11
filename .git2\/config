@@ -1,0 +1,30 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = https://github.com/IIIT-ECell/megathon26-commit-ment-issues.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "main"]
+	remote = origin
+	merge = refs/heads/main
+	vscode-merge-base = origin/main
+[branch "feature/engine-foundation"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/feature/engine-foundation
+[branch "feature/engine-core"]
+	vscode-merge-base = origin/feature/engine-foundation
+	remote = origin
+	merge = refs/heads/feature/engine-core
+[branch "feature/ml"]
+	vscode-merge-base = origin/feature/engine-core
+[branch "feature/llm-integration"]
+	vscode-merge-base = origin/main
+	remote = origin
+	merge = refs/heads/feature/ml-llm
+[branch "merged"]
+	remote = origin
+	merge = refs/heads/merged
+	vscode-merge-base = origin/merged

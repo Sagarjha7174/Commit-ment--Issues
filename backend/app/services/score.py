@@ -254,6 +254,8 @@ def apply_state_effects(home: HomeRecord, measures: list[MeasureId]) -> HomeReco
                 h.controls = e["controls_at_least"]
         if "heating_type" in e and h.heating_type is not None:
             h.heating_type = e["heating_type"]
+        if "heating_rating_at_least" in e and h.heating_rating in order:
+            h.heating_rating = _at_least(h.heating_rating, e["heating_rating_at_least"], order)
         if e.get("solar_pv") and h.solar_pv is not None and not h.solar_pv:
             h.solar_pv = True
             h.pv_roof_pct = e.get("pv_roof_pct_if_unknown")

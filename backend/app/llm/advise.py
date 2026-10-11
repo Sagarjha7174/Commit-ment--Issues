@@ -153,6 +153,28 @@ def merge_context(ctx: UserContext, parsed: WhatIfParse) -> UserContext:
     return UserContext(**data)
 
 
+def keep_stated_context(parsed: WhatIfParse, kw: dict[str, Any]) -> WhatIfParse:
+    """Context facts the user stated that the LLM reading dropped are kept (D44): "My budget is £5,000" read as out of
+    scope keeps the budget. Only facts the keyword reader finds verbatim are added; the LLM's own facts win; lists are
+    unioned. An out-of-scope part stays declined: it is listed as unsupported, never recalculated."""
+    update: dict[str, Any] = {}
+    for k, v in kw.items():
+        cur = getattr(parsed, k, None)
+        if isinstance(v, list):
+            extra = [x for x in v if x not in (cur or [])]
+            if extra:
+                update[k] = list(cur or []) + extra
+        elif cur in (None, ""):
+            update[k] = v
+    if not update:
+        return parsed
+    if parsed.kind in ("out_of_scope", "question_about_current"):
+        unsupported = list(parsed.unsupported) or (["request outside the supported changes"]
+                                                    if parsed.kind == "out_of_scope" else [])
+        update.update(kind="update_context", unsupported=unsupported)
+    return parsed.model_copy(update=update)
+
+
 def _has_context(p: WhatIfParse) -> bool:
     return bool(p.role or p.horizon or p.budget_gbp is not None or p.priorities or p.constraints or p.completed
                 or p.rejected)
@@ -172,6 +194,8 @@ def advise_whatif(home_id: str, question: str, runner: Runner, *, customer_id: O
     parsed, source = parse_question(question, current_measures, use_llm=use_llm, client=client)
     if source == "keywords" and kw:
         parsed = WhatIfParse(kind="update_context", add=[], remove=[], unsupported=[], **kw)
+    elif kw:
+        parsed = keep_stated_context(parsed, kw)
     if parsed.kind == "update_context" or _has_context(parsed):
         new_ctx = merge_context(ctx, parsed)
         if customer_id and profile is not None and not profile.records:
@@ -197,5 +221,5 @@ def advise_whatif(home_id: str, question: str, runner: Runner, *, customer_id: O
     return AdviceResult(ans.scenario, ans.explanation, current.decision, ctx, None, customer_id, False, ans)
 
 
-__all__ = ["AdviceResult", "advise", "advise_whatif", "keyword_context", "merge_context", "permissions",
+__all__ = ["AdviceResult", "advise", "advise_whatif", "keep_stated_context", "keyword_context", "merge_context", "permissions",
            "keyword_parse"]

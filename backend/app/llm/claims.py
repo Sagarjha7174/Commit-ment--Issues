@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Literal, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .measures import MeasureId
 
@@ -140,3 +140,9 @@ class WhatIfParse(BaseModel):
     user_elec_kwh: Optional[float] = Field(default=None, description="The user's own annual electricity use in kWh, only if stated")
     include_uncertainty: Optional[bool] = Field(
         default=None, description="true if the user asks for a range, how sure the figures are, or best/worst case")
+
+    @field_validator("add", "remove", "unsupported", "priorities", "constraints", "completed", "rejected", mode="before")
+    @classmethod
+    def _null_list_is_empty(cls, v):
+        """Some models answer null for an empty list (gpt-oss-20b): that is an empty list, not an invalid answer."""
+        return [] if v is None else v

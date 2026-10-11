@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 VAL = ROOT / "docs" / "validation"
 OUT = ROOT / "docs" / "LLM_EVALUATION.md"
-MODES = (("llm", "Real LLM (reported run)"), ("mock", "Mocked LLM (offline, scripted)"),
+MODES = (("llm", "Real LLM (reported run)"), ("llm_partial", "Real LLM, incomplete (quota) - not reported"), ("mock", "Mocked LLM (offline, scripted)"),
          ("template", "Template explainer (deterministic baseline)"),
          ("template_first_run", "Template, first run (before the fixes listed below)"))
 
@@ -83,7 +83,42 @@ def main() -> None:
               "- Before the real-LLM run, a one-home live smoke test (demo A, not an evaluation item) showed two checker "
               "gaps, fixed before the run: a direction filter after 'by' (\"change by fall by\") is now rejected, and "
               "a superlative citing the code-ranked {derived.priority_order} is allowed.",
+              "- The first real-LLM attempt (`llm_eval_llm_attempt1_quota.json`) ran out of provider quota and answered "
+              "51 of 53 items from the template, so it is not reported. Before the reported run: what-if parsing got a "
+              "keyword safety net (D44: q29 and q44 had been read as 'no change', q40 had dropped a stated budget); "
+              "explanations were fixed for spliced phrases, fragments, repeated caveats and payback/loan coverage (D45, "
+              "prompt `explain_v7`); a parse answer with `null` lists is read as empty lists; detail facts the template "
+              "already covers were hidden from the prompt to fit free-tier limits; the evaluation now stops on quota "
+              "and never reports a mostly-template run.",
+              "- After the reported run (disclosed, not re-run): q20 and q40 fell back to the template because "
+              "de-duplication dropped an LLM sentence carrying two caveats (benchmark and 'estimates, not guarantees') "
+              "as a benchmark repeat, losing the only estimates caveat (\"[WORDING] say that the figures are estimates, "
+              "not guarantees\"). A sentence is now dropped only if every caveat it carries is kept elsewhere "
+              "(`dedupe_claims`, test `test_c_a_sentence_carrying_two_caveats_is_kept_for_the_one_said_nowhere_else`); "
+              "replaying both items from the cached LLM answers (no new calls) now gives LLM answers. The table above "
+              "is the run before this fix.",
+              "- After the reported run, the engine changed (D46): electrically heated homes (demo B among the "
+              "evaluation homes) now get savings on electricity, a heat pump's after-state takes the heating rating "
+              "and controls of York heat-pump certificates, and the heat-pump EPC caveat is required only when the "
+              "heat pump replaces gas (prompt `explain_v8`). The table describes the engine and prompt `explain_v7` "
+              "at the time of the run; it was not re-run.",
               "No other item, prompt or rule was changed after the first runs."]
+    if "llm" in runs:
+        r = runs["llm"]
+        s = r["summary"]
+        models = "; ".join(f"{p['provider']}: explain {p['models']['explain']}, parse {p['models']['parse']}"
+                           for p in r.get("providers", []))
+        L += ["", "## Reported real-LLM run", "",
+              f"- Providers and models (in order; set through `LLM_PROVIDERS` and `LLM_<ROLE>_MODEL_<PROVIDER>` because "
+              f"the default `gpt-oss-120b` and `gemini-3.5-flash` free-tier daily quotas were used up): {models}.",
+              f"- {s['sources'].get('llm', 0) + s['sources'].get('llm_patched', 0)} of {r['n'] if 'n' in r else 53} "
+              f"answers were written by the LLM ({s['sources'].get('llm', 0)} entirely, "
+              f"{s['sources'].get('llm_patched', 0)} with template sentences filling rejected or missing parts). "
+              f"Of the {s['sources'].get('template', 0)} template answers, 9 are by design (declined out-of-scope "
+              "questions, refused invalid requests and blocked infeasible measures answer with fixed wording); q20 and "
+              "q40 were LLM answers lost to the de-duplication bug fixed after the run (above).",
+              f"- Median latency {s['latency_ms_median'] / 1000:.0f} s per item, mostly the client's free-tier rate "
+              f"limiter waiting (`LLM_MAX_WAIT_S=90`); total {r.get('runtime_s', 0) / 60:.0f} min."]
     L += ["", "## How grounding works", "",
           "- The LLM never sees a number: it writes `{placeholders}` that code fills from the engine result.",
           "- A rule checker rejects any sentence with a typed number, a wrong direction or an unsupported claim, and "

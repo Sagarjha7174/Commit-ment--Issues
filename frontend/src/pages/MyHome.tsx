@@ -85,9 +85,7 @@ function HomeView({ homeId }: { homeId: string }) {
     <>
       <div className="page"><PageHeader r={r} /></div>
       <StepBar tab={tab} onTab={goTo} onEditSituation={() => setEditing((e) => !e)} />
-      <div className="page">
-        {(!situation.done || editing) && <SituationCard onClose={() => setEditing(false)} />}
-      </div>
+      {editing && <div className="page"><SituationCard onClose={() => setEditing(false)} /></div>}
       <div
         className={`page tab-panel results ${busy ? 'is-recalculating' : ''}`}
         role="tabpanel"
@@ -95,7 +93,8 @@ function HomeView({ homeId }: { homeId: string }) {
         aria-labelledby={`tab-${tab}`}
         aria-busy={busy}
       >
-        {tab === 'home' && <YourHomeTab r={r} lab={lab} classes={evidence.data?.score.classes} onTab={goTo} />}
+        {tab === 'home' && <YourHomeTab r={r} lab={lab} classes={evidence.data?.score.classes} onTab={goTo}
+          situation={!situation.done && !editing ? <SituationCard onClose={() => setEditing(false)} /> : null} />}
         {tab === 'options' && <OptionsTab r={r} lab={lab} onTab={goTo} />}
         {tab === 'try' && <TryTab r={r} lab={lab} onTab={goTo} />}
         {tab === 'plan' && <PlanTab r={r} lab={lab} onTab={goTo} explanation={explanation} templateMode={templateMode} onTemplateMode={setTemplateMode} />}

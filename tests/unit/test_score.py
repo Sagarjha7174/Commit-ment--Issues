@@ -173,10 +173,16 @@ def test_state_effects_never_downgrade():
     assert (h2.roof_rating, h2.glazing, h2.controls) == ("Very Good", "triple", "smart")
 
 
-def test_heat_pump_after_uses_floor():
-    h = make_home(heating_rating="Poor")
-    a = S.score_after(h, [MeasureId.heat_pump], 300.0, 6000.0)
+def test_heat_pump_after_rating_at_least_good_and_floor_when_unknown():
+    """D46: after a heat pump the heating rating is at least Good (York heat-pump certificates); with the rating
+    unknown the heat-pump floor applies."""
+    a = S.score_after(make_home(heating_rating="Poor"), [MeasureId.heat_pump], 300.0, 6000.0)
+    assert next(p for p in a.parts if p.part == "heating").sub == 80
+    a = S.score_after(make_home(heating_rating=None), [MeasureId.heat_pump], 300.0, 6000.0)
     assert next(p for p in a.parts if p.part == "heating").sub == 75
+    assert S.apply_state_effects(make_home(heating_rating="Very Good", controls="none"),
+                                 [MeasureId.heat_pump]).heating_rating == "Very Good"   # never downgraded
+    assert S.apply_state_effects(make_home(controls="none"), [MeasureId.heat_pump]).controls == "full"
 
 
 # ---- real data ----

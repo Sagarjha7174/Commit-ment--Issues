@@ -78,14 +78,17 @@ export const OBJECTIVE_SHORT: Record<Objective, { kicker: string; question: stri
 export const SENSITIVITY_RUN_LABEL: Record<string, string> = {
   baseline_minus_15pct: 'Baseline energy −15%',
   baseline_plus_15pct: 'Baseline energy +15%',
-  scop_low: 'Heat-pump SCOP 2.5',
-  scop_high: 'Heat-pump SCOP 3.5',
+  scop_low: 'Heat-pump efficiency at the low end',
+  scop_high: 'Heat-pump efficiency at the high end',
   gas_split_65_35: 'Space/water gas split 65/35',
   gas_split_85_15: 'Space/water gas split 85/15',
   other_gas_low: 'Cooking gas share halved',
   other_gas_high: 'Cooking gas share doubled',
   impacts_low: 'Measure impacts at catalogue low',
   impacts_high: 'Measure impacts at catalogue high',
+  headline_impacts: 'National average savings instead of ones for homes like this',
+  need_calibrated_combinations: 'Combined insulation savings scaled down to what real homes achieved',
+  no_grants: 'No grants',
 };
 
 export const HEATING_LABEL: Record<string, string> = {

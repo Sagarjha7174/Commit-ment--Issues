@@ -58,3 +58,4 @@
 
 /* ---- footer ---- */
 .footer { display: grid; gap: 4px; padding: var(--s-5) var(--gutter) calc(var(--s-5) + 56px); border-top: 1px solid var(--line); max-width: var(--page-max); margin: var(--s-7) auto 0; width: 100%; }
+.footer-versions summary { cursor: pointer; }

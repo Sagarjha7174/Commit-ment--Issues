@@ -119,7 +119,13 @@ NOT_ASSESSED_RE = re.compile(
 LOAN_KEYS = ("cost_results.loan_monthly_repayment_gbp", "cost_results.loan_apr_pct", "cost_results.loan_term_years")
 _ILLUSTRATIVE_RE = re.compile(r"\billustrat", re.IGNORECASE)
 BILL_KEY = "cost_results.bill_saving_gbp"
+PAYBACK_KEY = "cost_results.payback_years"
+# About the starting energy use being a benchmark, not this home's meter. Not bare "typical": "typical published
+# ranges" (an unvalidated-impact warning) is about measures, not the baseline.
+BENCHMARK_RE = re.compile(r"\b(benchmark|not (a|this home's) meter|meter readings?|typical use of similar homes)",
+                          re.IGNORECASE)
 EPC_KEY = "epc_change.sap_change"
+_HP_LOWERS_EPC_RE = re.compile(r"heat pump[^.]*\b(lower|reduce|cut|drop)s?\b[^.]*\b(EPC|SAP)\b", re.IGNORECASE)
 BUDGET_RE = re.compile(r"\b(within|fits|inside) (your |the )?budget\b|\baffordable\b", re.IGNORECASE)
 PRIVACY_RE = re.compile(
     r"\byou (can't|cannot|can not|couldn't|could not) afford\b|"
@@ -261,7 +267,8 @@ def _false_missing(c: Claim, sheet: FactSheet) -> bool:
     return bool(section_facts) and all(f.available for f in section_facts)
 
 
-def check_claim(i: int, c: Claim, sheet: FactSheet) -> list[CheckError]:
+def check_claim(i: int, c: Claim, sheet: FactSheet, llm: bool = False) -> list[CheckError]:
+    """llm=True for sentences the LLM wrote: code-written phrases (direction filters) may not be spliced into them."""
     errs: list[CheckError] = []
 
     def err(code: str, msg: str) -> None:
@@ -282,6 +289,18 @@ def check_claim(i: int, c: Claim, sheet: FactSheet) -> list[CheckError]:
         err("SYMBOL", "%, £ or other currency symbol outside a placeholder; the renderer adds units")
     if "{" in bare or "}" in bare:
         err("BRACES", "malformed placeholder; use {dotted.key}")
+    # A sentence needs words of its own: "{derived.issues}." alone renders as an unlabelled fragment.
+    if len(re.findall(r"[A-Za-z]{2,}", bare)) < 1:
+        err("FRAGMENT", "a sentence needs its own words around a placeholder (a label such as 'Key issues:'), not a "
+                        "bare value")
+    if llm and re.search(r"\{[a-z0-9_.]+\|changes?\}", text):
+        # {key|change} renders a code-written verb phrase ("goes up by 15 points"); spliced into the LLM's own
+        # grammar it breaks sentences ("with the SAP score goes up by ..."). The LLM writes the direction itself.
+        err("FILTER", "do not use {key|change}; write the direction yourself next to a plain {key} "
+                      "('rises by {key}', 'falls by {key}')")
+    if _HP_LOWERS_EPC_RE.search(text) and not heat_pump_replaces_gas(sheet):
+        err("CONTRADICTION", "the heat pump does not replace gas here, so it does not lower the EPC (SAP) rating: "
+                             "replacing electric heating raises it")
     if m := _UNIT_AFTER.search(text):
         err("UNIT", f"unit {m.group(1)!r} typed after a placeholder; the renderer adds units")
 
@@ -389,8 +408,26 @@ def check_claim(i: int, c: Claim, sheet: FactSheet) -> list[CheckError]:
     return errs
 
 
-def _section_text(draft: ExplanationDraft, section: str) -> str:
-    return " ".join(c.text for c in draft.claims if c.section == section)
+def _section_text(draft: ExplanationDraft, section: str, sheet: FactSheet | None = None) -> str:
+    """The section's sentences; with a sheet, cited text facts (warnings, reasons) are expanded, so a caveat that an
+    engine warning already states counts as stated (no duplicate fill)."""
+    text = " ".join(c.text for c in draft.claims if c.section == section)
+    if sheet is None:
+        return text
+
+    def expand(m: re.Match) -> str:
+        f = sheet.get(m.group(1))
+        if f is not None and f.available and f.kind in ("text", "text_list"):
+            return " ".join(map(str, f.value)) if isinstance(f.value, (list, tuple)) else str(f.value)
+        return m.group(0)
+    return PLACEHOLDER_RE.sub(expand, text)
+
+
+def heat_pump_replaces_gas(sheet: FactSheet) -> bool:
+    """The SAP caveat (a heat pump can lower the EPC because SAP prices electricity above gas) applies only when the
+    heat pump displaces gas; replacing electric heating raises the EPC (D46)."""
+    gas = sheet.get(GAS_KEY)
+    return "heat_pump" in sheet.estimated_measures and gas is not None and gas.available and (gas.value or 0) > 0
 
 
 def _keys_in(draft: ExplanationDraft, section: str | None = None) -> set[str]:
@@ -471,18 +508,25 @@ def coverage_gaps(draft: ExplanationDraft, sheet: FactSheet, mode: Mode = "repor
         if bill is not None and bill.available:
             need(BILL_KEY in _keys_in(draft, "cost"), "bills", "cost", f"cost section must give the bill change "
                                                                      f"({{{BILL_KEY}}})")
+        pb = sheet.get(PAYBACK_KEY)
+        if pb is not None and (pb.available or sheet.get(f"{PAYBACK_KEY}.reason") is not None):
+            need(PAYBACK_KEY in _keys_in(draft, "cost"), "payback", "cost",
+                 f"cost section must give the simple payback ({{{PAYBACK_KEY}}}) or say why there is none")
+        loan = sheet.get(LOAN_KEYS[0])
+        if loan is not None and loan.available:
+            need(LOAN_KEYS[0] in _keys_in(draft, "cost"), "loan", "cost",
+                 "cost section must give the illustrative loan repayment next to the monthly bill change")
         epc = sheet.get(EPC_KEY)
         if epc is not None:
             need(EPC_KEY in _keys_in(draft, "score"), "epc_change", "score",
                  "score section must give the modelled EPC change (or say why it is not estimated)")
-        if "heat_pump" in sheet.estimated_measures:
-            need(bool(re.search(r"\b(EPC|SAP)\b", _section_text(draft, "caveats"))), "hp_epc", "caveats",
+        if heat_pump_replaces_gas(sheet):
+            need(bool(re.search(r"\b(EPC|SAP)\b", _section_text(draft, "caveats", sheet))), "hp_epc", "caveats",
                  "say that a heat pump can lower the EPC (SAP) rating while cutting carbon", "WORDING")
-    need(bool(_ESTIMATE_RE.search(_section_text(draft, "caveats"))) or not draft.claims, "estimates_caveat",
+    need(bool(_ESTIMATE_RE.search(_section_text(draft, "caveats", sheet))) or not draft.claims, "estimates_caveat",
          "caveats", "say that the figures are estimates, not guarantees", "WORDING")
     if sheet.baseline_provenance and not (sheet.baseline_provenance & MEASURED_PROVENANCE):
-        need(bool(re.search(r"\b(benchmark|typical|not a meter|meter reading)", _section_text(draft, "caveats"),
-                            re.IGNORECASE)), "benchmark_caveat", "caveats",
+        need(bool(BENCHMARK_RE.search(_section_text(draft, "caveats", sheet))), "benchmark_caveat", "caveats",
              "say that the starting energy use is a benchmark, not this home's meter", "WORDING")
 
     value_available = all(sheet.get(k) is not None and sheet.get(k).available for k in VALUE_KEYS)

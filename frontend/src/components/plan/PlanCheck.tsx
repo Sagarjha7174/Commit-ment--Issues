@@ -118,11 +118,14 @@ function planAnswers(r: ScenarioResult, s: Situation): Answer[] {
   ];
 }
 
-export function PlanCheck({ result, situation }: { result: ScenarioResult; situation: Situation }) {
-  const answers = planAnswers(result, situation);
+/** The first three answers decide whether to go ahead; the rest are background, folded away. */
+const MAIN_CHECKS = 3;
+
+function CheckList({ answers, start }: { answers: Answer[]; start: number }) {
   return (
-    <ol className="check">
-      {answers.map((a, i) => {
+    <ol className="check" start={start + 1}>
+      {answers.map((a, j) => {
+        const i = start + j;
         const Icon = ICON[a.tone];
         return (
           <li key={a.q} className={`check-item check-${a.tone}`}>
@@ -136,6 +139,22 @@ export function PlanCheck({ result, situation }: { result: ScenarioResult; situa
         );
       })}
     </ol>
+  );
+}
+
+export function PlanCheck({ result, situation }: { result: ScenarioResult; situation: Situation }) {
+  const answers = planAnswers(result, situation);
+  const more = answers.slice(MAIN_CHECKS);
+  return (
+    <>
+      <CheckList answers={answers.slice(0, MAIN_CHECKS)} start={0} />
+      {more.length > 0 && (
+        <details className="howto check-more">
+          <summary>{more.length} more checks (stability, evidence, after installation)</summary>
+          <CheckList answers={more} start={MAIN_CHECKS} />
+        </details>
+      )}
+    </>
   );
 }
 

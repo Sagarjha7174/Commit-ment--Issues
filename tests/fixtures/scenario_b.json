@@ -17,11 +17,21 @@
    "smart_thermostat",
    "heat_pump"
   ],
-  "not_estimated": {
-   "smart_thermostat": "heating_not_on_gas",
-   "heat_pump": "no_gas_to_displace"
+  "electric_heating_share": 0.4320987654320988,
+  "end_uses_before": {
+   "elec_space": 898.3333333333334,
+   "elec_water": 268.33333333333337,
+   "elec_base": 1533.3333333333333
   },
-  "improvement_potential_status": "not_estimated"
+  "standalone_elec_saving_kwh": {
+   "smart_thermostat": 67.375,
+   "heat_pump": 750.0
+  },
+  "package_gas_saving_kwh": 0.0,
+  "package_elec_saving_kwh": 774.0625,
+  "improvement_potential_status": "ok",
+  "improvement_potential_pct": 28.66898148148148,
+  "carbon_saving_kg": 111.42629687499999
  },
  "generated_by": "tests/fixtures/hand_calc_demo.py (hand arithmetic, no engine imports)"
 }

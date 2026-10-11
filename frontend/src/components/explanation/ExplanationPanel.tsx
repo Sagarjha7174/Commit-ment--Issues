@@ -3,6 +3,7 @@ import { Bot, FileText, Loader2 } from 'lucide-react';
 import type { ExplanationClaim, ScenarioResult } from '../../api/schema';
 import type { ExplanationState } from '../../hooks/useExplanation';
 import { ScenarioIdBadge } from '../common/ScenarioIdBadge';
+import { spanTone } from '../../utils/spanTone';
 import { SectionHeader } from '../common/States';
 import './explanation.css';
 
@@ -21,8 +22,8 @@ function ClaimText({ c }: { c: ExplanationClaim }) {
     const at = rest.indexOf(s.display);
     if (at < 0) return;
     parts.push(rest.slice(0, at));
-    const dir = s.direction === 'reduction' || s.direction === 'down' ? 'reduction' : s.direction === 'increase' || s.direction === 'up' ? 'increase' : 'none';
-    parts.push(<mark key={i} className={`span span-${dir}`} title={`${s.key}${s.provenance ? ` · ${s.provenance}` : ''}${s.direction ? ` · ${s.direction}` : ''}`}>{s.display}</mark>);
+    const tone = spanTone(s);
+    parts.push(<mark key={i} className={`span span-${tone}`} title={`${s.key}${s.provenance ? ` · ${s.provenance}` : ''}${s.direction ? ` · ${s.direction}` : ''}${s.sentiment ? ` · ${s.sentiment}` : ''}`}>{s.display}</mark>);
     rest = rest.slice(at + s.display.length);
   });
   parts.push(rest);

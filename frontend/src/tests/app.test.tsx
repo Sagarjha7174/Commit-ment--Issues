@@ -134,7 +134,8 @@ describe('My Home: demo homes B and C', () => {
     expect(screen.getByText('Another dwelling is above this home, so there is no loft to insulate.')).toBeInTheDocument();
     expect(screen.getAllByText('Not suitable').length).toBeGreaterThanOrEqual(5);
     expect(screen.getByRole('button', { name: 'Add Loft insulation to the scenario' })).toBeDisabled();
-    expect(screen.getAllByText(/no package can be estimated for this home/).length).toBeGreaterThan(0);
+    // electric heating (D16): the thermostat and heat pump now have estimated savings, so packages exist
+    expect(screen.queryByText(/no package can be estimated for this home/)).not.toBeInTheDocument();
   });
 
   it('C (missing data): score unavailable, never zero; every measure needs verification', async () => {

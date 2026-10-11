@@ -29,13 +29,16 @@ REPO = Path(__file__).resolve().parents[2]
 
 MEASURE_ORDER = ["loft_insulation", "cavity_wall", "solid_wall", "double_glazing", "smart_thermostat", "heat_pump", "solar_pv"]
 
+# Heat-pump SCOP range the engine uses (field evidence, configs/engine_params.json, D24)
+_SCOP = json.loads((REPO / "configs" / "engine_params.json").read_text())["heat_pump_scop"]
+
 # Assumption presets offered by the UI. Key "default" = engine defaults.
 ASSUMPTION_PRESETS = {
     "default": {},
     "impact-low": {"impact_level": "low"},
     "impact-high": {"impact_level": "high"},
-    "scop-2.5": {"heat_pump_scop": 2.5},
-    "scop-3.5": {"heat_pump_scop": 3.5},
+    "scop-low": {"heat_pump_scop": _SCOP["low"]},
+    "scop-high": {"heat_pump_scop": _SCOP["high"]},
     # Occupancy scenarios ("fewer / more people at home"): the engine's own baseline_scale, the same +/-15%
     # range its sensitivity analysis uses. The engine recalculates; nothing is scaled in the browser.
     "occupancy-low": {"baseline_scale": 0.85},
@@ -120,8 +123,13 @@ def main() -> None:
     assert rb.score_before.total == eb["score_before"] and rb.score_before.classification == eb["class_before"]
     sb = {f.measure.value: f.state.value for f in rb.feasibility}
     assert sorted(m for m, s in sb.items() if s == "infeasible") == sorted(eb["infeasible"]), sb
-    assert {r.measure.value: r.reason_code for r in rb.simulation.measures} == eb["not_estimated"]
+    # electric heating split (D16): savings on electricity, checked against the hand arithmetic
     assert rb.simulation.improvement_potential_status.value == eb["improvement_potential_status"]
+    assert close(rb.simulation.elec_saving_kwh, eb["package_elec_saving_kwh"])
+    assert close(rb.simulation.improvement_potential_pct, eb["improvement_potential_pct"])
+    assert close(rb.carbon.total_kg, eb["carbon_saving_kg"])
+    for m, v in eb["standalone_elec_saving_kwh"].items():
+        assert close(rb.standalone[m]["elec_saving_kwh"], v), m
     rc, ec = build("c_missing_data"), fx["c"]
     assert rc.score_before.status.value == ec["score_status"] and rc.score_before.completeness == ec["completeness"]
     assert rc.baseline.gas_kwh is None and rc.baseline.elec_kwh is None

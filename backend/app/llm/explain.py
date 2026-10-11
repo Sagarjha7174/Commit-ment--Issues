@@ -14,6 +14,7 @@ If every provider fails, the deterministic template is used. The LLM never sees 
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -29,7 +30,7 @@ from .render import RenderedExplanation, render, to_dict
 from .templates import template_report
 
 PROMPTS_DIR = Path(__file__).resolve().parent / "prompts"
-EXPLAIN_PROMPT_VERSION = "explain_v6"
+EXPLAIN_PROMPT_VERSION = "explain_v8"
 EXPLAIN_MAX_TOKENS = int(__import__("os").environ.get("LLM_MAX_OUTPUT_TOKENS", "4000"))   # cost cap per call
 MAX_REJECT_SHARE = 0.4      # above this, the answer is unusable and the LLM is asked once more
 MIN_KEPT_SENTENCES = 3      # below this, use the template outright
@@ -140,7 +141,7 @@ def build_user_message(sheet: FactSheet, mode: str, *, question: str | None = No
 def split_checked(draft: ExplanationDraft, sheet: FactSheet) -> tuple[list[Claim], list[dict[str, Any]]]:
     kept, dropped = [], []
     for i, c in enumerate(draft.claims):
-        errs = check_claim(i, c, sheet)
+        errs = check_claim(i, c, sheet, llm=True)
         if errs:
             dropped.append({"section": c.section, "text": c.text, "errors": [f"[{e.code}] {e.message}" for e in errs]})
         else:
@@ -184,6 +185,75 @@ def patch_with_template(kept: list[Claim], template_draft: ExplanationDraft, she
     return ExplanationDraft(claims=ordered), len(added), filled_ids
 
 
+_CAVEAT_TOPICS = (
+    ("benchmark", re.compile(r"\b(benchmark|not a meter|meter readings?)\b", re.I)),
+    ("estimates", re.compile(r"\bestimates?\b[^.]{0,40}\bnot (a )?guarantees?\b", re.I)),
+    ("hp_epc", re.compile(r"heat pump[^.]*\b(EPC|SAP)\b", re.I)),
+    ("association", re.compile(r"\bassociation\b", re.I)),
+)
+
+
+def dedupe_claims(draft: ExplanationDraft, sheet: FactSheet) -> ExplanationDraft:
+    """Say each thing once: drop a sentence whose rendered text repeats an earlier one, and, among caveat sentences
+    on the same topic (benchmark baseline, estimates not guarantees, heat pump and EPC, value association), keep one,
+    preferring the sentence that cites an engine warning (coverage requires those). A sentence carrying several
+    caveats is dropped only if every one of them is kept in another sentence."""
+    from .render import render_claim
+
+    def norm(c: Claim) -> str:
+        return re.sub(r"\W+", " ", render_claim(c, sheet).text.lower()).strip()
+
+    def topics_of(c: Claim) -> list[str]:
+        if c.type != "caveat" and c.section not in ("caveats", "value"):
+            return []
+        text = render_claim(c, sheet).text
+        return [t for t, rx in _CAVEAT_TOPICS if rx.search(text)]
+
+    warning_keys = set(sheet.warning_keys)
+    cites_warning = [bool(set(placeholders_in(c)) & warning_keys) for c in draft.claims]
+    topics = [topics_of(c) for c in draft.claims]
+    keeper: dict[tuple[str, str], int] = {}
+    for i, ts in enumerate(topics):   # one sentence per (section, topic); a warning-citing one wins
+        for t in ts:
+            k = (draft.claims[i].section, t)
+            if k not in keeper or (cites_warning[i] and not cites_warning[keeper[k]]):
+                keeper[k] = i
+    seen, out = set(), []
+    for i, c in enumerate(draft.claims):
+        ts = topics[i]
+        if ts and not cites_warning[i] and all(keeper[(c.section, t)] != i for t in ts):
+            continue
+        n = norm(c)
+        if n in seen:
+            continue
+        seen.add(n)
+        out.append(c)
+    return ExplanationDraft(claims=out)
+
+
+def replacements(rejected: list[Claim], kept: list[Claim], template_draft: ExplanationDraft) -> list[Claim]:
+    """Template sentences that cite a fact a rejected LLM sentence cited, in the same section, not already present."""
+    have = {id(c) for c in kept}
+    have_text = {c.text for c in kept}
+    out: list[Claim] = []
+    for r in rejected:
+        keys = set(placeholders_in(r))
+        if not keys:
+            continue
+        for tc in template_draft.claims:
+            if tc.section == r.section and id(tc) not in have and tc.text not in have_text \
+                    and keys & set(placeholders_in(tc)):
+                out.append(tc)
+                have.add(id(tc))
+                have_text.add(tc.text)
+    return out
+
+
+def placeholders_in(c: Claim) -> list[str]:
+    from .render import placeholders
+    return [k for k, _ in placeholders(c.text)] + list(c.keys)
+
+
 def explain_sheet(sheet: FactSheet, *, mode: Literal["report", "whatif"] = "report", use_llm: bool = True,
                   current_scenario_id: str | None = None, question: str | None = None,
                   extra: dict[str, Any] | None = None, must_explain: set[str] | None = None,
@@ -223,8 +293,10 @@ def explain_sheet(sheet: FactSheet, *, mode: Literal["report", "whatif"] = "repo
             usage.append(res.usage)
             draft = extract_claims(res.parsed, sheet, mode)
             kept, dropped = split_checked(draft, sheet)
+            kept_ids = {id(c) for c in kept}
+            rejected = [c for c in draft.claims if id(c) not in kept_ids]
             if best is None or len(kept) > len(best[0]):
-                best = (kept, dropped, len(draft.claims))
+                best = (kept, dropped, len(draft.claims), rejected)
             usable = draft.claims and len(dropped) <= MAX_REJECT_SHARE * len(draft.claims)
             if usable:
                 break
@@ -233,8 +305,15 @@ def explain_sheet(sheet: FactSheet, *, mode: Literal["report", "whatif"] = "repo
 
     result: ExplainResult | None = None
     if best is not None and len(best[0]) >= MIN_KEPT_SENTENCES:
-        kept, dropped, total = best
+        kept, dropped, total, rejected = best
+        # A rejected sentence is replaced by the template sentence citing the same facts in the same section (whole,
+        # never spliced), so content such as "Key issues: ..." survives with its label.
+        swaps = replacements(rejected, kept, template_draft)
+        kept = sorted(kept + swaps, key=lambda c: SECTION_ORDER.index(c.section))
         draft, filled, filled_ids = patch_with_template(kept, template_draft, sheet, mode, must_explain)
+        filled += len(swaps)
+        filled_ids |= {id(c) for c in swaps}
+        draft = dedupe_claims(draft, sheet)
         errs = check(draft, sheet, mode, must_explain)
         if not errs:
             rendered = render(draft, sheet)

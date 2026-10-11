@@ -11,8 +11,14 @@ import { selectionPackage } from './scenarioDiff';
 
 type Span = ExplanationClaim['spans'][number];
 
-function span(key: string, display: string, status = 'available', provenance: string | null = null, direction: string | null = null): Span {
-  return { key, display, status, provenance, direction };
+function span(key: string, display: string, status = 'available', provenance: string | null = null, direction: string | null = null,
+  sentiment: string | null = null): Span {
+  return { key, display, status, provenance, direction, sentiment };
+}
+
+/** Good/bad for the homeowner from a saving (positive = less energy, carbon or bill). */
+function savingSentiment(v: number | null | undefined): string | null {
+  return !isNum(v) ? null : v > 0 ? 'good' : v < 0 ? 'bad' : 'neutral';
 }
 
 function claim(type: string, text: string, spans: Span[] = [], measures: string[] = []): ExplanationClaim {
@@ -23,9 +29,9 @@ function changeSentence(fuel: string, key: string, v: number | null, status: str
   const dir = savingDirection(v);
   if (!isNum(v)) return claim('missing_data', `The ${fuel} change is ${missingText(status).toLowerCase()} for this selection.`, [span(key, missingText(status), status)]);
   const shown = fmtKwh(Math.abs(v));
-  if (dir === 'none') return claim('statement', `Estimated ${fuel} use does not change with this selection.`, [span(key, fmtKwh(v), 'available', 'derived', 'no change')]);
-  if (dir === 'reduction') return claim('saving', `Estimated ${fuel} use falls by ${shown}.`, [span(key, shown, 'available', 'derived', 'reduction')]);
-  return claim('increase', `Estimated ${fuel} use rises by ${shown}; the engine reports this as a negative saving.`, [span(key, shown, 'available', 'derived', 'increase')]);
+  if (dir === 'none') return claim('statement', `Estimated ${fuel} use does not change with this selection.`, [span(key, fmtKwh(v), 'available', 'derived', 'no change', 'neutral')]);
+  if (dir === 'reduction') return claim('saving', `Estimated ${fuel} use falls by ${shown}.`, [span(key, shown, 'available', 'derived', 'reduction', 'good')]);
+  return claim('increase', `Estimated ${fuel} use rises by ${shown}; the engine reports this as a negative saving.`, [span(key, shown, 'available', 'derived', 'increase', 'bad')]);
 }
 
 export function templateExplanation(r: ScenarioResult, reason: string | null = null): Explanation {
@@ -74,17 +80,42 @@ export function templateExplanation(r: ScenarioResult, reason: string | null = n
           cdir === 'increase'
             ? `Estimated emissions rise by ${fmtKg(Math.abs(c.total_kg))}.`
             : `Estimated emissions fall by ${fmtKg(c.total_kg)}, from ${fmtKg(c.before_kg)} to ${fmtKg(c.after_kg)}.`,
-          [span('carbon.total_kg', fmtKg(c.total_kg), 'available', 'derived', cdir)])
+          [span('carbon.total_kg', fmtKg(c.total_kg), 'available', 'derived', cdir, savingSentiment(c.total_kg))])
       : claim('missing_data', `The carbon change is ${missingText(c.status).toLowerCase()}.`)],
   });
 
+  // Engine money figures (D26, D27): bills at the price cap, grants, net cost, payback, illustrative loan.
   const pkg = selectionPackage(r);
-  sections.push({
-    id: 'cost', title: 'Cost',
-    claims: [pkg && isNum(pkg.cost_gbp) && plan.length
-      ? claim('statement', `Indicative cost of ${packageName(pkg.package_id)}: ${fmtGbp(pkg.cost_gbp)} (${pkg.cost_provenance}). Bills in pounds are not estimated.`, [span('package.cost_gbp', fmtGbp(pkg.cost_gbp), 'available', 'assumption')])
-      : claim('missing_data', 'No indicative cost is available for this selection. Bills in pounds are not estimated.')],
-  });
+  const costClaims: ExplanationClaim[] = [pkg && isNum(pkg.cost_gbp) && plan.length
+    ? claim('statement', `Indicative cost of ${packageName(pkg.package_id)}: ${fmtGbp(pkg.cost_gbp)} (${pkg.cost_provenance}).`, [span('package.cost_gbp', fmtGbp(pkg.cost_gbp), 'available', 'assumption')])
+    : claim('missing_data', 'No indicative cost is available for this selection.')];
+  const b = r.bills;
+  if (b && b.status === 'ok' && isNum(b.saving_gbp) && plan.length) {
+    const bs = b.saving_gbp;
+    costClaims.push(claim('statement', bs > 0
+      ? `At capped prices the annual bill falls by ${fmtGbp(bs)}, from ${fmtGbp(b.before_gbp)} to ${fmtGbp(b.after_gbp)}.`
+      : bs < 0 ? `At capped prices the annual bill rises by ${fmtGbp(Math.abs(bs))}, from ${fmtGbp(b.before_gbp)} to ${fmtGbp(b.after_gbp)}.`
+        : 'At capped prices the annual bill does not change.',
+    [span('bills.saving_gbp', fmtGbp(Math.abs(bs)), 'available', 'derived', bs > 0 ? 'reduction' : bs < 0 ? 'increase' : 'no change', savingSentiment(bs))]));
+  } else if (plan.length) {
+    costClaims.push(claim('missing_data', `The change in the annual bill is ${missingText(b?.status ?? 'not_estimated').toLowerCase()}.`));
+  }
+  const f = r.finance;
+  if (f && f.status === 'ok' && plan.length) {
+    if (isNum(f.grants_gbp) && f.grants_gbp > 0 && isNum(f.net_cost_gbp)) {
+      costClaims.push(claim('statement', `Grants of ${fmtGbp(f.grants_gbp)} may apply, subject to eligibility, leaving ${fmtGbp(f.net_cost_gbp)}.`,
+        [span('finance.grants_gbp', fmtGbp(f.grants_gbp)), span('finance.net_cost_gbp', fmtGbp(f.net_cost_gbp))]));
+    }
+    costClaims.push(isNum(f.payback_years)
+      ? claim('statement', `Simple payback (cost after grants divided by the annual bill saving) is about ${f.payback_years.toFixed(1)} years.`, [span('finance.payback_years', `${f.payback_years.toFixed(1)} years`)])
+      : claim('missing_data', 'There is no payback figure, because the annual bill does not fall with this selection.'));
+    const loan = f.illustrative_loan;
+    if (loan && isNum(loan.monthly_repayment_gbp)) {
+      costClaims.push(claim('caveat', `Illustration only, not a Lloyds product, rate or offer: a loan for the cost after grants at ${loan.apr_pct}% APR over ${loan.term_years} years would cost about ${fmtGbp(loan.monthly_repayment_gbp)} a month.`,
+        [span('finance.illustrative_loan.monthly_repayment_gbp', fmtGbp(loan.monthly_repayment_gbp))]));
+    }
+  }
+  sections.push({ id: 'cost', title: 'Cost and bills', claims: costClaims });
 
   sections.push({
     id: 'value', title: 'Property value',

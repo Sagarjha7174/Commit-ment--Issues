@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { AlertCircle, Flame, Leaf, MapPin, Zap } from 'lucide-react';
 import type { Evidence, ScenarioResult } from '../../api/schema';
 import type { ScenarioLab } from '../../hooks/useScenarioLab';
@@ -30,7 +31,11 @@ function plainIssue(s: string): string {
   return prettyText(s.replace(/\s*\(.*\)\s*$/, '').replace(/^EPC /, 'official EPC '));
 }
 
-export function YourHomeTab({ r, lab, classes, onTab }: { r: ScenarioResult; lab: ScenarioLab; classes?: Classes; onTab(t: TabId): void }) {
+export function YourHomeTab({ r, lab, classes, onTab, situation }: {
+  r: ScenarioResult; lab: ScenarioLab; classes?: Classes; onTab(t: TabId): void;
+  /** The optional situation questions, asked after the home summary rather than before it. */
+  situation?: ReactNode;
+}) {
   const s = r.score_before;
   const openEvidence = useOpenEvidence();
   const lim = limitations(r);
@@ -100,18 +105,21 @@ export function YourHomeTab({ r, lab, classes, onTab }: { r: ScenarioResult; lab
           onExplain={(m) => openEvidence(measureEvidence(r, m))}
         />
         <p className="xsmall muted">Tap a number to add or remove that improvement. Green = in the current plan.</p>
-        <div className="location">
-          <p className="kicker"><MapPin size={12} aria-hidden="true" /> Location & climate</p>
+        <details className="location">
+          <summary className="kicker"><MapPin size={12} aria-hidden="true" /> Location & climate</summary>
           <dl>
             <div><dt>Area</dt><dd>{r.home.postcode_outward ?? 'York'}, City of York, UK</dd></div>
             <div><dt>Climate</dt><dd>Cool, heating-led: the engine models space heating, hot water and grid electricity</dd></div>
             <div><dt>Carbon factors</dt><dd>{factor.gas ? `Gas ${factor.gas.kg_co2e_per_kwh}, electricity ${factor.elec?.kg_co2e_per_kwh} kg CO₂e/kWh (${factor.gas.source.split(':')[0]})` : 'Not available'}</dd></div>
             <div><dt>Flood / overheating risk</dt><dd className="v-unknown">Not checked yet</dd></div>
           </dl>
-        </div>
+        </details>
       </aside>
 
-      <div className="tab-foot"><NextButton to="options" label="See your options" onTab={onTab} /></div>
+      <div className="tab-foot">
+        {situation}
+        <NextButton to="options" label="See your options" onTab={onTab} />
+      </div>
     </div>
   );
 }

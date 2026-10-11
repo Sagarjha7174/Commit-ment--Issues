@@ -130,10 +130,13 @@ export function Footer() {
       <p className="xsmall muted">
         Every number comes from the engine; the language model only explains. Not a lending, eligibility or credit decision.
       </p>
-      <p className="xsmall muted mono">
-        {versions ? Object.entries(versions).map(([k, v]) => `${k} ${v}`).join(' · ') : ''}
-        {manifest.data ? ` · snapshot ${fmtDate(manifest.data.generated_at)} (${manifest.data.engine_commit})` : ''}
-      </p>
+      <details className="footer-versions">
+        <summary className="xsmall muted">Model and data versions</summary>
+        <p className="xsmall muted mono">
+          {versions ? Object.entries(versions).map(([k, v]) => `${k} ${v}`).join(' · ') : ''}
+          {manifest.data ? ` · snapshot ${fmtDate(manifest.data.generated_at)} (${manifest.data.engine_commit})` : ''}
+        </p>
+      </details>
     </footer>
   );
 }

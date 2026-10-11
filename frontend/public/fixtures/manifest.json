@@ -1,8 +1,8 @@
 {
  "kind": "offline_snapshot",
  "engine_branch": "main",
- "engine_commit": "d72dc69",
- "generated_at": "2026-10-10T23:24:02+00:00",
+ "engine_commit": "138249c",
+ "generated_at": "2026-10-11T02:26:48+00:00",
  "generator": "scripts/generate_fixtures.py",
  "home_inputs": "backend/app/data/demo_homes.py (configs/demo_homes.json public fields + certificate fields documented in tests/fixtures/hand_calc_demo.py)",
  "parity": "reproduces tests/fixtures/scenario_{a,b,c}.json (engine hand-calculated acceptance fixtures)",
@@ -14,10 +14,10 @@
   "impact-high": {
    "impact_level": "high"
   },
-  "scop-2.5": {
-   "heat_pump_scop": 2.5
+  "scop-low": {
+   "heat_pump_scop": 2.44
   },
-  "scop-3.5": {
+  "scop-high": {
    "heat_pump_scop": 3.5
   },
   "occupancy-low": {
@@ -114,36 +114,36 @@
       "15000": "budgets/U100050529765-impact-high-15000.json"
      }
     },
-    "scop-2.5": {
+    "scop-low": {
      "overrides": {
-      "heat_pump_scop": 2.5
+      "heat_pump_scop": 2.44
      },
-     "shared": "shared/U100050529765-scop-2.5-1ca874be344d.json",
+     "shared": "shared/U100050529765-scop-low-7081dd8affdf.json",
      "scenarios": {
-      "engine-default": "scenarios/U100050529765/scop-2.5__engine-default.json",
-      "cavity_wall": "scenarios/U100050529765/scop-2.5__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-2.5__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
+      "engine-default": "scenarios/U100050529765/scop-low__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/scop-low__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-low__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
-      "1000": "budgets/U100050529765-scop-2.5-1000.json",
-      "5000": "budgets/U100050529765-scop-2.5-5000.json",
-      "15000": "budgets/U100050529765-scop-2.5-15000.json"
+      "1000": "budgets/U100050529765-scop-low-1000.json",
+      "5000": "budgets/U100050529765-scop-low-5000.json",
+      "15000": "budgets/U100050529765-scop-low-15000.json"
      }
     },
-    "scop-3.5": {
+    "scop-high": {
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/U100050529765-scop-3.5-78843e5759e1.json",
+     "shared": "shared/U100050529765-scop-high-78843e5759e1.json",
      "scenarios": {
-      "engine-default": "scenarios/U100050529765/scop-3.5__engine-default.json",
-      "cavity_wall": "scenarios/U100050529765/scop-3.5__cavity_wall.json",
-      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-3.5__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
+      "engine-default": "scenarios/U100050529765/scop-high__engine-default.json",
+      "cavity_wall": "scenarios/U100050529765/scop-high__cavity_wall.json",
+      "cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv": "scenarios/U100050529765/scop-high__cavity_wall+double_glazing+heat_pump+smart_thermostat+solar_pv.json"
      },
      "budgets": {
-      "1000": "budgets/U100050529765-scop-3.5-1000.json",
-      "5000": "budgets/U100050529765-scop-3.5-5000.json",
-      "15000": "budgets/U100050529765-scop-3.5-15000.json"
+      "1000": "budgets/U100050529765-scop-high-1000.json",
+      "5000": "budgets/U100050529765-scop-high-5000.json",
+      "15000": "budgets/U100050529765-scop-high-15000.json"
      }
     },
     "occupancy-low": {
@@ -204,7 +204,7 @@
    "variants": {
     "default": {
      "overrides": {},
-     "shared": "shared/A012dcfda4e502be0-default-2a8f514ae347.json",
+     "shared": "shared/A012dcfda4e502be0-default-5d93dd1d841c.json",
      "scenarios": {
       "engine-default": "scenarios/A012dcfda4e502be0/default__engine-default.json",
       "none": "scenarios/A012dcfda4e502be0/default__none.json",
@@ -222,9 +222,11 @@
      "overrides": {
       "impact_level": "low"
      },
-     "shared": "shared/A012dcfda4e502be0-impact-low-2a8f514ae347.json",
+     "shared": "shared/A012dcfda4e502be0-impact-low-59c9833ee92e.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/impact-low__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/impact-low__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/impact-low__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/impact-low__heat_pump+smart_thermostat.json"
      },
      "budgets": {
       "1000": "budgets/A012dcfda4e502be0-impact-low-1000.json",
@@ -236,9 +238,11 @@
      "overrides": {
       "impact_level": "high"
      },
-     "shared": "shared/A012dcfda4e502be0-impact-high-2a8f514ae347.json",
+     "shared": "shared/A012dcfda4e502be0-impact-high-c3653d9aab16.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/impact-high__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/impact-high__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/impact-high__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/impact-high__heat_pump+smart_thermostat.json"
      },
      "budgets": {
       "1000": "budgets/A012dcfda4e502be0-impact-high-1000.json",
@@ -246,41 +250,47 @@
       "15000": "budgets/A012dcfda4e502be0-impact-high-15000.json"
      }
     },
-    "scop-2.5": {
+    "scop-low": {
      "overrides": {
-      "heat_pump_scop": 2.5
+      "heat_pump_scop": 2.44
      },
-     "shared": "shared/A012dcfda4e502be0-scop-2.5-2a8f514ae347.json",
+     "shared": "shared/A012dcfda4e502be0-scop-low-6dd368022c99.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/scop-2.5__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/scop-low__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/scop-low__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/scop-low__heat_pump+smart_thermostat.json"
      },
      "budgets": {
-      "1000": "budgets/A012dcfda4e502be0-scop-2.5-1000.json",
-      "5000": "budgets/A012dcfda4e502be0-scop-2.5-5000.json",
-      "15000": "budgets/A012dcfda4e502be0-scop-2.5-15000.json"
+      "1000": "budgets/A012dcfda4e502be0-scop-low-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-scop-low-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-scop-low-15000.json"
      }
     },
-    "scop-3.5": {
+    "scop-high": {
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/A012dcfda4e502be0-scop-3.5-2a8f514ae347.json",
+     "shared": "shared/A012dcfda4e502be0-scop-high-bd4e26b78d26.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/scop-3.5__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/scop-high__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/scop-high__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/scop-high__heat_pump+smart_thermostat.json"
      },
      "budgets": {
-      "1000": "budgets/A012dcfda4e502be0-scop-3.5-1000.json",
-      "5000": "budgets/A012dcfda4e502be0-scop-3.5-5000.json",
-      "15000": "budgets/A012dcfda4e502be0-scop-3.5-15000.json"
+      "1000": "budgets/A012dcfda4e502be0-scop-high-1000.json",
+      "5000": "budgets/A012dcfda4e502be0-scop-high-5000.json",
+      "15000": "budgets/A012dcfda4e502be0-scop-high-15000.json"
      }
     },
     "occupancy-low": {
      "overrides": {
       "baseline_scale": 0.85
      },
-     "shared": "shared/A012dcfda4e502be0-occupancy-low-e7731918fad6.json",
+     "shared": "shared/A012dcfda4e502be0-occupancy-low-1d7792df6680.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-low__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-low__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/occupancy-low__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/occupancy-low__heat_pump+smart_thermostat.json"
      },
      "budgets": {
       "1000": "budgets/A012dcfda4e502be0-occupancy-low-1000.json",
@@ -292,9 +302,11 @@
      "overrides": {
       "baseline_scale": 1.15
      },
-     "shared": "shared/A012dcfda4e502be0-occupancy-high-0eaa11eac08d.json",
+     "shared": "shared/A012dcfda4e502be0-occupancy-high-ebb83ddbb4f7.json",
      "scenarios": {
-      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-high__engine-default.json"
+      "engine-default": "scenarios/A012dcfda4e502be0/occupancy-high__engine-default.json",
+      "heat_pump": "scenarios/A012dcfda4e502be0/occupancy-high__heat_pump.json",
+      "heat_pump+smart_thermostat": "scenarios/A012dcfda4e502be0/occupancy-high__heat_pump+smart_thermostat.json"
      },
      "budgets": {
       "1000": "budgets/A012dcfda4e502be0-occupancy-high-1000.json",
@@ -484,32 +496,32 @@
       "15000": "budgets/U100050565716-impact-high-15000.json"
      }
     },
-    "scop-2.5": {
+    "scop-low": {
      "overrides": {
-      "heat_pump_scop": 2.5
+      "heat_pump_scop": 2.44
      },
-     "shared": "shared/U100050565716-scop-2.5-ed1437340e4e.json",
+     "shared": "shared/U100050565716-scop-low-ed1437340e4e.json",
      "scenarios": {
-      "engine-default": "scenarios/U100050565716/scop-2.5__engine-default.json"
+      "engine-default": "scenarios/U100050565716/scop-low__engine-default.json"
      },
      "budgets": {
-      "1000": "budgets/U100050565716-scop-2.5-1000.json",
-      "5000": "budgets/U100050565716-scop-2.5-5000.json",
-      "15000": "budgets/U100050565716-scop-2.5-15000.json"
+      "1000": "budgets/U100050565716-scop-low-1000.json",
+      "5000": "budgets/U100050565716-scop-low-5000.json",
+      "15000": "budgets/U100050565716-scop-low-15000.json"
      }
     },
-    "scop-3.5": {
+    "scop-high": {
      "overrides": {
       "heat_pump_scop": 3.5
      },
-     "shared": "shared/U100050565716-scop-3.5-ed1437340e4e.json",
+     "shared": "shared/U100050565716-scop-high-ed1437340e4e.json",
      "scenarios": {
-      "engine-default": "scenarios/U100050565716/scop-3.5__engine-default.json"
+      "engine-default": "scenarios/U100050565716/scop-high__engine-default.json"
      },
      "budgets": {
-      "1000": "budgets/U100050565716-scop-3.5-1000.json",
-      "5000": "budgets/U100050565716-scop-3.5-5000.json",
-      "15000": "budgets/U100050565716-scop-3.5-15000.json"
+      "1000": "budgets/U100050565716-scop-high-1000.json",
+      "5000": "budgets/U100050565716-scop-high-5000.json",
+      "15000": "budgets/U100050565716-scop-high-15000.json"
      }
     },
     "occupancy-low": {

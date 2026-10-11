@@ -1,0 +1,300 @@
+{
+ "version": "elec-split-v1",
+ "built": "2026-10-11",
+ "source": "data/processed/region=york/benchmarks.parquet",
+ "method": "share = 1 - median elec of gas-heated homes / median elec of non-gas-heated homes, same NEED cell; cells need >= 30 homes on both sides; clipped to [0, 0.9]",
+ "shares": {
+  "Bungalow|A/B": {
+   "share": 0.5615384615384615,
+   "elec_gas_heated_kwh": 1900.0,
+   "elec_not_gas_heated_kwh": 4333.333333333333,
+   "n_gas_heated": 709,
+   "n_not_gas_heated": 122,
+   "level": "type x EPC band"
+  },
+  "Bungalow|C": {
+   "share": 0.2894736842105263,
+   "elec_gas_heated_kwh": 1800.0,
+   "elec_not_gas_heated_kwh": 2533.3333333333335,
+   "n_gas_heated": 5350,
+   "n_not_gas_heated": 289,
+   "level": "type x EPC band"
+  },
+  "Bungalow|D": {
+   "share": 0.3139534883720929,
+   "elec_gas_heated_kwh": 1966.6666666666667,
+   "elec_not_gas_heated_kwh": 2866.6666666666665,
+   "n_gas_heated": 12597,
+   "n_not_gas_heated": 651,
+   "level": "type x EPC band"
+  },
+  "Bungalow|E": {
+   "share": 0.42622950819672134,
+   "elec_gas_heated_kwh": 2333.3333333333335,
+   "elec_not_gas_heated_kwh": 4066.666666666667,
+   "n_gas_heated": 1753,
+   "n_not_gas_heated": 344,
+   "level": "type x EPC band"
+  },
+  "Bungalow|F/G": {
+   "share": 0.44654088050314467,
+   "elec_gas_heated_kwh": 2200.0,
+   "elec_not_gas_heated_kwh": 3975.0,
+   "n_gas_heated": 145,
+   "n_not_gas_heated": 116,
+   "level": "type x EPC band"
+  },
+  "Detached|A/B": {
+   "share": 0.31851851851851853,
+   "elec_gas_heated_kwh": 3066.6666666666665,
+   "elec_not_gas_heated_kwh": 4500.0,
+   "n_gas_heated": 7756,
+   "n_not_gas_heated": 583,
+   "level": "type x EPC band"
+  },
+  "Detached|C": {
+   "share": 0.276595744680851,
+   "elec_gas_heated_kwh": 3400.0,
+   "elec_not_gas_heated_kwh": 4700.0,
+   "n_gas_heated": 7019,
+   "n_not_gas_heated": 602,
+   "level": "type x EPC band"
+  },
+  "Detached|D": {
+   "share": 0.31944444444444453,
+   "elec_gas_heated_kwh": 3266.6666666666665,
+   "elec_not_gas_heated_kwh": 4800.0,
+   "n_gas_heated": 9536,
+   "n_not_gas_heated": 865,
+   "level": "type x EPC band"
+  },
+  "Detached|E": {
+   "share": 0.30065359477124187,
+   "elec_gas_heated_kwh": 3566.6666666666665,
+   "elec_not_gas_heated_kwh": 5100.0,
+   "n_gas_heated": 1921,
+   "n_not_gas_heated": 753,
+   "level": "type x EPC band"
+  },
+  "Detached|F/G": {
+   "share": 0.23676012461059193,
+   "elec_gas_heated_kwh": 4083.333333333333,
+   "elec_not_gas_heated_kwh": 5350.0,
+   "n_gas_heated": 288,
+   "n_not_gas_heated": 500,
+   "level": "type x EPC band"
+  },
+  "End terrace|A/B": {
+   "share": 0.08108108108108114,
+   "elec_gas_heated_kwh": 2266.6666666666665,
+   "elec_not_gas_heated_kwh": 2466.6666666666665,
+   "n_gas_heated": 2426,
+   "n_not_gas_heated": 157,
+   "level": "type x EPC band"
+  },
+  "End terrace|C": {
+   "share": 0.003278688524590234,
+   "elec_gas_heated_kwh": 2533.3333333333335,
+   "elec_not_gas_heated_kwh": 2541.666666666667,
+   "n_gas_heated": 6718,
+   "n_not_gas_heated": 274,
+   "level": "type x EPC band"
+  },
+  "End terrace|D": {
+   "share": 0.11904761904761907,
+   "elec_gas_heated_kwh": 2466.6666666666665,
+   "elec_not_gas_heated_kwh": 2800.0,
+   "n_gas_heated": 8869,
+   "n_not_gas_heated": 394,
+   "level": "type x EPC band"
+  },
+  "End terrace|E": {
+   "share": 0.18324607329842924,
+   "elec_gas_heated_kwh": 2600.0,
+   "elec_not_gas_heated_kwh": 3183.333333333333,
+   "n_gas_heated": 3174,
+   "n_not_gas_heated": 282,
+   "level": "type x EPC band"
+  },
+  "End terrace|F/G": {
+   "share": 0.44217687074829926,
+   "elec_gas_heated_kwh": 2733.3333333333335,
+   "elec_not_gas_heated_kwh": 4900.0,
+   "n_gas_heated": 339,
+   "n_not_gas_heated": 118,
+   "level": "type x EPC band"
+  },
+  "Flat|A/B": {
+   "share": 0.4320987654320988,
+   "elec_gas_heated_kwh": 1533.3333333333333,
+   "elec_not_gas_heated_kwh": 2700.0,
+   "n_gas_heated": 1958,
+   "n_not_gas_heated": 4271,
+   "level": "type x EPC band"
+  },
+  "Flat|C": {
+   "share": 0.4838709677419355,
+   "elec_gas_heated_kwh": 1600.0,
+   "elec_not_gas_heated_kwh": 3100.0,
+   "n_gas_heated": 16298,
+   "n_not_gas_heated": 12960,
+   "level": "type x EPC band"
+  },
+  "Flat|D": {
+   "share": 0.5731707317073171,
+   "elec_gas_heated_kwh": 1750.0,
+   "elec_not_gas_heated_kwh": 4100.0,
+   "n_gas_heated": 4219,
+   "n_not_gas_heated": 5795,
+   "level": "type x EPC band"
+  },
+  "Flat|E": {
+   "share": 0.583941605839416,
+   "elec_gas_heated_kwh": 1900.0,
+   "elec_not_gas_heated_kwh": 4566.666666666667,
+   "n_gas_heated": 616,
+   "n_not_gas_heated": 2015,
+   "level": "type x EPC band"
+  },
+  "Flat|F/G": {
+   "share": 0.5736434108527132,
+   "elec_gas_heated_kwh": 1833.3333333333333,
+   "elec_not_gas_heated_kwh": 4300.0,
+   "n_gas_heated": 61,
+   "n_not_gas_heated": 265,
+   "level": "type x EPC band"
+  },
+  "Mid terrace|A/B": {
+   "share": 0.18471337579617841,
+   "elec_gas_heated_kwh": 2133.3333333333335,
+   "elec_not_gas_heated_kwh": 2616.666666666667,
+   "n_gas_heated": 2297,
+   "n_not_gas_heated": 172,
+   "level": "type x EPC band"
+  },
+  "Mid terrace|C": {
+   "share": 0.054054054054053946,
+   "elec_gas_heated_kwh": 2333.3333333333335,
+   "elec_not_gas_heated_kwh": 2466.6666666666665,
+   "n_gas_heated": 15346,
+   "n_not_gas_heated": 639,
+   "level": "type x EPC band"
+  },
+  "Mid terrace|D": {
+   "share": 0.07999999999999996,
+   "elec_gas_heated_kwh": 2300.0,
+   "elec_not_gas_heated_kwh": 2500.0,
+   "n_gas_heated": 24810,
+   "n_not_gas_heated": 1079,
+   "level": "type x EPC band"
+  },
+  "Mid terrace|E": {
+   "share": 0.27450980392156865,
+   "elec_gas_heated_kwh": 2466.6666666666665,
+   "elec_not_gas_heated_kwh": 3400.0,
+   "n_gas_heated": 7991,
+   "n_not_gas_heated": 577,
+   "level": "type x EPC band"
+  },
+  "Mid terrace|F/G": {
+   "share": 0.37606837606837606,
+   "elec_gas_heated_kwh": 2433.3333333333335,
+   "elec_not_gas_heated_kwh": 3900.0,
+   "n_gas_heated": 891,
+   "n_not_gas_heated": 203,
+   "level": "type x EPC band"
+  },
+  "Semi detached|A/B": {
+   "share": 0.18518518518518523,
+   "elec_gas_heated_kwh": 2200.0,
+   "elec_not_gas_heated_kwh": 2700.0,
+   "n_gas_heated": 8191,
+   "n_not_gas_heated": 584,
+   "level": "type x EPC band"
+  },
+  "Semi detached|C": {
+   "share": 0.1428571428571429,
+   "elec_gas_heated_kwh": 2600.0,
+   "elec_not_gas_heated_kwh": 3033.3333333333335,
+   "n_gas_heated": 19456,
+   "n_not_gas_heated": 494,
+   "level": "type x EPC band"
+  },
+  "Semi detached|D": {
+   "share": 0.2440191387559808,
+   "elec_gas_heated_kwh": 2633.3333333333335,
+   "elec_not_gas_heated_kwh": 3483.333333333333,
+   "n_gas_heated": 33346,
+   "n_not_gas_heated": 788,
+   "level": "type x EPC band"
+  },
+  "Semi detached|E": {
+   "share": 0.2905982905982907,
+   "elec_gas_heated_kwh": 2766.6666666666665,
+   "elec_not_gas_heated_kwh": 3900.0,
+   "n_gas_heated": 7024,
+   "n_not_gas_heated": 621,
+   "level": "type x EPC band"
+  },
+  "Semi detached|F/G": {
+   "share": 0.35074626865671643,
+   "elec_gas_heated_kwh": 2900.0,
+   "elec_not_gas_heated_kwh": 4466.666666666667,
+   "n_gas_heated": 790,
+   "n_not_gas_heated": 265,
+   "level": "type x EPC band"
+  },
+  "*|A/B": {
+   "share": 0.17441860465116277,
+   "elec_gas_heated_kwh": 2366.6666666666665,
+   "elec_not_gas_heated_kwh": 2866.6666666666665,
+   "n_gas_heated": 23337,
+   "n_not_gas_heated": 5889,
+   "level": "EPC band"
+  },
+  "*|C": {
+   "share": 0.26881720430107536,
+   "elec_gas_heated_kwh": 2266.6666666666665,
+   "elec_not_gas_heated_kwh": 3100.0,
+   "n_gas_heated": 70187,
+   "n_not_gas_heated": 15258,
+   "level": "EPC band"
+  },
+  "*|D": {
+   "share": 0.3495575221238938,
+   "elec_gas_heated_kwh": 2450.0,
+   "elec_not_gas_heated_kwh": 3766.6666666666665,
+   "n_gas_heated": 93377,
+   "n_not_gas_heated": 9572,
+   "level": "EPC band"
+  },
+  "*|E": {
+   "share": 0.3875968992248061,
+   "elec_gas_heated_kwh": 2633.3333333333335,
+   "elec_not_gas_heated_kwh": 4300.0,
+   "n_gas_heated": 22479,
+   "n_not_gas_heated": 4592,
+   "level": "EPC band"
+  },
+  "*|F/G": {
+   "share": 0.4057971014492753,
+   "elec_gas_heated_kwh": 2733.3333333333335,
+   "elec_not_gas_heated_kwh": 4600.0,
+   "n_gas_heated": 2514,
+   "n_not_gas_heated": 1467,
+   "level": "EPC band"
+  },
+  "*|*": {
+   "share": 0.30501370631195257,
+   "elec_gas_heated_kwh": 2394.789457465514,
+   "elec_not_gas_heated_kwh": 3445.8081824279006,
+   "n_not_gas_heated": 36778,
+   "level": "all homes (n-weighted over EPC bands)"
+  }
+ },
+ "caveats": [
+  "non-gas-heated NEED homes include oil/LPG/solid fuel, so the share is conservative for direct electric homes",
+  "regional benchmarks (Yorkshire and The Humber), not this home's meter (D6)",
+  "space/water split of the heating share uses the gas split (assumption)"
+ ]
+}

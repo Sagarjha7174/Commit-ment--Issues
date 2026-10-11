@@ -143,11 +143,16 @@ def test_demo_b_matches_hand_calc():
     assert r.baseline.gas_kwh == e["baseline_gas_kwh"] and r.baseline.elec_kwh == e["baseline_elec_kwh"]
     states = {f.measure.value: f.state.value for f in r.feasibility}
     assert all(states[m] == "infeasible" for m in e["infeasible"]) and all(states[m] == "feasible" for m in e["feasible"])
-    rows = {x.measure.value: x for x in r.simulation.measures}
-    for m, reason in e["not_estimated"].items():
-        assert rows[m].status == ValueStatus.not_estimated and rows[m].reason_code == reason
+    # electric heating split (D16): fabric/controls and heat-pump savings are estimated on electricity
+    for k, v in e["end_uses_before"].items():
+        assert getattr(r.simulation.before, k) == pytest.approx(v, abs=TOL)
+    for m, v in e["standalone_elec_saving_kwh"].items():
+        assert r.standalone[m]["elec_saving_kwh"] == pytest.approx(v, abs=TOL), m
+    assert r.simulation.gas_saving_kwh == pytest.approx(e["package_gas_saving_kwh"], abs=TOL)
+    assert r.simulation.elec_saving_kwh == pytest.approx(e["package_elec_saving_kwh"], abs=TOL)
     assert r.simulation.improvement_potential_status.value == e["improvement_potential_status"]
-    assert r.simulation.improvement_potential_pct is None
+    assert r.simulation.improvement_potential_pct == pytest.approx(e["improvement_potential_pct"], abs=TOL)
+    assert r.carbon.total_kg == pytest.approx(e["carbon_saving_kg"], abs=TOL)
 
 
 @needs_data

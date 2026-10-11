@@ -258,8 +258,9 @@ def _cost_block(pay: dict, none_estimated: bool = False, why: str | None = None)
             out.update(package_cost_status="not_estimated", package_cost_reason="no cost data for these measures")
         out["payback_years"] = pk["payback_years"]
         if pk["payback_years"] is None:
-            out.update(payback_years_status="not_estimated",
-                       payback_years_reason="the annual bill does not fall with these measures, so there is no payback")
+            why = ("the annual bill does not fall with these measures, so there is no payback"
+                   if pk["bill_status"] == "ok" else "the change in the annual bill is not estimated")
+            out.update(payback_years_status="not_estimated", payback_years_reason=why)
     if pk["bill_status"] == "ok":
         out.update(bill_before_gbp=pk["bill_before_gbp"], bill_after_gbp=pk["bill_after_gbp"],
                    bill_saving_gbp=pk["bill_saving_gbp"])

@@ -111,8 +111,8 @@ describe('fixture transport (offline snapshot)', () => {
   it('serves assumption presets and the preset meter reading', async () => {
     stubFixtureFetch();
     const t = createFixtureTransport('/fixtures');
-    const low = await t.scenario(req({ assumptions: Assumptions.parse({ heat_pump_scop: 2.5 }) }));
-    expect(low.assumptions.heat_pump_scop).toBe(2.5);
+    const low = await t.scenario(req({ assumptions: Assumptions.parse({ heat_pump_scop: 2.44 }) }));
+    expect(low.assumptions.heat_pump_scop).toBe(2.44);
     const reading = await t.scenario(req({ user_reading: { gas_kwh: 18500, elec_kwh: 3400 } }));
     expect(reading.baseline.source).toBe('user_provided');
     expect(reading.baseline.gas_provenance).toBe('user_provided');

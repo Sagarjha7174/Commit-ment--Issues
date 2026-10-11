@@ -191,6 +191,21 @@ class Fact:
             return "reduction" if v > 0 else "increase"
         return "up" if v > 0 else "down"
 
+    @property
+    def sentiment(self) -> str | None:
+        """Good or bad for the homeowner (for colour), independent of the arithmetic direction: less energy, carbon or
+        bill is good; a higher score or EPC (SAP) is good; a higher cost is bad."""
+        if not self.signed or not self.available:
+            return None
+        v = float(self.value)
+        if v == 0:
+            return "neutral"
+        if self.kind in SAVING_KINDS:          # positive = reduction in energy / carbon / bill
+            return "good" if v > 0 else "bad"
+        if self.kind == "gbp_change":          # extra cost
+            return "bad" if v > 0 else "good"
+        return "good" if v > 0 else "bad"      # score_change: score or SAP points
+
 
 @dataclass(frozen=True)
 class Feasibility:
@@ -251,7 +266,10 @@ _HIDDEN_RE = re.compile(
     r"^(green_home_score\.parts\.|property_id$|baseline_id$|validation_status$|\w*_version$|blocked_measures|"
     r"missing_inputs|energy_results\.baseline\.useful_|energy_results\.per_measure\.\d+\.impact_source|"
     r"valuation\.label$|cost_results\.bill_status$|assumptions\.\d+$|warnings$|"
-    r"energy_results\.(baseline|after|change)\.(status|reason)$)")
+    r"energy_results\.(baseline|after|change)\.(status|reason)$|"
+    # per-measure standalone rows, the ranking list and package money details: covered by the template, cited via
+    # derived.priority_order; hidden to keep each request inside free-tier token limits (still valid keys)
+    r"standalone\.|ranking\.|packages\.\w+\.(bill_saving_gbp|payback_years|carbon_saving_kg|calibrated_carbon_saving_kg)$)")
 
 
 _WHATIF_PREFIXES = ("diff.", "green_home_score.after.", "feasibility.", "derived.plan_order", "energy_results.change.",

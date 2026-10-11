@@ -21,7 +21,7 @@ The web app from branch `frontend` now lives in `frontend/` and runs on the engi
 
 ## 2. Plan (executed in this order)
 
-1. **Bring the app in without touching its history.** `frontend/` on branch `feature/frontend-integration` from `main`. Loose planning notes go to `frontend/docs/notes/`. The 14 MB screencast stays on the `frontend` branch.
+1. **Bring the app in without touching its history.** `frontend/` on branch `feature/frontend-integration` from `main`. Loose planning notes stay local (`frontend/docs/notes/` is git-ignored). The 14 MB screencast stays on the `frontend` branch.
 2. **Backend routes for the contract** (`backend/app/web_api.py`, prefix `/api`). These are thin wrappers over `services/api.py` with the address guard on every response.
 3. **Run without the York data** (`backend/app/data/demo_homes.py`, `loaders.data_mode()`). The three public demo homes are rebuilt from `configs/demo_homes.json` plus the certificate fields documented in `tests/fixtures/hand_calc_demo.py`. Gate: they must reproduce `tests/fixtures/scenario_{a,b,c}.json` exactly.
 4. **Align the LLM routes.** They take the rest of the engine request (assumptions, reading, `include_*`) and rerun exactly that request. What-ifs that change prices, grants or readings go through `request_runner`.

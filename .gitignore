@@ -62,8 +62,10 @@ dataset/
 data/
 # engine source package that happens to be named data/ (built data stays ignored above)
 !/backend/app/data/
-# data-integrity tests (code, not data)
-!/tests/data/
 
 # ---- LLM call log and answer cache (local only) ----
 backend/.cache/
+
+# ---- planning notes and drafts (local only) ----
+frontend/docs/notes/
+/report.md

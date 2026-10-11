@@ -70,15 +70,18 @@ describe('demo homes match the engine’s hand-calculated acceptance values', ()
     expect(infeasible).toEqual(e.infeasible);   // flat roof: no loft (D20); cavity walls: no solid-wall insulation
   });
 
-  it('B: flat — loft and solar infeasible, heat pump not estimated (no gas to displace)', () => {
+  it('B: flat — loft and solar infeasible; electric heating savings estimated on electricity (D16)', () => {
     const b = ScenarioResult.parse(snapshotResult(HOME_B));
     expect(b.score_before.total).toBe(61);
     expect(b.score_before.total).toBe(handCalc('b').score_before);
     const state = Object.fromEntries(b.feasibility.map((f) => [f.measure, f.state]));
     expect(state.loft_insulation).toBe('infeasible');
     expect(state.solar_pv).toBe('infeasible');
-    expect(b.simulation.improvement_potential_status).toBe('not_estimated');
-    expect(b.simulation.measures.find((m) => m.measure === 'heat_pump')?.reason_code).toBe('no_gas_to_displace');
+    const hc = handCalc('b') as unknown as { package_elec_saving_kwh: number; improvement_potential_pct: number };
+    expect(b.simulation.improvement_potential_status).toBe('ok');
+    expect(b.simulation.elec_saving_kwh).toBeCloseTo(hc.package_elec_saving_kwh, 6);
+    expect(b.simulation.improvement_potential_pct).toBeCloseTo(hc.improvement_potential_pct, 6);
+    expect(b.simulation.measures.find((m) => m.measure === 'heat_pump')?.status).toBe('ok');
   });
 
   it('C: missing data — score unavailable, baselines null (never 0), all measures need verification', () => {

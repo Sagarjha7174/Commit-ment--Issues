@@ -138,10 +138,30 @@ def parse_question(question: str, current: list[str], *, use_llm: bool = True,
             res = client.structured(system=load_prompt(WHATIF_PROMPT_VERSION), user=user, schema=WhatIfParse,
                                     role="parse", max_tokens=WHATIF_MAX_TOKENS,
                                     purpose="whatif_parse")
-            return res.parsed, "llm"
+            return reconcile_parse(res.parsed, keyword_parse(question, current), current)
         except LLMUnavailable:
             pass
     return keyword_parse(question, current), "keywords"
+
+
+_CONTEXT_FIELDS = ("role", "horizon", "budget_gbp", "priorities", "constraints", "completed", "rejected")
+
+
+def _requests_change(p: WhatIfParse, current: list[str]) -> bool:
+    """An explicit change: a measure added that is not in the plan, one removed that is, or a request field."""
+    return bool(set(p.add) - set(current) or set(p.remove) & set(current)
+                or any(getattr(p, f, None) is not None for f in REQUEST_FIELDS))
+
+
+def reconcile_parse(llm: WhatIfParse, kw: WhatIfParse, current: list[str]) -> tuple[WhatIfParse, str]:
+    """Keyword safety net (D44). The LLM reading wins, except when it finds no change while the conservative keyword
+    reading finds an explicit one ("What if I add a heat pump?" read as a question about the current plan): then the
+    keyword change is used, keeping any context facts the LLM did read. An LLM out_of_scope reading is never
+    overridden."""
+    if llm.kind == "out_of_scope" or _requests_change(llm, current) or not _requests_change(kw, current):
+        return llm, "llm"
+    keep = {f: getattr(llm, f) for f in _CONTEXT_FIELDS if getattr(llm, f)}
+    return kw.model_copy(update=keep), "llm+keywords"
 
 
 @dataclass

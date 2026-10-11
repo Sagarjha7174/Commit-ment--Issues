@@ -1,11 +1,12 @@
 import { Check, Plus, Users } from 'lucide-react';
 import { MEASURE_ORDER, type ScenarioResult } from '../../api/schema';
-import { useTransport } from '../../api/queries';
+import { useEvidence, useTransport } from '../../api/queries';
 import type { ScenarioLab } from '../../hooks/useScenarioLab';
 import { useSituation } from '../../hooks/useSituation';
-import { fmtKg, fmtKwh, isNum, savingDirection, shortId } from '../../utils/format';
+import { fmtKg, fmtKwh, isNum, savingDirection } from '../../utils/format';
 import { measureLabel } from '../../utils/labels';
 import { permissionFor } from '../../utils/permissions';
+import { scopRange } from '../../utils/scop';
 import { DirectionTag } from '../../components/common/Knowledge';
 import { ErrorState } from '../../components/common/States';
 import { Term } from '../../components/common/Term';
@@ -35,7 +36,8 @@ export function TryTab({ r, lab, onTab }: { r: ScenarioResult; lab: ScenarioLab;
   const fmap = new Map(r.feasibility.map((f) => [f.measure, f]));
   const selected = new Set(lab.selectedMeasures);
   const a = lab.state.draft.assumptions;
-  const showHp = selected.has('heat_pump');
+  const scop = scopRange(useEvidence().data);
+  const showHp = selected.has('heat_pump') && scop != null;
   const f = lab.state.failure;
   const carbonDir = savingDirection(r.carbon.total_kg);
 
@@ -58,7 +60,7 @@ export function TryTab({ r, lab, onTab }: { r: ScenarioResult; lab: ScenarioLab;
       )}
 
       <div className="now panel">
-        <p className="kicker">Right now (scenario <span className="mono">{shortId(r.scenario_id)}</span>)</p>
+        <p className="kicker">Your plan right now</p>
         <div className="minis">
           <div className="mini">
             <span className="mini-label">Score after</span>
@@ -126,13 +128,13 @@ export function TryTab({ r, lab, onTab }: { r: ScenarioResult; lab: ScenarioLab;
             <section className="plan-card" aria-labelledby="try-hp">
               <h3 id="try-hp">How efficient is the <Term k="heat pump">heat pump</Term>?</h3>
               <div className="seg seg-wide" role="group" aria-labelledby="try-hp">
-                {[2.5, null, 3.5].map((v) => (
+                {[scop.low, null, scop.high].map((v) => (
                   <button key={String(v)} aria-pressed={a.heat_pump_scop === v} onClick={() => lab.setAssumptions({ heat_pump_scop: v })}>
-                    {v === null ? 'Typical' : v === 2.5 ? 'Less efficient' : 'More efficient'}
+                    {v === null ? 'Typical' : v === scop.low ? 'Less efficient' : 'More efficient'}
                   </button>
                 ))}
               </div>
-              <p className="xsmall muted"><Term k="SCOP">SCOP</Term> 2.5 / typical / 3.5.</p>
+              <p className="xsmall muted"><Term k="SCOP">SCOP</Term> {scop.low} / typical {scop.mid} / {scop.high} (UK field trials).</p>
             </section>
           )}
 

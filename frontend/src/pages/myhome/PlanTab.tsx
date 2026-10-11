@@ -28,7 +28,7 @@ export function PlanTab({ r, lab, onTab, explanation, templateMode, onTemplateMo
 
       <div className="plan-grid">
         <section aria-labelledby="six-q">
-          <h3 id="six-q" className="plan-h">Six questions to ask before you start</h3>
+          <h3 id="six-q" className="plan-h">Before you start</h3>
           <PlanCheck result={r} situation={s} />
           <p className="xsmall muted">{PERMISSION_NOTE}</p>
         </section>

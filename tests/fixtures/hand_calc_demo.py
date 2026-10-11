@@ -112,6 +112,18 @@ pb = demo["b"]["public_fields"]
 xb = (pb["baseline_gas_kwh"] + pb["baseline_elec_kwh"]) / pb["floor_area_m2"]
 sb_int = 100 * (P90 - xb) / (P90 - P10)
 b_raw = 0.25 * 81 + 0.20 * sb_int + 0.15 * 80 + 0.15 * 10 + 0.10 * 75 + 0.10 * 0 + 0.05 * 40
+# Electric heating (D16): heating share of electricity from the NEED split for a flat in EPC band A/B; electric heat
+# is delivered at efficiency 1.0, so savings of space heat are savings of electricity.
+SHARE_B = json.loads((ROOT / "configs/electric_heating_split.json").read_text())["shares"]["Flat|A/B"]["share"]
+EB = pb["baseline_elec_kwh"]
+heat_b = SHARE_B * EB
+space_b, water_b, base_b = SPACE * heat_b, WATER * heat_b, EB - heat_b
+therm_b = THERM_BY_CONTROLS[pb["controls"]]          # timer controls -> 7.5%
+therm_alone_b = therm_b * space_b
+hp_alone_b = (space_b + water_b) - (space_b + water_b) / SCOP
+space_after_b = space_b * (1 - therm_b)            # fixed order: thermostat, then heat pump
+elec_after_b = base_b + (space_after_b + water_b) / SCOP
+elec_saving_b = EB - elec_after_b
 B = {
     "home_id": demo["b"]["home_id"],
     "expect": {
@@ -119,8 +131,12 @@ B = {
         "baseline_gas_kwh": 0.0, "baseline_elec_kwh": pb["baseline_elec_kwh"],
         "infeasible": ["loft_insulation", "cavity_wall", "solid_wall", "double_glazing", "solar_pv"],
         "feasible": ["smart_thermostat", "heat_pump"],
-        "not_estimated": {"smart_thermostat": "heating_not_on_gas", "heat_pump": "no_gas_to_displace"},
-        "improvement_potential_status": "not_estimated",
+        "electric_heating_share": SHARE_B,
+        "end_uses_before": {"elec_space": space_b, "elec_water": water_b, "elec_base": base_b},
+        "standalone_elec_saving_kwh": {"smart_thermostat": therm_alone_b, "heat_pump": hp_alone_b},
+        "package_gas_saving_kwh": 0.0, "package_elec_saving_kwh": elec_saving_b,
+        "improvement_potential_status": "ok", "improvement_potential_pct": 100 * elec_saving_b / EB,
+        "carbon_saving_kg": elec_saving_b * EF_ELEC,
     },
 }
 

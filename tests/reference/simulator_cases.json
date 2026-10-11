@@ -148,9 +148,37 @@
    "hand_calc": "already double glazed: blocked even though requested"
   },
   {
-   "name": "electric_home_fabric_not_estimated",
+   "name": "electric_home_fabric_on_electricity",
    "home": {
     "heating_type": "electric",
+    "mains_gas": false,
+    "baseline_gas_kwh": 0.0,
+    "gas_status": "no_mains_gas",
+    "prov_baseline_gas_kwh": "observed"
+   },
+   "baseline": {
+    "gas": 0.0,
+    "elec": 6000.0
+   },
+   "measures": [
+    "loft_insulation",
+    "heat_pump"
+   ],
+   "expect": {
+    "gas_saving_kwh": 0.0,
+    "elec_saving_kwh": 958.5389266687271,
+    "elec_after": 5041.461073331273,
+    "measure_status": {
+     "loft_insulation": "ok",
+     "heat_pump": "ok"
+    }
+   },
+   "hand_calc": "electric heating split D16 (Semi detached|D share 0.244019): heat 1464.115 = space 1127.368 + water 336.746; loft 3.2117% of heating fuel = 0.043023 of space heat -> space 1078.866; heat pump (space+water)/2.8 -> elec after 5041.461, saving 958.539"
+  },
+  {
+   "name": "oil_home_fabric_not_estimated",
+   "home": {
+    "heating_type": "oil",
     "mains_gas": false,
     "baseline_gas_kwh": 0.0,
     "gas_status": "no_mains_gas",
@@ -176,7 +204,7 @@
      "heat_pump": "no_gas_to_displace"
     }
    },
-   "hand_calc": "no gas heating to reduce or displace (D13)"
+   "hand_calc": "oil heating: NEED has no metered oil, so nothing to reduce or displace (D13)"
   },
   {
    "name": "zero_baseline_improvement_unavailable",

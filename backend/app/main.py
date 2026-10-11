@@ -7,8 +7,9 @@ CORS_ORIGINS (comma list) allows other origins. After `npm run build` in fronten
 app at / (make web), so one process runs the whole demo.
 
 The engine (scenario_builder.build) is the only writer of numbers; the LLM routes explain its results and turn
-what-if questions into validated ScenarioRequests. No response carries an address, full postcode, UPRN or
-certificate number (checked on every response). Without an LLM API key every route still works: answers use the
+what-if questions into validated ScenarioRequests. No response carries an address field, full postcode or
+certificate number (field names checked on every response). Home ids are the open EPC register's UPRN-based
+property ids (Open Government Licence; D47). Without an LLM API key every route still works: answers use the
 deterministic template explainer.
 """
 from __future__ import annotations

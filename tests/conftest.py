@@ -1,7 +1,13 @@
+import os
 import sys
 from pathlib import Path
 
 import pytest
+
+# No test ever calls a real LLM provider or writes the shared answer cache, even with keys in .env: tests outside
+# tests/llm (e.g. the web API prefetching an LLM explanation in the background) must not spend quota or need the network.
+os.environ["LLM_ENABLED"] = "0"
+os.environ["LLM_CACHE"] = "0"
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))

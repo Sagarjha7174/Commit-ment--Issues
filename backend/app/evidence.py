@@ -83,7 +83,14 @@ def evidence() -> dict:
         "score": {"weights": smap["weights"], "classes": smap["classes"], "missing": smap["missing"],
                   "rating_points": smap["rating_points"], "parts": {k: smap[k] for k in smap["weights"]},
                   "intensity_params": config.score_params()["intensity"]},
-        "catalogue": {"version": cat["version"], "global": cat["global"],
+        "catalogue": {"version": cat["version"],
+                      # the SCOP the engine uses: field evidence (engine_params, D24) overrides the catalogue assumption
+                      "global": {**cat["global"], "heat_pump_scop": {**cat["global"]["heat_pump_scop"],
+                                                                     **config.catalogue_globals()["heat_pump_scop"],
+                                                                     "status": "published_field_evidence (D24)",
+                                                                     "note": "Energy Systems Catapult field trials "
+                                                                             "(configs/engine_params.json), replacing "
+                                                                             "the catalogue assumption 2.5 / 3.0 / 3.5"}},
                       "measures": [{k: m.get(k) for k in CATALOGUE_KEYS} for m in cat["measures"]]},
         "emission_factors": config.emission_factors(),
         "simulator_vs_need": _read_json(VALIDATION / "simulator_vs_need.json"),

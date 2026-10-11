@@ -20,7 +20,7 @@ data-rebuild:
 	$(PY) pipelines/audit_sales_matches.py
 
 data-test:
-	$(PY) -m pytest -q tests/unit tests/data
+	$(PY) -m pytest -q tests/unit tests/data_integrity
 
 # ---- engine (backend/app/services) ----
 .PHONY: score test

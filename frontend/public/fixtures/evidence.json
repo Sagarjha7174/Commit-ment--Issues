@@ -3,13 +3,14 @@
   "catalogue": "cat-v3",
   "score_params": "score-params-v1",
   "score_mappings": "score-map-v1",
-  "state_effects": "state-effects-v1",
+  "state_effects": "state-effects-v2",
   "emission_factors": "DESNZ 2026",
   "engine": "engine-v2",
   "engine_params": "engine-params-v2",
   "energy_prices": "prices-2026Q4",
   "grants": "grants-2026-10",
   "finance": "finance-v1",
+  "electric_heating_split": "elec-split-v1",
   "combination_calibration": "combo-cal-v1",
   "model_energy_elec_q10": "energy_elec_q10-ab346cd53b",
   "model_energy_elec_q50": "energy_elec_q50-2f7a17dfd5",
@@ -232,12 +233,12 @@
     "definition": "share of (space + water heating) gas used for water heating; = 1 - space_share_of_heat_water_gas"
    },
    "heat_pump_scop": {
-    "low": 2.5,
-    "mid": 3.0,
+    "low": 2.44,
+    "mid": 2.8,
     "high": 3.5,
-    "status": "assumption",
+    "status": "published_field_evidence (D24)",
     "definition": "seasonal coefficient of performance of an air source heat pump (useful heat / electricity)",
-    "note": "same values as the heat_pump measure impact block; read from here by the engine"
+    "note": "Energy Systems Catapult field trials (configs/engine_params.json), replacing the catalogue assumption 2.5 / 3.0 / 3.5"
    },
    "derived": {
     "space_share_of_total_gas": 0.746515,
@@ -1133,6 +1134,23 @@
    },
    "runs": [
     {
+     "mode": "llm",
+     "label": "Live LLM",
+     "date": "2026-10-11",
+     "n": 53,
+     "groundedness": 1.0,
+     "factual_accuracy": 1.0,
+     "unsupported_claim_rate": 0.0,
+     "whatif_success": 1.0,
+     "refusal_correctness": 1.0,
+     "items_all_checks_passed": 1.0,
+     "targets_met": {
+      "groundedness": true,
+      "factual_accuracy": true,
+      "unsupported_claim_rate": true
+     }
+    },
+    {
      "mode": "mock",
      "label": "Mocked LLM (offline, scripted)",
      "date": "2026-10-11",
@@ -1167,8 +1185,8 @@
      }
     }
    ],
-   "live_llm_run": false,
-   "note": "No live-LLM run yet: the template and mocked runs show the guardrails, not a live model's answer quality.",
+   "live_llm_run": true,
+   "note": null,
    "report": "docs/LLM_EVALUATION.md"
   }
  }

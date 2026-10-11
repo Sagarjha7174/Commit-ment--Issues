@@ -39,8 +39,10 @@ def test_demo_a_heat_pump_explains_rising_electricity_and_epc_caveat():
 
 
 @needs_data
-def test_demo_b_infeasible_and_not_estimated_are_explained():
+def test_demo_b_infeasible_explained_and_electric_heating_savings_estimated():
+    """Electric flat (D16): savings come off electricity; a heat pump replacing electric heating raises the EPC (D46)."""
     r = build(ScenarioRequest(home_id=DEMO_B))
     text = explain(r, use_llm=False).rendered.all_text
-    assert "Not suitable: solar panels" in text and "not estimated" in text
-    assert "property value is not estimated" in text
+    assert "Not suitable: solar panels" in text
+    assert r.simulation.elec_saving_kwh > 0 and "grid electricity is estimated to fall" in text.lower()
+    assert r.score_after.epc_change["sap_change"] > 0 and "EPC score goes up" in text

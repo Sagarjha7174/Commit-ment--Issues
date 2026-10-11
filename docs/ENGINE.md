@@ -38,7 +38,7 @@ Priority order:
 | Heat pump | already a heat pump | heating missing; gas-supply conflict |
 | Solar PV | flat or maisonette; already has PV | property type or PV missing |
 
-A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Electric-heated homes are feasible but get `not_estimated` impacts (§5).
+A flat gets heat-pump suitability Low, because outdoor space is unconfirmed. Electric-heated homes get their savings on electricity through the electric heating split (D16, applied since D46); oil and other non-gas heating stay `not_estimated` (§5).
 
 ## 4. Gas end-use decomposition (`units.py`)
 - `gas_other = other_gas_share × gas` (0.0305; cooking, never touched)

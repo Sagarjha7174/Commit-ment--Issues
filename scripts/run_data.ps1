@@ -23,5 +23,5 @@ switch ($Target) {
         Run @("pipelines/make_monthly_demo.py")
         Run @("pipelines/audit_sales_matches.py")
     }
-    "data-test" { Run @("-m", "pytest", "-q", "tests/unit", "tests/data") }
+    "data-test" { Run @("-m", "pytest", "-q", "tests/unit", "tests/data_integrity") }
 }

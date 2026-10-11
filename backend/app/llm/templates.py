@@ -8,7 +8,9 @@ scenario; tests/llm/test_llm_templates.py enforces it on every fixture.
 
 from __future__ import annotations
 
-from .checker import CARBON_KEY, CLASS_KEY, ELEC_KEY, GAS_KEY, MEASURED_PROVENANCE, SCORE_KEY, VALUE_KEYS
+import re
+
+from .checker import BENCHMARK_RE, CARBON_KEY, heat_pump_replaces_gas, CLASS_KEY, ELEC_KEY, GAS_KEY, MEASURED_PROVENANCE, SCORE_KEY, VALUE_KEYS
 from .claims import Claim, ExplanationDraft
 from .facts_view import FactSheet
 from .measures import display_name
@@ -259,6 +261,11 @@ def _cost_claims(sheet: FactSheet) -> list[Claim]:
     bill = sheet.get(BILL_KEY)
     if bill is not None and not bill.available:
         out.append(_missing(sheet, "cost", BILL_KEY, "The change in energy bills in pounds"))
+        pb = sheet.get("cost_results.payback_years")
+        if sheet.selected_measures and pb is not None and sheet.get("cost_results.payback_years.reason") is not None:
+            out.append(_c("cost", "missing_data", "There is no payback figure, because "
+                                                  "{cost_results.payback_years.reason}.",
+                          ["cost_results.payback_years", "cost_results.payback_years.reason"]))
     elif bill is not None and sheet.selected_measures:
         keys = [BILL_KEY]
         text = "At today's capped energy prices, the annual energy bill is estimated to {%s|change}" % BILL_KEY
@@ -343,10 +350,12 @@ def _caveat_claims(sheet: FactSheet) -> list[Claim]:
     if sheet.get("derived.missing_inputs") is not None:
         out.append(_c("caveats", "missing_data", "Details about the home that are missing: {derived.missing_inputs}.",
                       ["derived.missing_inputs"]))
-    if sheet.baseline_provenance and not (sheet.baseline_provenance & MEASURED_PROVENANCE):
+    warned = " ".join(str(sheet.value(k) or "") for k in sheet.warning_keys)
+    if sheet.baseline_provenance and not (sheet.baseline_provenance & MEASURED_PROVENANCE) \
+            and not BENCHMARK_RE.search(warned):   # the engine warning already says it: said once, not twice
         out.append(_c("caveats", "caveat", "The starting energy use is not a meter reading from this home."))
     out.append(_c("caveats", "caveat", "All savings, carbon and cost figures are estimates, not guarantees."))
-    if "heat_pump" in sheet.estimated_measures:
+    if heat_pump_replaces_gas(sheet):
         out.append(_c("caveats", "caveat", HEAT_PUMP_EPC_NOTE, [], ["heat_pump"]))
     if sheet.get("assumptions") is not None and sheet.get("assumptions").available:
         out.append(_c("caveats", "caveat", "Main assumptions: {assumptions}.", ["assumptions"]))
