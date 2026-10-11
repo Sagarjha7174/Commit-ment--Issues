@@ -118,3 +118,14 @@ def test_context_rules(text, code):
     draft = template_report(sheet)
     bad = ExplanationDraft(claims=[*draft.claims, Claim(section="fit", type="statement", text=text)])
     assert code in {e.code for e in check(bad, sheet)}
+
+
+def test_budget_stated_in_words_survives_an_llm_reading_that_missed_it():
+    """eval q40: the LLM parse missed '£5,000'; the keyword reading of the stated budget is kept."""
+    from backend.app.llm.claims import WhatIfParse
+    from helpers import FakeLLM
+    missed = WhatIfParse(kind="question_about_current", add=[], remove=[], unsupported=[])
+    res = advise_whatif("syn-poor-semi", "My budget is £5,000. What should I do?", sh.run, use_llm=True,
+                        client=FakeLLM(missed))
+    assert res.updated_context and res.context.budget_gbp == 5000
+    assert "budget" in res.explanation.rendered.all_text.lower()

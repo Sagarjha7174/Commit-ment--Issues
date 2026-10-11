@@ -128,8 +128,25 @@ def keyword_request_fields(question: str) -> dict[str, Any]:
     return out
 
 
+_CHANGE_FIELDS = (*REQUEST_FIELDS,)
+
+
+def reconcile_parse(llm: WhatIfParse, kw: WhatIfParse) -> tuple[WhatIfParse, bool]:
+    """Safety net for the LLM's reading. The keyword parser only reports a change when an action word is attached to
+    a named measure ("add a heat pump") or a value is stated ("gas at 6p"), so an explicit change it finds is never
+    dropped: when the LLM reads such a question as "about the current plan" (no add, no remove, no request field),
+    the keyword reading is used instead. An LLM reading that does change something is kept as it is, and an
+    out-of-scope reading is never overridden (that is the injection guard). Returns (parse, overridden)."""
+    llm_changes = bool(llm.add or llm.remove or any(getattr(llm, f, None) is not None for f in _CHANGE_FIELDS))
+    kw_changes = bool(kw.add or kw.remove or any(getattr(kw, f, None) is not None for f in _CHANGE_FIELDS))
+    if llm.kind in ("question_about_current", "change_measures", "change_assumptions") and not llm_changes and kw_changes:
+        return kw, True
+    return llm, False
+
+
 def parse_question(question: str, current: list[str], *, use_llm: bool = True,
                    client: LLMClient | None = None) -> tuple[WhatIfParse, str]:
+    """(parse, parser): parser is "llm", "llm+keywords" (the keyword safety net corrected the LLM) or "keywords"."""
     if use_llm:
         client = client or get_client()
         user = (f"CURRENT_SELECTED_MEASURES: {current}\n\n"
@@ -138,7 +155,8 @@ def parse_question(question: str, current: list[str], *, use_llm: bool = True,
             res = client.structured(system=load_prompt(WHATIF_PROMPT_VERSION), user=user, schema=WhatIfParse,
                                     role="parse", max_tokens=WHATIF_MAX_TOKENS,
                                     purpose="whatif_parse")
-            return res.parsed, "llm"
+            parsed, overridden = reconcile_parse(res.parsed, keyword_parse(question, current))
+            return parsed, ("llm+keywords" if overridden else "llm")
         except LLMUnavailable:
             pass
     return keyword_parse(question, current), "keywords"

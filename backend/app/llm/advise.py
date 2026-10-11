@@ -172,6 +172,12 @@ def advise_whatif(home_id: str, question: str, runner: Runner, *, customer_id: O
     parsed, source = parse_question(question, current_measures, use_llm=use_llm, client=client)
     if source == "keywords" and kw:
         parsed = WhatIfParse(kind="update_context", add=[], remove=[], unsupported=[], **kw)
+    elif kw:
+        # Safety net: a situation fact stated in plain words ("my budget is £5,000") is kept even if the LLM's
+        # reading missed it; the LLM's own context fields win where it set them.
+        missing = {k: v for k, v in kw.items() if getattr(parsed, k, None) in (None, [], "")}
+        if missing:
+            parsed = parsed.model_copy(update={**missing, "kind": "update_context"})
     if parsed.kind == "update_context" or _has_context(parsed):
         new_ctx = merge_context(ctx, parsed)
         if customer_id and profile is not None and not profile.records:
